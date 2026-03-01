@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-const DASHBOARD_URL = 'https://ai-receptionist-dashboard-seven.vercel.app'
+const DASHBOARD_URL = 'https://app.iamclara.ai'
 
 function Nav() {
   const [open, setOpen] = useState(false)
