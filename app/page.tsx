@@ -270,7 +270,7 @@ function Pricing() {
               ))}
             </ul>
 
-            <a href="mailto:hello@iamclara.ai?subject=Clara Core - Get Started"
+            <a href="mailto:jay@dental-on-demand.com?subject=Clara Core - Get Started"
               className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
               Get Started
             </a>
@@ -311,7 +311,7 @@ function Pricing() {
               ))}
             </ul>
 
-            <a href="mailto:hello@iamclara.ai?subject=Clara Growth - Notify Me"
+            <a href="mailto:jay@dental-on-demand.com?subject=Clara Growth - Notify Me"
               className="block text-center border border-teal-500/40 hover:border-teal-400 text-white/70 hover:text-white font-semibold py-3.5 rounded-full transition-colors">
               Notify Me When Available
             </a>
@@ -403,7 +403,7 @@ function CTA() {
             Join dental practices already using Clara to capture more patients and save $400+ a month.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="mailto:hello@iamclara.ai?subject=Clara - Get Started"
+            <a href="mailto:jay@dental-on-demand.com?subject=Clara - Get Started"
               className="w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-4 rounded-full text-lg transition-all hover:scale-105">
               Get Started Today
             </a>
@@ -430,7 +430,7 @@ function Footer() {
           <a href="#how-it-works" className="hover:text-white/70 transition-colors">How it works</a>
           <a href="#features" className="hover:text-white/70 transition-colors">Features</a>
           <a href="#pricing" className="hover:text-white/70 transition-colors">Pricing</a>
-          <a href="mailto:hello@iamclara.ai" className="hover:text-white/70 transition-colors">Contact</a>
+          <a href="mailto:jay@dental-on-demand.com" className="hover:text-white/70 transition-colors">Contact</a>
         </div>
         <div className="text-white/30 text-sm">
           © 2026 Clara AI. All rights reserved.
