@@ -91,7 +91,7 @@ function Hero() {
         <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto border-t border-white/10 pt-10">
           {[
             { value: '24/7', label: 'Always on' },
-            { value: '$450+', label: 'Saved vs Yobi/mo' },
+            { value: '$450+', label: 'Saved vs avg service/mo' },
             { value: '< 2s', label: 'Answer time' },
           ].map((s) => (
             <div key={s.label} className="text-center">
