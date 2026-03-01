@@ -79,7 +79,7 @@ function Hero() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <a href="#pricing"
             className="w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-4 rounded-full text-lg transition-all hover:scale-105 glow">
-            Start for $149/month
+            Start for $199/month
           </a>
           <a href="#how-it-works"
             className="w-full sm:w-auto border border-white/20 hover:border-white/40 text-white font-medium px-8 py-4 rounded-full text-lg transition-colors">
@@ -243,7 +243,7 @@ function Pricing() {
             <div className="mb-6">
               <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">CORE</div>
               <div className="flex items-end gap-2 mb-3">
-                <span className="text-5xl font-bold">$149</span>
+                <span className="text-5xl font-bold">$199</span>
                 <span className="text-white/40 mb-2">/month</span>
               </div>
               <p className="text-white/50 text-sm">
