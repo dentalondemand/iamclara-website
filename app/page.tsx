@@ -214,11 +214,11 @@ function Features() {
 
         {/* Growth tier teaser */}
         <div className="mt-10 bg-teal-500/10 border border-teal-500/20 rounded-2xl p-8 text-center">
-          <div className="text-2xl mb-2">📣</div>
-          <h3 className="text-xl font-semibold mb-2">Plus: Outbound Lead Follow-Up</h3>
-          <p className="text-white/50 max-w-xl mx-auto">
-            Available in the Growth plan — Clara automatically calls Facebook leads and website form submissions,
-            qualifies interest, and books consultations without your team lifting a finger.
+          <div className="text-2xl mb-2">🚀</div>
+          <h3 className="text-xl font-semibold mb-2">Want Clara to run your marketing too?</h3>
+          <p className="text-white/50 max-w-2xl mx-auto">
+            Clara Growth adds outbound lead calling, AI-powered social media, Facebook &amp; Google ad management,
+            and automated lead nurture — replacing your $2,000–5,000/month marketing agency for $799/month.
           </p>
         </div>
       </div>
@@ -280,49 +280,58 @@ function Pricing() {
           {/* Growth Plan */}
           <div className="relative bg-card-gradient border border-teal-500/40 rounded-3xl p-8 flex flex-col glow">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">COMING SOON</span>
+              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">FOUNDING RATE</span>
             </div>
 
             <div className="mb-6">
               <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">GROWTH</div>
               <div className="flex items-end gap-2 mb-3">
-                <span className="text-5xl font-bold text-white/40">$—</span>
+                <span className="text-5xl font-bold">$599</span>
+                <span className="text-white/40 mb-2">/month</span>
               </div>
+              <p className="text-white/30 text-xs mb-1 line-through">$799/month after founding rate ends</p>
               <p className="text-white/50 text-sm">
-                Everything in Core, plus automated outbound lead follow-up and marketing integrations.
+                Your AI receptionist plus a full marketing team — outbound calls, social media, and ads — all automated.
               </p>
             </div>
 
             <ul className="space-y-3 mb-8 flex-1">
               {[
                 'Everything in Core',
-                'Outbound lead calling (Facebook, website forms)',
-                'Lead qualification & booking',
-                'Google Sheets integration',
-                'Lead tracking dashboard',
-                'Automated retry scheduling',
-                'Results write-back to your CRM',
+                'Lead capture (web forms, JotForm, email)',
+                'Outbound lead calling + retry scheduling',
+                'AI social media (IG, FB, TikTok, GMB)',
+                'Email photos → auto-caption → auto-post',
+                'Facebook & Google Ads management',
+                'Practice landing page (auto-generated)',
+                'Lead nurture email sequences',
+                'Ads analytics dashboard',
                 'Priority support',
               ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-white/50">
-                  <span className="text-teal-400/50 mt-0.5 flex-shrink-0">✓</span>
+                <li key={item} className="flex items-start gap-3 text-sm text-white/70">
+                  <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
                   {item}
                 </li>
               ))}
             </ul>
 
-            <a href="mailto:jay@dental-on-demand.com?subject=Clara Growth - Notify Me"
-              className="block text-center border border-teal-500/40 hover:border-teal-400 text-white/70 hover:text-white font-semibold py-3.5 rounded-full transition-colors">
-              Notify Me When Available
+            <a href="mailto:jay@dental-on-demand.com?subject=Clara Growth - Founding Practice"
+              className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
+              Join as Founding Practice
             </a>
+            <p className="text-center text-white/30 text-xs mt-3">Lock in $599/mo for life — limited spots</p>
           </div>
         </div>
 
         {/* Savings callout */}
-        <div className="mt-12 text-center">
+        <div className="mt-12 text-center space-y-2">
           <p className="text-white/40 text-sm">
-            💡 The average dental answering service costs <span className="text-white/70 font-semibold">$500–$700/month</span>.
+            💡 Core: The average dental answering service costs <span className="text-white/70 font-semibold">$500–$700/month</span>.
             Clara Core saves you <span className="text-teal-400 font-semibold">$350–550/month</span> — and works harder.
+          </p>
+          <p className="text-white/40 text-sm">
+            🚀 Growth: The average dental marketing agency costs <span className="text-white/70 font-semibold">$2,000–$5,000/month</span>.
+            Clara Growth replaces all of it for <span className="text-teal-400 font-semibold">$599/month</span>.
           </p>
         </div>
       </div>
