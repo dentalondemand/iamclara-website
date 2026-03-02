@@ -135,7 +135,8 @@ export default function LandingPage() {
   const pricing = c.pricing || {};
   const stats = c.stats || {};
   const diffs: string[] = c.differentiators || [];
-  const testimonials: any[] = (c.testimonials || []).filter((t: any) => t.video_url);
+  const videoTestimonials: any[] = (c.testimonials || []).filter((t: any) => t.video_url);
+  const textReviews: any[] = (c.text_reviews || c.testimonials || []).filter((t: any) => t.result && t.patient_name);
   const beforeAfters: string[] = (c.before_afters || []).filter(Boolean);
   const focus = c.priority_cases || "both";
   const faqs = focus === "cosmetic" ? FAQS_COSMETIC : FAQS_IMPLANTS;
@@ -388,33 +389,52 @@ export default function LandingPage() {
         </section>
       )}
 
-      {/* ── TESTIMONIALS ── */}
-      {testimonials.length > 0 && (
+      {/* ── VIDEO TESTIMONIALS ── */}
+      {videoTestimonials.length > 0 && (
         <section style={{ padding: "80px 20px", background: "#fff" }}>
-          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
               <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>REAL PATIENTS. REAL RESULTS.</div>
               <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#0a1628", margin: 0 }}>
-                See what our patients say
+                Hear from our patients
               </h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 28 }}>
-              {testimonials.map((t: any, i: number) => (
-                <div key={i} style={{ borderRadius: 16, overflow: "hidden",
-                  boxShadow: "0 4px 24px rgba(0,0,0,0.08)", border: "1px solid #f3f4f6" }}>
-                  {ytEmbed(t.video_url) && (
-                    <div style={{ position: "relative", paddingTop: "56.25%" }}>
-                      <iframe src={ytEmbed(t.video_url)} style={{ position: "absolute", top: 0, left: 0,
-                        width: "100%", height: "100%", border: "none" }}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen />
-                    </div>
-                  )}
-                  <div style={{ padding: "16px 20px" }}>
-                    <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 14 }}>★★★★★</div>
-                    <div style={{ fontWeight: 700, color: "#0a1628", marginTop: 4 }}>{t.patient_name}</div>
-                    {t.result && <div style={{ color: "#6b7280", fontSize: 13, marginTop: 2 }}>{t.result}</div>}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
+              {videoTestimonials.map((t: any, i: number) => (
+                <div key={i} style={{ borderRadius: 14, overflow: "hidden",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.08)", border: "1px solid #f3f4f6" }}>
+                  <div style={{ position: "relative", paddingTop: "56.25%" }}>
+                    <iframe src={ytEmbed(t.video_url)} style={{ position: "absolute", top: 0, left: 0,
+                      width: "100%", height: "100%", border: "none" }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen />
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── TEXT REVIEWS ── */}
+      {textReviews.length > 0 && (
+        <section style={{ padding: "80px 20px", background: "#f8fafc" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>PATIENT REVIEWS</div>
+              <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#0a1628", margin: 0 }}>
+                ★★★★★ 5-Star Reviews
+              </h2>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+              {textReviews.map((t: any, i: number) => (
+                <div key={i} style={{ background: "#fff", borderRadius: 16, padding: "28px 24px",
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.06)", border: "1px solid #f3f4f6" }}>
+                  <div style={{ color: "#f59e0b", fontSize: 18, marginBottom: 14 }}>★★★★★</div>
+                  <p style={{ color: "#374151", fontSize: 15, lineHeight: 1.8, margin: "0 0 20px", fontStyle: "italic" }}>
+                    "{t.result}"
+                  </p>
+                  <div style={{ fontWeight: 700, color: "#0a1628", fontSize: 14 }}>— {t.patient_name}</div>
                 </div>
               ))}
             </div>
