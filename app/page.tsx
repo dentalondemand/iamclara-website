@@ -315,7 +315,7 @@ function Pricing() {
               ))}
             </ul>
 
-            <a href="mailto:jay@dental-on-demand.com?subject=Clara Growth - Founding Practice"
+            <a href="/get-started"
               className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
               Join as Founding Practice
             </a>

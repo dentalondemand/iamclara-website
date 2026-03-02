@@ -98,17 +98,31 @@ export default function GetStarted() {
     }
   }
 
+    const stripeLink = info.plan === "growth"
+    ? "https://buy.stripe.com/test_aFaaEYdmufTqbEJcoUbZe01"   // Growth Founders $599/mo — replace with live link
+    : "https://buy.stripe.com/test_28E28s96e5eM249dsYbZe00"    // Core $199/mo — replace with live link
+
   if (submitted) return (
     <div style={{ minHeight:"100vh", background:"#141E2B", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
       <div style={{ background:"#1C2A38", borderRadius:24, padding:48, maxWidth:480, textAlign:"center", border:"1px solid rgba(255,255,255,0.1)" }}>
         <div style={{ fontSize:64, marginBottom:16 }}>🎉</div>
-        <h1 style={{ color:"#fff", fontSize:28, marginBottom:12 }}>You're on the list!</h1>
-        <p style={{ color:"rgba(255,255,255,0.6)", lineHeight:1.6, marginBottom:24 }}>
-          We received your intake form. Jay will be in touch within 1 business day to get Clara set up for{" "}
-          <strong style={{color:"#fff"}}>{info.practice_name}</strong>.
+        <h1 style={{ color:"#fff", fontSize:28, marginBottom:12 }}>Almost there!</h1>
+        <p style={{ color:"rgba(255,255,255,0.6)", lineHeight:1.6, marginBottom:8 }}>
+          We received your intake for <strong style={{color:"#fff"}}>{info.practice_name}</strong>.
+          Complete your payment below and we'll have Clara set up within 1 business day.
         </p>
-        <a href="/" style={{ display:"inline-block", background:"#14B8A6", color:"#fff", padding:"12px 28px",
-                              borderRadius:50, fontWeight:600, textDecoration:"none" }}>
+        <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:28 }}>
+          {info.plan === "growth"
+            ? "Growth plan · $599/mo founding rate (locked for life)"
+            : "Core plan · $199/month"}
+        </p>
+        <a href={stripeLink} target="_blank" rel="noopener noreferrer"
+          style={{ display:"block", background:"#14B8A6", color:"#fff", padding:"14px 28px",
+                   borderRadius:50, fontWeight:700, textDecoration:"none", fontSize:16, marginBottom:16 }}>
+          Complete Payment →
+        </a>
+        <a href="/" style={{ display:"inline-block", color:"rgba(255,255,255,0.35)", fontSize:13,
+                              textDecoration:"none" }}>
           Back to iamclara.ai
         </a>
       </div>
