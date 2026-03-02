@@ -137,7 +137,10 @@ export default function LandingPage() {
   const diffs: string[] = c.differentiators || [];
   const videoTestimonials: any[] = (c.testimonials || []).filter((t: any) => t.video_url);
   const textReviews: any[] = (c.text_reviews || c.testimonials || []).filter((t: any) => t.result && t.patient_name);
-  const beforeAfters: string[] = (c.before_afters || []).filter(Boolean);
+  const beforeAfters: { before: string; after: string; label?: string }[] =
+    (c.before_afters || []).filter((b: any) => b?.before || b?.after || typeof b === "string").map((b: any) =>
+      typeof b === "string" ? { before: b, after: b } : b
+    );
   const focus = c.priority_cases || "both";
   const faqs = focus === "cosmetic" ? FAQS_COSMETIC : FAQS_IMPLANTS;
 
@@ -452,13 +455,36 @@ export default function LandingPage() {
                 Before &amp; After
               </h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
-              {beforeAfters.map((url, i) => (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
+              {beforeAfters.map((pair, i) => (
                 <div key={i} style={{ borderRadius: 16, overflow: "hidden",
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.08)", aspectRatio: "4/3", background: "#e5e7eb" }}>
-                  <img src={url} alt={`Before and after ${i + 1}`}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.08)", background: "#fff",
+                  border: "1px solid #e5e7eb" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+                    <div style={{ position: "relative" }}>
+                      <img src={pair.before} alt={`Before ${i + 1}`}
+                        style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }}
+                        onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
+                      <div style={{ position: "absolute", bottom: 6, left: 6, background: "rgba(0,0,0,0.6)",
+                        color: "#fff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>
+                        BEFORE
+                      </div>
+                    </div>
+                    <div style={{ position: "relative" }}>
+                      <img src={pair.after} alt={`After ${i + 1}`}
+                        style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }}
+                        onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
+                      <div style={{ position: "absolute", bottom: 6, right: 6, background: "#0d9488",
+                        color: "#fff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>
+                        AFTER
+                      </div>
+                    </div>
+                  </div>
+                  {pair.label && (
+                    <div style={{ padding: "10px 14px", fontSize: 13, color: "#6b7280", fontWeight: 600 }}>
+                      {pair.label}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
