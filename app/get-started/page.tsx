@@ -109,20 +109,24 @@ export default function GetStarted() {
     <div style={{ minHeight:"100vh", background:"#141E2B", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
       <div style={{ background:"#1C2A38", borderRadius:24, padding:48, maxWidth:480, textAlign:"center", border:"1px solid rgba(255,255,255,0.1)" }}>
         <div style={{ fontSize:64, marginBottom:16 }}>🎉</div>
-        <h1 style={{ color:"#fff", fontSize:28, marginBottom:12 }}>Almost there!</h1>
+        <h1 style={{ color:"#fff", fontSize:28, marginBottom:12 }}>You're all set!</h1>
         <p style={{ color:"rgba(255,255,255,0.6)", lineHeight:1.6, marginBottom:8 }}>
           We received your intake for <strong style={{color:"#fff"}}>{info.practice_name}</strong>.
-          Complete your payment below and we'll have Clara set up within 1 business day.
+          Jay will reach out within 1 business day to get Clara configured for your practice.
         </p>
         <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:28 }}>
           {info.plan === "growth"
             ? "Growth plan · $599/mo founding rate (locked for life)"
             : "Core plan · $199/month"}
         </p>
+        <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, marginBottom:16 }}>
+          Want to get started sooner? Complete payment now and we'll prioritize your setup.
+        </p>
         <a href={stripeLink} target="_blank" rel="noopener noreferrer"
-          style={{ display:"block", background:"#14B8A6", color:"#fff", padding:"14px 28px",
-                   borderRadius:50, fontWeight:700, textDecoration:"none", fontSize:16, marginBottom:16 }}>
-          Complete Payment →
+          style={{ display:"block", background:"rgba(20,184,166,0.15)", border:"1px solid #14B8A6",
+                   color:"#14B8A6", padding:"12px 28px",
+                   borderRadius:50, fontWeight:600, textDecoration:"none", fontSize:15, marginBottom:16 }}>
+          Complete Payment (optional) →
         </a>
         <a href="/" style={{ display:"inline-block", color:"rgba(255,255,255,0.35)", fontSize:13,
                               textDecoration:"none" }}>
