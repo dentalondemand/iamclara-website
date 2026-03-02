@@ -38,6 +38,9 @@ export default function GetStarted() {
     voip_provider: "", rings_before_forward: "3",
     wants_calendar: "yes", wants_outbound: "no",
     priority_cases: "both",   // implants / cosmetic / both
+    // Business / Legal (for A2P 10DLC + tax)
+    business_legal_name: "", ein: "", business_type: "",
+    street_address: "", city: "", state: "", zip: "",
     // Growth
     instagram: "", facebook_page: "", tiktok: "", google_business: "", ad_budget: "",
   })
@@ -187,6 +190,61 @@ export default function GetStarted() {
                 {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g," ")}</option>)}
               </select>
             </label>
+
+            {/* Business / Legal */}
+            <div style={{ borderTop:"1px solid rgba(255,255,255,0.08)", marginTop:8, paddingTop:20, marginBottom:4 }}>
+              <h3 style={{ color:"#fff", fontSize:15, fontWeight:700, marginBottom:4, marginTop:0 }}>Business & Legal Info</h3>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:14, marginTop:0 }}>
+                Required for SMS text messaging compliance (Twilio A2P) and tax purposes. Kept private.
+              </p>
+            </div>
+
+            <label style={labelStyle}>
+              Business legal name <span style={{color:"rgba(255,255,255,0.35)", fontWeight:400}}>(if different from practice name)</span>
+              <input value={info.business_legal_name}
+                onChange={e => setInfo({...info, business_legal_name: e.target.value})}
+                placeholder="Radiant Dental Care LLC" style={inputStyle} />
+            </label>
+
+            <label style={labelStyle}>
+              EIN / Tax ID <span style={{color:"#f87171", fontWeight:600}}>*</span>
+              <input value={info.ein}
+                onChange={e => setInfo({...info, ein: e.target.value})}
+                placeholder="XX-XXXXXXX" style={inputStyle} />
+            </label>
+
+            <label style={labelStyle}>
+              Business type <span style={{color:"#f87171", fontWeight:600}}>*</span>
+              <select value={info.business_type} onChange={e => setInfo({...info, business_type: e.target.value})} style={inputStyle}>
+                <option value="">Select…</option>
+                <option value="sole_proprietorship">Sole Proprietorship</option>
+                <option value="llc">LLC</option>
+                <option value="s_corp">S-Corp</option>
+                <option value="c_corp">C-Corp</option>
+                <option value="partnership">Partnership</option>
+                <option value="non_profit">Non-Profit</option>
+              </select>
+            </label>
+
+            <label style={labelStyle}>Street address
+              <input value={info.street_address}
+                onChange={e => setInfo({...info, street_address: e.target.value})}
+                placeholder="123 Main St, Suite 100" style={inputStyle} />
+            </label>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 80px 100px", gap:10 }}>
+              <label style={labelStyle}>City
+                <input value={info.city} onChange={e => setInfo({...info, city: e.target.value})}
+                  placeholder="Chevy Chase" style={inputStyle} />
+              </label>
+              <label style={labelStyle}>State
+                <input value={info.state} onChange={e => setInfo({...info, state: e.target.value})}
+                  placeholder="MD" maxLength={2} style={inputStyle} />
+              </label>
+              <label style={labelStyle}>ZIP
+                <input value={info.zip} onChange={e => setInfo({...info, zip: e.target.value})}
+                  placeholder="20815" style={inputStyle} />
+              </label>
+            </div>
 
             {/* Plan selector */}
             <label style={labelStyle}>
@@ -407,6 +465,10 @@ export default function GetStarted() {
               ["Timezone", info.timezone.replace(/_/g," ")],
               ["Plan", info.plan === "growth" ? "Growth — $599/mo (founding)" : "Core — $199/mo"],
               ["Admin", `${info.admin_name} (${info.admin_email})`],
+              ["Legal name", info.business_legal_name || info.practice_name],
+              ["EIN", info.ein || "—"],
+              ["Business type", info.business_type.replace(/_/g," ") || "—"],
+              ["Address", [info.street_address, info.city, info.state, info.zip].filter(Boolean).join(", ") || info.address],
               ["Alert emails", alertEmails.filter(Boolean).join(", ") || "—"],
               ["Alert SMS", alertPhones.filter(Boolean).join(", ") || "—"],
               ["Services", `${services.length} selected`],
