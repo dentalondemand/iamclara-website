@@ -16,7 +16,7 @@ function Nav() {
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
           <a href="#how-it-works" className="hover:text-white transition-colors">How it works</a>
           <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="/get-started" className="hover:text-white transition-colors">Pricing</a>
+          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
         </div>
         <div className="flex items-center gap-3">
           <a href={DASHBOARD_URL} target="_blank" rel="noopener noreferrer"
@@ -40,7 +40,7 @@ function Nav() {
         <div className="md:hidden border-t border-white/10 bg-navy-800 px-6 py-4 space-y-3">
           <a href="#how-it-works" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>How it works</a>
           <a href="#features" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Features</a>
-          <a href="/get-started" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Pricing</a>
+          <a href="#pricing" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Pricing</a>
           <a href={DASHBOARD_URL} target="_blank" rel="noopener noreferrer" className="block text-white/70 hover:text-white py-2">Log in</a>
         </div>
       )}
@@ -438,7 +438,7 @@ function Footer() {
         <div className="flex items-center gap-6 text-sm text-white/40">
           <a href="#how-it-works" className="hover:text-white/70 transition-colors">How it works</a>
           <a href="#features" className="hover:text-white/70 transition-colors">Features</a>
-          <a href="/get-started" className="hover:text-white/70 transition-colors">Pricing</a>
+          <a href="#pricing" className="hover:text-white/70 transition-colors">Pricing</a>
           <a href="mailto:jay@dental-on-demand.com" className="hover:text-white/70 transition-colors">Contact</a>
         </div>
         <div className="text-white/30 text-sm">
