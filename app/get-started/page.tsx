@@ -99,8 +99,8 @@ export default function GetStarted() {
   }
 
     const stripeLink = info.plan === "growth"
-    ? "https://buy.stripe.com/test_aFaaEYdmufTqbEJcoUbZe01"   // Growth Founders $599/mo — replace with live link
-    : "https://buy.stripe.com/test_28E28s96e5eM249dsYbZe00"    // Core $199/mo — replace with live link
+    ? "https://buy.stripe.com/7sY00l9W12tmeEp2vmaEE02"   // Growth Founders $599/mo
+    : "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01"   // Core $199/mo
 
   if (submitted) return (
     <div style={{ minHeight:"100vh", background:"#141E2B", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
