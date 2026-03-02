@@ -4,15 +4,25 @@ import { useParams } from "next/navigation";
 
 const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
 
+const THEMES: Record<string, { primary: string; accent: string; hero: string }> = {
+  teal:   { primary: "#0d9488", accent: "#2DD4BF", hero: "135deg, #0a1628 0%, #0d2240 60%, #0f3460 100%" },
+  navy:   { primary: "#1d4ed8", accent: "#60a5fa", hero: "135deg, #0a0f1e 0%, #0f1f4a 60%, #1a3070 100%" },
+  purple: { primary: "#7c3aed", accent: "#a78bfa", hero: "135deg, #0f0a1e 0%, #1e0f3a 60%, #2d1060 100%" },
+  green:  { primary: "#15803d", accent: "#4ade80", hero: "135deg, #0a1a0f 0%, #0f2d1a 60%, #16402a 100%" },
+  slate:  { primary: "#475569", accent: "#94a3b8", hero: "135deg, #0f1117 0%, #1a1f2e 60%, #252b3b 100%" },
+};
+
 function ytEmbed(url: string) {
   if (!url) return "";
   const m = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
   return m ? `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0&modestbranding=1` : "";
 }
 
-function LeadForm({ tenantId, offer, offerDetail, interestOptions }: {
+function LeadForm({ tenantId, offer, offerDetail, interestOptions, primary = "#0d9488", accent = "#2DD4BF" }: {
   tenantId: string; offer: string; offerDetail?: string; interestOptions: string[];
+  primary?: string; accent?: string;
 }) {
+  const P = primary; const A = accent;
   const [form, setForm] = useState({ name: "", phone: "", interest: interestOptions[0] ?? "" });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -50,7 +60,7 @@ function LeadForm({ tenantId, offer, offerDetail, interestOptions }: {
       {offer && (
         <div style={{ background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)",
           borderRadius: 10, padding: "10px 14px", marginBottom: 4 }}>
-          <div style={{ color: "#2DD4BF", fontWeight: 700, fontSize: 13 }}>🎁 {offer}</div>
+          <div style={{ color: A, fontWeight: 700, fontSize: 13 }}>🎁 {offer}</div>
           {offerDetail && <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 2 }}>{offerDetail}</div>}
         </div>
       )}
@@ -70,7 +80,7 @@ function LeadForm({ tenantId, offer, offerDetail, interestOptions }: {
       )}
       {err && <div style={{ color: "#f87171", fontSize: 13 }}>{err}</div>}
       <button type="submit" disabled={submitting}
-        style={{ padding: "15px", borderRadius: 12, border: "none", background: "#0d9488",
+        style={{ padding: "15px", borderRadius: 12, border: "none", background: P,
           color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer",
           opacity: submitting ? 0.7 : 1, letterSpacing: 0.3 }}>
         {submitting ? "Sending…" : "Get My Free Consultation →"}
@@ -131,6 +141,9 @@ export default function LandingPage() {
   );
 
   const c = content;
+  const theme = THEMES[c.theme] || THEMES.teal;
+  const P = theme.primary;   // primary color
+  const A = theme.accent;    // accent color
   const dr = c.doctor || {};
   const pricing = c.pricing || {};
   const stats = c.stats || {};
@@ -180,7 +193,7 @@ export default function LandingPage() {
     <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", background: "#fff" }}>
 
       {/* ── HERO ── */}
-      <section style={{ background: "linear-gradient(135deg, #0a1628 0%, #0d2240 60%, #0f3460 100%)",
+      <section style={{ background: `linear-gradient(${theme.hero})`,
         padding: "0 20px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
 
         {/* Nav */}
@@ -191,7 +204,7 @@ export default function LandingPage() {
             <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12 }}>Powered by Clara AI</div>
           </div>
           <button onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
-            style={{ padding: "10px 20px", borderRadius: 50, border: "none", background: "#0d9488",
+            style={{ padding: "10px 20px", borderRadius: 50, border: "none", background: P,
               color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
             Free Consultation
           </button>
@@ -206,7 +219,7 @@ export default function LandingPage() {
           <div style={{ flex: "1 1 420px" }}>
             <div style={{ display: "inline-block", background: "rgba(13,148,136,0.2)",
               border: "1px solid rgba(13,148,136,0.4)", borderRadius: 20,
-              padding: "4px 14px", fontSize: 12, color: "#2DD4BF", fontWeight: 700,
+              padding: "4px 14px", fontSize: 12, color: A, fontWeight: 700,
               marginBottom: 20, letterSpacing: 1 }}>
               {c.practice_name?.toUpperCase()} · ACCEPTING NEW PATIENTS
             </div>
@@ -226,7 +239,7 @@ export default function LandingPage() {
               <div style={{ display: "flex", gap: 28, flexWrap: "wrap", marginBottom: 32 }}>
                 {statItems.map(s => (
                   <div key={s.label}>
-                    <div style={{ color: "#2DD4BF", fontWeight: 800, fontSize: 22 }}>{s.value}</div>
+                    <div style={{ color: A, fontWeight: 800, fontSize: 22 }}>{s.value}</div>
                     <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>{s.label}</div>
                   </div>
                 ))}
@@ -254,15 +267,14 @@ export default function LandingPage() {
             <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "0 0 20px" }}>
               Takes 10 seconds. We'll call you.
             </p>
-            <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail}
-              interestOptions={interestOptions} />
+            <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail} interestOptions={interestOptions} primary={P} accent={A} />
           </div>
         </div>
       </section>
 
       {/* ── OFFER BANNER ── */}
       {c.cta_offer && (
-        <div style={{ background: "#0d9488", padding: "16px 20px", textAlign: "center" }}>
+        <div style={{ background: P, padding: "16px 20px", textAlign: "center" }}>
           <span style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>
             🎁 {c.cta_offer}
           </span>
@@ -278,7 +290,7 @@ export default function LandingPage() {
       <section style={{ padding: "80px 20px", background: "#fff" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>THE PROCESS</div>
+            <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>THE PROCESS</div>
             <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 800, margin: 0, color: "#0a1628" }}>
               Simple. Fast. Permanent.
             </h2>
@@ -295,7 +307,7 @@ export default function LandingPage() {
             ]).map(s => (
               <div key={s.n} style={{ textAlign: "center", padding: "0 16px" }}>
                 <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#e6f9f7",
-                  color: "#0d9488", fontWeight: 900, fontSize: 18, display: "flex",
+                  color: P, fontWeight: 900, fontSize: 18, display: "flex",
                   alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
                   {s.n}
                 </div>
@@ -313,14 +325,14 @@ export default function LandingPage() {
           <div style={{ maxWidth: 960, margin: "0 auto",
             display: "flex", gap: 60, alignItems: "center", flexWrap: "wrap" }}>
             <div style={{ flex: "1 1 400px" }}>
-              <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>
+              <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>
                 MEET YOUR DOCTOR
               </div>
               <h2 style={{ fontSize: "clamp(26px, 3vw, 38px)", fontWeight: 800, margin: "0 0 8px", color: "#0a1628" }}>
                 {dr.full_name}
               </h2>
               {dr.credentials && (
-                <div style={{ color: "#0d9488", fontWeight: 600, marginBottom: 20, fontSize: 15 }}>{dr.credentials}</div>
+                <div style={{ color: P, fontWeight: 600, marginBottom: 20, fontSize: 15 }}>{dr.credentials}</div>
               )}
               {dr.bio && (
                 <p style={{ color: "#374151", fontSize: 16, lineHeight: 1.8, margin: "0 0 24px" }}>{dr.bio}</p>
@@ -356,7 +368,7 @@ export default function LandingPage() {
         <section style={{ padding: "80px 20px", background: "#0a1628" }}>
           <div style={{ maxWidth: 900, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <div style={{ color: "#2DD4BF", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>TRANSPARENT PRICING</div>
+              <div style={{ color: A, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>TRANSPARENT PRICING</div>
               <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#fff", margin: "0 0 12px" }}>
                 No hidden fees. No surprises.
               </h2>
@@ -369,7 +381,7 @@ export default function LandingPage() {
                 <div key={p.label} style={{ background: "rgba(255,255,255,0.05)",
                   border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: "24px 20px", textAlign: "center" }}>
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 8 }}>{p.label}</div>
-                  <div style={{ color: "#2DD4BF", fontWeight: 800, fontSize: 26, marginBottom: 6 }}>{p.price}</div>
+                  <div style={{ color: A, fontWeight: 800, fontSize: 26, marginBottom: 6 }}>{p.price}</div>
                   <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>{p.note}</div>
                 </div>
               ))}
@@ -377,7 +389,7 @@ export default function LandingPage() {
             {pricing.financing === "yes" && (
               <div style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.3)",
                 borderRadius: 12, padding: "16px 20px", textAlign: "center" }}>
-                <span style={{ color: "#2DD4BF", fontWeight: 700 }}>💳 Financing available</span>
+                <span style={{ color: A, fontWeight: 700 }}>💳 Financing available</span>
                 <span style={{ color: "rgba(255,255,255,0.5)", marginLeft: 8, fontSize: 14 }}>
                   {pricing.financing_partners ? `through ${pricing.financing_partners}` : "— ask us about monthly payment plans"}
                 </span>
@@ -397,7 +409,7 @@ export default function LandingPage() {
         <section style={{ padding: "80px 20px", background: "#fff" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>REAL PATIENTS. REAL RESULTS.</div>
+              <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>REAL PATIENTS. REAL RESULTS.</div>
               <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#0a1628", margin: 0 }}>
                 Hear from our patients
               </h2>
@@ -424,7 +436,7 @@ export default function LandingPage() {
         <section style={{ padding: "80px 20px", background: "#f8fafc" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>PATIENT REVIEWS</div>
+              <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>PATIENT REVIEWS</div>
               <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#0a1628", margin: 0 }}>
                 ★★★★★ 5-Star Reviews
               </h2>
@@ -450,7 +462,7 @@ export default function LandingPage() {
         <section style={{ padding: "80px 20px", background: "#f8fafc" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 40 }}>
-              <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>OUR WORK</div>
+              <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>OUR WORK</div>
               <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#0a1628", margin: 0 }}>
                 Before &amp; After
               </h2>
@@ -474,7 +486,7 @@ export default function LandingPage() {
                       <img src={pair.after} alt={`After ${i + 1}`}
                         style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }}
                         onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
-                      <div style={{ position: "absolute", bottom: 6, right: 6, background: "#0d9488",
+                      <div style={{ position: "absolute", bottom: 6, right: 6, background: P,
                         color: "#fff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>
                         AFTER
                       </div>
@@ -496,7 +508,7 @@ export default function LandingPage() {
       {diffs.length > 0 && (
         <section style={{ padding: "60px 20px", background: "#fff" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-            <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 28 }}>
+            <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 28 }}>
               WHY {c.practice_name?.toUpperCase()}
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
@@ -515,21 +527,21 @@ export default function LandingPage() {
       <section style={{ padding: "80px 20px", background: "#f8fafc" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ color: "#0d9488", fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>FAQ</div>
+            <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 12 }}>FAQ</div>
             <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#0a1628", margin: 0 }}>
               Questions we hear every day
             </h2>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {faqs.map(([q, a], i) => (
-              <FaqItem key={i} q={q} a={a} />
+              <FaqItem key={i} q={q} a={a} primary={P} />
             ))}
           </div>
         </div>
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section style={{ padding: "80px 20px", background: "linear-gradient(135deg, #0a1628, #0d2240)" }}>
+      <section style={{ padding: "80px 20px", background: `linear-gradient(${theme.hero})` }}>
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
           <h2 style={{ color: "#fff", fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, margin: "0 0 16px" }}>
             Ready to get started?
@@ -537,8 +549,7 @@ export default function LandingPage() {
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 17, margin: "0 0 40px", lineHeight: 1.6 }}>
             Your free consultation takes about an hour. We'll give you a complete treatment plan and exact pricing — no pressure, no surprises.
           </p>
-          <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail}
-            interestOptions={interestOptions} />
+          <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail} interestOptions={interestOptions} primary={P} accent={A} />
         </div>
       </section>
 
@@ -546,7 +557,7 @@ export default function LandingPage() {
       <footer style={{ background: "#060e1a", padding: "24px 20px", textAlign: "center" }}>
         <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 12 }}>
           © {new Date().getFullYear()} {c.practice_name} · Powered by{" "}
-          <a href="https://iamclara.ai" style={{ color: "#2DD4BF", textDecoration: "none" }}>Clara AI</a>
+          <a href="https://iamclara.ai" style={{ color: A, textDecoration: "none" }}>Clara AI</a>
           {" "}·{" "}
           <a href="https://iamclara.ai/privacy" style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none" }}>Privacy</a>
         </div>
@@ -555,7 +566,7 @@ export default function LandingPage() {
   );
 }
 
-function FaqItem({ q, a }: { q: string; a: string }) {
+function FaqItem({ q, a, primary = "#0d9488" }: { q: string; a: string; primary?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div style={{ borderBottom: "1px solid #e5e7eb" }}>
@@ -564,7 +575,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
           border: "none", cursor: "pointer", display: "flex", justifyContent: "space-between",
           alignItems: "center", gap: 16 }}>
         <span style={{ fontWeight: 700, fontSize: 16, color: "#0a1628", lineHeight: 1.4 }}>{q}</span>
-        <span style={{ color: "#0d9488", fontSize: 20, flexShrink: 0 }}>{open ? "−" : "+"}</span>
+        <span style={{ color: primary, fontSize: 20, flexShrink: 0 }}>{open ? "−" : "+"}</span>
       </button>
       {open && (
         <div style={{ color: "#6b7280", fontSize: 15, lineHeight: 1.8, paddingBottom: 20 }}>{a}</div>

@@ -15,6 +15,14 @@ const DIFFERENTIATORS = [
   "Accepts most PPO plans", "Lifetime warranty on implants",
 ];
 
+const COLOR_THEMES = [
+  { id: "teal",   name: "Teal",     primary: "#0d9488", accent: "#2DD4BF", hero: "135deg, #0a1628 0%, #0d2240 60%, #0f3460 100%" },
+  { id: "navy",   name: "Navy",     primary: "#1d4ed8", accent: "#60a5fa", hero: "135deg, #0a0f1e 0%, #0f1f4a 60%, #1a3070 100%" },
+  { id: "purple", name: "Purple",   primary: "#7c3aed", accent: "#a78bfa", hero: "135deg, #0f0a1e 0%, #1e0f3a 60%, #2d1060 100%" },
+  { id: "green",  name: "Forest",   primary: "#15803d", accent: "#4ade80", hero: "135deg, #0a1a0f 0%, #0f2d1a 60%, #16402a 100%" },
+  { id: "slate",  name: "Slate",    primary: "#475569", accent: "#94a3b8", hero: "135deg, #0f1117 0%, #1a1f2e 60%, #252b3b 100%" },
+];
+
 const FINANCING_OPTIONS = [
   "CareCredit", "Cherry", "Proceed Finance", "Alphaeon",
   "LendingClub", "Sunbit", "Lending USA", "In-house payment plan",
@@ -73,6 +81,7 @@ export default function SetupPage() {
   ]);
 
   // Step 4 — Differentiators, before/afters, stats, CTA
+  const [selectedTheme, setSelectedTheme] = useState("teal");
   const [selectedDiffs, setSelectedDiffs] = useState<string[]>([]);
   const [selectedFinancing, setSelectedFinancing] = useState<string[]>([]);
   const [selectedInclusions, setSelectedInclusions] = useState<string[]>([]);
@@ -116,6 +125,7 @@ export default function SetupPage() {
       stats,
       cta_offer: cta.offer,
       cta_offer_detail: cta.offer_detail,
+      theme: selectedTheme,
     };
     try {
       const res = await fetch(`${BACKEND}/public/setup/${tenantId}/content`, {
@@ -332,6 +342,28 @@ export default function SetupPage() {
           {/* ── Step 4: Differentiators & CTA ── */}
           {step === 4 && (
             <>
+              <h2 style={sh}>Page Style</h2>
+              <p style={{ ...sub, marginBottom: 16 }}>Choose a color theme for your landing page.</p>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 32 }}>
+                {COLOR_THEMES.map(t => (
+                  <div key={t.id} onClick={() => setSelectedTheme(t.id)}
+                    style={{ cursor: "pointer", textAlign: "center", opacity: selectedTheme === t.id ? 1 : 0.6,
+                      transition: "opacity 0.15s" }}>
+                    <div style={{
+                      width: 56, height: 40, borderRadius: 10, marginBottom: 6,
+                      background: `linear-gradient(${t.hero})`,
+                      border: selectedTheme === t.id ? `2px solid ${t.accent}` : "2px solid rgba(255,255,255,0.1)",
+                      position: "relative", overflow: "hidden",
+                    }}>
+                      <div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 4,
+                        borderRadius: 4, background: t.primary }} />
+                    </div>
+                    <div style={{ color: selectedTheme === t.id ? t.accent : "rgba(255,255,255,0.5)",
+                      fontSize: 12, fontWeight: 600 }}>{t.name}</div>
+                  </div>
+                ))}
+              </div>
+
               <h2 style={sh}>What Makes You Different</h2>
               <p style={sub}>Check everything that applies. These become trust badges on your landing page.</p>
 
