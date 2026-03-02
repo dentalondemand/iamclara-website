@@ -37,6 +37,7 @@ export default function GetStarted() {
     website: "", admin_name: "", admin_email: "", plan: "core",
     voip_provider: "", rings_before_forward: "3",
     wants_calendar: "yes", wants_outbound: "no",
+    priority_cases: "both",   // implants / cosmetic / both
     // Growth
     instagram: "", facebook_page: "", tiktok: "", google_business: "", ad_budget: "",
   })
@@ -303,7 +304,29 @@ export default function GetStarted() {
               </select>
             </label>
 
-            <h2 style={{...sh, marginTop:20}}>Additional Notes</h2>
+            <h2 style={{...sh, marginTop:20}}>Priority Cases</h2>
+            <p style={subText}>What high-value cases should Clara focus on for marketing and lead follow-up?</p>
+            <div style={{ display:"flex", gap:12, flexWrap:"wrap", marginBottom:24 }}>
+              {([
+                ["implants", "🦷 Implants", "Full arch, single implants, guided surgery"],
+                ["cosmetic",  "✨ Cosmetics", "Veneers, smile makeovers, whitening"],
+                ["both",      "🎯 Both",      "Implants & cosmetics equally"],
+              ] as [string, string, string][]).map(([val, label, desc]) => (
+                <div key={val}
+                  onClick={() => setInfo({...info, priority_cases: val})}
+                  style={{
+                    flex:"1 1 140px", padding:"14px 16px", borderRadius:12, cursor:"pointer",
+                    border: info.priority_cases === val ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                    background: info.priority_cases === val ? "rgba(45,212,191,0.1)" : "rgba(255,255,255,0.03)",
+                    transition:"all 0.15s",
+                  }}>
+                  <div style={{ fontWeight:700, fontSize:15, color:"#fff", marginBottom:4 }}>{label}</div>
+                  <div style={{ fontSize:12, color:"rgba(255,255,255,0.45)" }}>{desc}</div>
+                </div>
+              ))}
+            </div>
+
+            <h2 style={{...sh, marginTop:4}}>Additional Notes</h2>
             <textarea value={notes} onChange={e => setNotes(e.target.value)}
               placeholder="Special instructions, things Clara should avoid saying, language preferences, VIP patients, etc."
               rows={4} style={{...inputStyle, resize:"vertical", lineHeight:1.5}} />
@@ -374,6 +397,7 @@ export default function GetStarted() {
               ["Alert SMS", alertPhones.filter(Boolean).join(", ") || "—"],
               ["Services", `${services.length} selected`],
               ["Google Calendar booking", info.wants_calendar === "yes" ? "Yes" : "No"],
+              ["Priority cases", info.priority_cases === "implants" ? "Implants" : info.priority_cases === "cosmetic" ? "Cosmetics" : "Both"],
               ["VoIP", info.voip_provider || "Not specified"],
               ...(isGrowth ? [
                 ["Instagram", info.instagram || "—"],
