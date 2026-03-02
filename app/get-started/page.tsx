@@ -1,0 +1,333 @@
+"use client"
+import { useState } from "react"
+
+const TIMEZONES = [
+  "America/New_York", "America/Chicago", "America/Denver",
+  "America/Los_Angeles", "America/Phoenix", "America/Anchorage", "Pacific/Honolulu",
+]
+
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+
+const SERVICES = [
+  "Cleanings and exams","Emergency dentistry","Dental implants",
+  "Full arch implants (All-on-4 / All-on-X)","Cosmetic dentistry","Veneers",
+  "Teeth whitening","Crowns and bridges","Fillings / restorations","Extractions",
+  "Root canal therapy","Orthodontics / clear aligners","Pediatric dentistry",
+  "Periodontal treatment","Bone grafting","Same-day crowns","3D imaging / CBCT",
+  "Sedation dentistry","Dentures","Night guards / TMJ",
+]
+
+
+
+type Step = 1 | 2 | 3 | 4 | 5
+
+export default function GetStarted() {
+  const [step, setStep] = useState<Step>(1)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState("")
+
+  // Form state
+  const [info, setInfo] = useState({
+    practice_name: "", phone: "", address: "", timezone: "America/New_York",
+    website: "", admin_name: "", admin_email: "", plan: "core",
+    voip_provider: "", rings_before_forward: "3",
+    wants_calendar: "yes", wants_outbound: "no",
+  })
+  const [hours, setHours] = useState<Record<string,string>>({
+    Monday:"", Tuesday:"", Wednesday:"", Thursday:"", Friday:"", Saturday:"Closed", Sunday:"Closed",
+  })
+  const [services, setServices] = useState<string[]>([])
+  const [alertEmails, setAlertEmails] = useState([""])
+  const [alertPhones, setAlertPhones] = useState([""])
+  const [notes, setNotes] = useState("")
+
+  function toggleService(s: string) {
+    setServices(prev => prev.includes(s) ? prev.filter(x=>x!==s) : [...prev,s])
+  }
+
+  async function submit() {
+    setSubmitting(true)
+    setError("")
+    try {
+      const payload = { info, hours, services, alertEmails: alertEmails.filter(Boolean),
+                        alertPhones: alertPhones.filter(Boolean), notes }
+      const resp = await fetch(`/api/intake`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      if (!resp.ok) throw new Error("Submission failed")
+      setSubmitted(true)
+    } catch(e: any) {
+      setError("Something went wrong. Please email jay@dental-on-demand.com directly.")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (submitted) return (
+    <div style={{ minHeight:"100vh", background:"#141E2B", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
+      <div style={{ background:"#1C2A38", borderRadius:24, padding:48, maxWidth:480, textAlign:"center", border:"1px solid rgba(255,255,255,0.1)" }}>
+        <div style={{ fontSize:64, marginBottom:16 }}>🎉</div>
+        <h1 style={{ color:"#fff", fontSize:28, marginBottom:12 }}>You're on the list!</h1>
+        <p style={{ color:"rgba(255,255,255,0.6)", lineHeight:1.6, marginBottom:24 }}>
+          We received your intake form. Jay will be in touch within 1 business day to get Clara set up for <strong style={{color:"#fff"}}>{info.practice_name}</strong>.
+        </p>
+        <a href="/" style={{ display:"inline-block", background:"#14B8A6", color:"#fff", padding:"12px 28px",
+                              borderRadius:50, fontWeight:600, textDecoration:"none" }}>
+          Back to iamclara.ai
+        </a>
+      </div>
+    </div>
+  )
+
+  const stepLabels = ["Practice Info","Hours","Services","Alerts & Login","Review"]
+  const canNext: Record<number,boolean> = {
+    1: !!(info.practice_name && info.phone && info.address && info.admin_email && info.admin_name),
+    2: true,
+    3: services.length > 0,
+    4: !!(alertEmails[0]),
+    5: true,
+  }
+
+  return (
+    <div style={{ minHeight:"100vh", background:"#141E2B", padding:"24px 16px 60px" }}>
+      {/* Header */}
+      <div style={{ textAlign:"center", marginBottom:32 }}>
+        <a href="/" style={{ textDecoration:"none" }}>
+          <span style={{ fontSize:24, fontWeight:700, color:"#fff" }}>Clara<span style={{color:"#2DD4BF"}}>.</span></span>
+        </a>
+        <h1 style={{ color:"#fff", fontSize:26, fontWeight:700, marginTop:16, marginBottom:8 }}>Get Started</h1>
+        <p style={{ color:"rgba(255,255,255,0.5)", fontSize:15 }}>Tell us about your practice — takes about 5 minutes.</p>
+      </div>
+
+      {/* Step indicator */}
+      <div style={{ display:"flex", justifyContent:"center", gap:8, marginBottom:32 }}>
+        {stepLabels.map((label, i) => (
+          <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+            <div style={{ width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
+                          fontSize:13, fontWeight:700,
+                          background: step > i+1 ? "#14B8A6" : step === i+1 ? "#2DD4BF" : "rgba(255,255,255,0.1)",
+                          color: step >= i+1 ? "#fff" : "rgba(255,255,255,0.3)" }}>
+              {step > i+1 ? "✓" : i+1}
+            </div>
+            <span style={{ fontSize:10, color: step === i+1 ? "#2DD4BF" : "rgba(255,255,255,0.3)",
+                           display:"none", whiteSpace:"nowrap" }}>{label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Card */}
+      <div style={{ maxWidth:560, margin:"0 auto", background:"#1C2A38", borderRadius:20,
+                    padding:"28px 24px", border:"1px solid rgba(255,255,255,0.08)" }}>
+
+        {/* ── Step 1: Practice Info ── */}
+        {step === 1 && (
+          <>
+            <h2 style={sh}>Practice Information</h2>
+            {[
+              ["Practice name", "practice_name", "Radiant Dental Care"],
+              ["Main phone number", "phone", "(301) 652-2222"],
+              ["Address / city, state", "address", "Chevy Chase, MD"],
+              ["Website (optional)", "website", "https://yourpractice.com"],
+              ["Contact name (admin)", "admin_name", "Dr. Smith"],
+              ["Admin email", "admin_email", "admin@yourpractice.com"],
+            ].map(([label, key, ph]) => (
+              <label key={key} style={labelStyle}>
+                {label}
+                <input value={(info as any)[key]} onChange={e => setInfo({...info, [key]: e.target.value})}
+                  placeholder={ph as string} style={inputStyle} />
+              </label>
+            ))}
+            <label style={labelStyle}>Timezone
+              <select value={info.timezone} onChange={e => setInfo({...info, timezone: e.target.value})} style={inputStyle}>
+                {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g," ")}</option>)}
+              </select>
+            </label>
+            <label style={labelStyle}>Plan
+              <select value={info.plan} onChange={e => setInfo({...info, plan: e.target.value})} style={inputStyle}>
+                <option value="core">Core — $199/month (AI receptionist)</option>
+                <option value="growth">Growth — contact for pricing (+ outbound lead calling)</option>
+              </select>
+            </label>
+          </>
+        )}
+
+        {/* ── Step 2: Hours ── */}
+        {step === 2 && (
+          <>
+            <h2 style={sh}>Business Hours</h2>
+            <p style={subText}>Enter hours as "9:00am–5:00pm" or "Closed"</p>
+            {DAYS.map(day => (
+              <label key={day} style={labelStyle}>{day}
+                <input value={hours[day] || ""} onChange={e => setHours({...hours, [day]: e.target.value})}
+                  placeholder={["Saturday","Sunday"].includes(day) ? "Closed" : "9:00am–5:00pm"}
+                  style={inputStyle} />
+              </label>
+            ))}
+            <label style={labelStyle}>Phone system / VoIP provider
+              <input value={info.voip_provider} onChange={e => setInfo({...info, voip_provider: e.target.value})}
+                placeholder="e.g. Mango, RingCentral, 8x8, AT&T, Vonage" style={inputStyle} />
+            </label>
+            <label style={labelStyle}>Rings before forwarding to Clara
+              <select value={info.rings_before_forward} onChange={e => setInfo({...info, rings_before_forward: e.target.value})} style={inputStyle}>
+                {["2","3","4","5"].map(n => <option key={n} value={n}>{n} rings</option>)}
+              </select>
+            </label>
+          </>
+        )}
+
+        {/* ── Step 3: Services ── */}
+        {step === 3 && (
+          <>
+            <h2 style={sh}>Services Offered</h2>
+            <p style={subText}>Clara mentions these when patients ask. Check everything you offer.</p>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:8 }}>
+              {SERVICES.map(s => (
+                <label key={s} style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer",
+                                        background: services.includes(s) ? "rgba(45,212,191,0.1)" : "rgba(255,255,255,0.04)",
+                                        borderRadius:8, padding:"10px 14px",
+                                        border: services.includes(s) ? "1px solid rgba(45,212,191,0.3)" : "1px solid rgba(255,255,255,0.06)",
+                                        transition:"all .15s" }}>
+                  <input type="checkbox" checked={services.includes(s)} onChange={() => toggleService(s)}
+                    style={{ width:16, height:16, accentColor:"#2DD4BF", cursor:"pointer" }} />
+                  <span style={{ color: services.includes(s) ? "#fff" : "rgba(255,255,255,0.7)", fontSize:14 }}>{s}</span>
+                </label>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* ── Step 4: Alerts & Login ── */}
+        {step === 4 && (
+          <>
+            <h2 style={sh}>Alerts & Notifications</h2>
+            <p style={subText}>Who should receive call alerts from Clara?</p>
+
+            <div style={{ marginBottom:20 }}>
+              <div style={{ color:"rgba(255,255,255,0.8)", fontSize:13, fontWeight:600, marginBottom:8 }}>
+                📧 Email recipients <span style={{color:"rgba(255,255,255,0.4)", fontWeight:400}}>(call summaries)</span>
+              </div>
+              {alertEmails.map((e, i) => (
+                <input key={i} value={e} onChange={ev => { const a=[...alertEmails]; a[i]=ev.target.value; setAlertEmails(a) }}
+                  placeholder="email@practice.com" style={{...inputStyle, marginBottom:8}} />
+              ))}
+              <button onClick={() => setAlertEmails([...alertEmails,""])}
+                style={{ background:"none", border:"1px dashed rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.5)",
+                          borderRadius:8, padding:"6px 14px", cursor:"pointer", fontSize:13 }}>
+                + Add another email
+              </button>
+            </div>
+
+            <div style={{ marginBottom:20 }}>
+              <div style={{ color:"rgba(255,255,255,0.8)", fontSize:13, fontWeight:600, marginBottom:8 }}>
+                📱 SMS recipients <span style={{color:"rgba(255,255,255,0.4)", fontWeight:400}}>(urgent calls only — implants, emergencies)</span>
+              </div>
+              {alertPhones.map((p, i) => (
+                <input key={i} value={p} onChange={ev => { const a=[...alertPhones]; a[i]=ev.target.value; setAlertPhones(a) }}
+                  placeholder="+13015551234" style={{...inputStyle, marginBottom:8}} />
+              ))}
+              <button onClick={() => setAlertPhones([...alertPhones,""])}
+                style={{ background:"none", border:"1px dashed rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.5)",
+                          borderRadius:8, padding:"6px 14px", cursor:"pointer", fontSize:13 }}>
+                + Add another number
+              </button>
+            </div>
+
+            <h2 style={{...sh, marginTop:24}}>Features</h2>
+            {[
+              ["wants_calendar", "📅 Book consultations directly on Google Calendar",
+                [["yes","Yes — connect my calendar"],["no","No — just take a message"]]],
+              ["wants_outbound", "📣 Outbound lead follow-up calls (Growth plan)",
+                [["no","No — Core plan only"],["yes","Yes — I want Growth plan"]]],
+            ].map(([key, label, opts]) => (
+              <label key={key as string} style={labelStyle}>
+                {label as string}
+                <select value={(info as any)[key as string]}
+                  onChange={e => setInfo({...info, [key as string]: e.target.value})} style={inputStyle}>
+                  {(opts as string[][]).map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </label>
+            ))}
+
+            <h2 style={{...sh, marginTop:24}}>Additional Notes</h2>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)}
+              placeholder="Special instructions, things Clara should avoid saying, language preferences, etc."
+              rows={4} style={{...inputStyle, resize:"vertical", lineHeight:1.5}} />
+          </>
+        )}
+
+        {/* ── Step 5: Review ── */}
+        {step === 5 && (
+          <>
+            <h2 style={sh}>Review & Submit</h2>
+            <p style={subText}>Almost done — confirm your details below.</p>
+
+            {[
+              ["Practice", info.practice_name],
+              ["Phone", info.phone],
+              ["Address", info.address],
+              ["Timezone", info.timezone.replace(/_/g," ")],
+              ["Plan", info.plan === "core" ? "Core — $199/mo" : "Growth"],
+              ["Admin", `${info.admin_name} (${info.admin_email})`],
+              ["Alert emails", alertEmails.filter(Boolean).join(", ") || "—"],
+              ["Alert SMS", alertPhones.filter(Boolean).join(", ") || "—"],
+              ["Services selected", `${services.length} services`],
+              ["Google Calendar", info.wants_calendar === "yes" ? "Yes" : "No"],
+              ["VoIP system", info.voip_provider || "Not specified"],
+            ].map(([k,v]) => (
+              <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"8px 0",
+                                     borderBottom:"1px solid rgba(255,255,255,0.06)", fontSize:14 }}>
+                <span style={{ color:"rgba(255,255,255,0.5)" }}>{k}</span>
+                <span style={{ color:"#fff", fontWeight:500, textAlign:"right", maxWidth:"60%" }}>{v}</span>
+              </div>
+            ))}
+
+            {error && <div style={{ marginTop:16, padding:"10px 14px", background:"rgba(239,68,68,0.1)",
+                                     border:"1px solid rgba(239,68,68,0.3)", borderRadius:8,
+                                     color:"#f87171", fontSize:13 }}>{error}</div>}
+          </>
+        )}
+
+        {/* Navigation */}
+        <div style={{ display:"flex", gap:12, marginTop:28 }}>
+          {step > 1 && (
+            <button onClick={() => setStep((step-1) as Step)}
+              style={{ flex:1, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)",
+                        color:"rgba(255,255,255,0.7)", padding:14, borderRadius:50, cursor:"pointer",
+                        fontWeight:600, fontSize:15 }}>
+              ← Back
+            </button>
+          )}
+          {step < 5 ? (
+            <button onClick={() => setStep((step+1) as Step)} disabled={!canNext[step]}
+              style={{ flex:2, background: canNext[step] ? "#14B8A6" : "rgba(255,255,255,0.1)",
+                        border:"none", color: canNext[step] ? "#fff" : "rgba(255,255,255,0.3)",
+                        padding:14, borderRadius:50, cursor: canNext[step] ? "pointer" : "not-allowed",
+                        fontWeight:700, fontSize:15, transition:"all .2s" }}>
+              Next →
+            </button>
+          ) : (
+            <button onClick={submit} disabled={submitting}
+              style={{ flex:2, background: submitting ? "rgba(255,255,255,0.1)" : "#14B8A6",
+                        border:"none", color:"#fff", padding:14, borderRadius:50,
+                        cursor: submitting ? "not-allowed" : "pointer",
+                        fontWeight:700, fontSize:15 }}>
+              {submitting ? "Submitting…" : "Submit — Let's go! 🦷"}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Shared styles
+const sh: React.CSSProperties = { color:"#fff", fontSize:18, fontWeight:700, marginBottom:16, marginTop:0 }
+const subText: React.CSSProperties = { color:"rgba(255,255,255,0.5)", fontSize:13, marginBottom:16, marginTop:-8 }
+const labelStyle: React.CSSProperties = { display:"flex", flexDirection:"column", gap:6, marginBottom:14,
+                                            color:"rgba(255,255,255,0.7)", fontSize:13, fontWeight:500 }
+const inputStyle: React.CSSProperties = { background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)",
+                                            borderRadius:10, padding:"11px 14px", color:"#fff", fontSize:14,
+                                            outline:"none", width:"100%", boxSizing:"border-box" }

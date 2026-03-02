@@ -16,14 +16,14 @@ function Nav() {
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
           <a href="#how-it-works" className="hover:text-white transition-colors">How it works</a>
           <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+          <a href="/get-started" className="hover:text-white transition-colors">Pricing</a>
         </div>
         <div className="flex items-center gap-3">
           <a href={DASHBOARD_URL} target="_blank" rel="noopener noreferrer"
             className="hidden md:block text-sm text-white/70 hover:text-white transition-colors px-4 py-2">
             Log in
           </a>
-          <a href="#pricing"
+          <a href="/get-started"
             className="bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors">
             Get Started
           </a>
@@ -40,7 +40,7 @@ function Nav() {
         <div className="md:hidden border-t border-white/10 bg-navy-800 px-6 py-4 space-y-3">
           <a href="#how-it-works" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>How it works</a>
           <a href="#features" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Features</a>
-          <a href="#pricing" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Pricing</a>
+          <a href="/get-started" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Pricing</a>
           <a href={DASHBOARD_URL} target="_blank" rel="noopener noreferrer" className="block text-white/70 hover:text-white py-2">Log in</a>
         </div>
       )}
@@ -77,7 +77,7 @@ function Hero() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-          <a href="#pricing"
+          <a href="/get-started"
             className="w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-4 rounded-full text-lg transition-all hover:scale-105 glow">
             Start for $199/month
           </a>
@@ -270,7 +270,7 @@ function Pricing() {
               ))}
             </ul>
 
-            <a href="mailto:jay@dental-on-demand.com?subject=Clara Core - Get Started"
+            <a href="/get-started"
               className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
               Get Started
             </a>
@@ -403,7 +403,7 @@ function CTA() {
             Join dental practices already using Clara to capture more patients and save $400+ a month.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="mailto:jay@dental-on-demand.com?subject=Clara - Get Started"
+            <a href="/get-started"
               className="w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-4 rounded-full text-lg transition-all hover:scale-105">
               Get Started Today
             </a>
@@ -429,7 +429,7 @@ function Footer() {
         <div className="flex items-center gap-6 text-sm text-white/40">
           <a href="#how-it-works" className="hover:text-white/70 transition-colors">How it works</a>
           <a href="#features" className="hover:text-white/70 transition-colors">Features</a>
-          <a href="#pricing" className="hover:text-white/70 transition-colors">Pricing</a>
+          <a href="/get-started" className="hover:text-white/70 transition-colors">Pricing</a>
           <a href="mailto:jay@dental-on-demand.com" className="hover:text-white/70 transition-colors">Contact</a>
         </div>
         <div className="text-white/30 text-sm">
