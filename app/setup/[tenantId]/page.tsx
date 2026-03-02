@@ -5,11 +5,27 @@ import { useParams } from "next/navigation";
 const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
 
 const DIFFERENTIATORS = [
-  "Same-day results", "CBCT / 3D imaging", "Guided implant surgery (xNav)",
-  "3D printing in-house", "Milling unit (same-day crowns)", "IV sedation",
-  "Oral sedation", "Full arch implants (All-on-4)", "Exocad digital design",
-  "Intraoral scanner", "No-wait appointments", "Evening / weekend hours",
-  "Bilingual staff", "0% financing available", "Accepts most PPO plans",
+  "Same-day teeth (guided surgery)", "CBCT / 3D imaging on-site",
+  "Guided implant surgery (navigation system)", "In-house dental lab",
+  "3D printing in-house", "Milling unit (same-day crowns/veneers)",
+  "IV sedation available", "Oral sedation available",
+  "Digital smile design", "Intraoral scanner",
+  "Exocad case design", "No-wait appointments",
+  "Evening / weekend hours", "Bilingual staff",
+  "Accepts most PPO plans", "Lifetime warranty on implants",
+];
+
+const FINANCING_OPTIONS = [
+  "CareCredit", "Cherry", "Proceed Finance", "Alphaeon",
+  "LendingClub", "Sunbit", "Lending USA", "In-house payment plan",
+];
+
+const PACKAGE_INCLUSIONS = [
+  "Extractions included", "Oral sedation included",
+  "IV sedation included", "Provisional (temporary) arch same day",
+  "Final zirconia arch included", "3-year warranty",
+  "Lifetime warranty", "Free CT scan / 3D imaging",
+  "Free consultation", "Abutments included",
 ];
 
 const inp = {
@@ -58,6 +74,8 @@ export default function SetupPage() {
 
   // Step 4 — Differentiators, before/afters, stats, CTA
   const [selectedDiffs, setSelectedDiffs] = useState<string[]>([]);
+  const [selectedFinancing, setSelectedFinancing] = useState<string[]>([]);
+  const [selectedInclusions, setSelectedInclusions] = useState<string[]>([]);
   const [beforeAfters, setBeforeAfters] = useState(["", "", ""]);
   const [stats, setStats] = useState({ implants_placed: "", years_practice: "", custom_stat_label: "", custom_stat_value: "" });
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
@@ -67,6 +85,12 @@ export default function SetupPage() {
 
   function toggleDiff(d: string) {
     setSelectedDiffs(p => p.includes(d) ? p.filter(x => x !== d) : [...p, d]);
+  }
+  function toggleFinancing(f: string) {
+    setSelectedFinancing(p => p.includes(f) ? p.filter(x => x !== f) : [...p, f]);
+  }
+  function toggleInclusion(i: string) {
+    setSelectedInclusions(p => p.includes(i) ? p.filter(x => x !== i) : [...p, i]);
   }
 
   function setTestField(i: number, field: string, val: string) {
@@ -80,7 +104,11 @@ export default function SetupPage() {
       practice_name: practiceInfo.practice_name,
       headline: practiceInfo.headline,
       priority_cases: cta.priority_cases,
-      pricing,
+      pricing: {
+        ...pricing,
+        financing_partners: selectedFinancing.join(", ") || pricing.financing_partners,
+        package_inclusions: selectedInclusions,
+      },
       doctor,
       testimonials: testimonials.filter(t => t.video_url || t.patient_name),
       differentiators: selectedDiffs,
@@ -181,7 +209,7 @@ export default function SetupPage() {
                 ))}
               </div>
 
-              <label style={{ ...label, marginTop: 16 }}>
+              <label style={{ ...label, marginTop: 20 }}>
                 Financing available?
                 <select value={pricing.financing} onChange={e => setPricing(p => ({ ...p, financing: e.target.value }))} style={{ ...inp, marginTop: 4 }}>
                   <option value="yes">Yes — we offer patient financing</option>
@@ -189,15 +217,45 @@ export default function SetupPage() {
                 </select>
               </label>
               {pricing.financing === "yes" && (
-                <label style={{ ...label, marginTop: 12 }}>
-                  Financing partners (e.g. CareCredit, Alphaeon)
-                  <input value={pricing.financing_partners} onChange={e => setPricing(p => ({ ...p, financing_partners: e.target.value }))} placeholder="CareCredit, Alphaeon" style={{ ...inp, marginTop: 4 }} />
-                </label>
+                <div style={{ marginTop: 14 }}>
+                  <div style={{ ...label, marginBottom: 10 }}>Which financing partners do you use?</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {FINANCING_OPTIONS.map(f => (
+                      <div key={f} onClick={() => toggleFinancing(f)} style={{
+                        padding: "7px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 500,
+                        border: selectedFinancing.includes(f) ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                        background: selectedFinancing.includes(f) ? "rgba(45,212,191,0.12)" : "rgba(255,255,255,0.03)",
+                        color: selectedFinancing.includes(f) ? "#2DD4BF" : "rgba(255,255,255,0.6)",
+                      }}>{selectedFinancing.includes(f) ? "✓ " : ""}{f}</div>
+                    ))}
+                  </div>
+                  <input value={pricing.financing_partners}
+                    onChange={e => setPricing(p => ({ ...p, financing_partners: e.target.value }))}
+                    placeholder="Other (type here)" style={{ ...inp, marginTop: 10 }} />
+                </div>
               )}
-              <label style={{ ...label, marginTop: 16 }}>
+
+              <div style={{ marginTop: 24 }}>
+                <div style={{ ...label, marginBottom: 6 }}>What's included in your full arch package?</div>
+                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, marginBottom: 12, marginTop: 0 }}>
+                  Check everything that's included. This builds patient confidence and eliminates sticker shock.
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {PACKAGE_INCLUSIONS.map(item => (
+                    <div key={item} onClick={() => toggleInclusion(item)} style={{
+                      padding: "7px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 500,
+                      border: selectedInclusions.includes(item) ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                      background: selectedInclusions.includes(item) ? "rgba(45,212,191,0.12)" : "rgba(255,255,255,0.03)",
+                      color: selectedInclusions.includes(item) ? "#2DD4BF" : "rgba(255,255,255,0.6)",
+                    }}>{selectedInclusions.includes(item) ? "✓ " : ""}{item}</div>
+                  ))}
+                </div>
+              </div>
+
+              <label style={{ ...label, marginTop: 20 }}>
                 Any pricing notes to show patients? <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional)</span>
                 <input value={pricing.custom_pricing_note} onChange={e => setPricing(p => ({ ...p, custom_pricing_note: e.target.value }))}
-                  placeholder="e.g. Includes implant, abutment, and crown. Free consultations include 3D scan." style={{ ...inp, marginTop: 4 }} />
+                  placeholder="e.g. Price includes final zirconia. Save $4,000 vs. standard rates. Limited time." style={{ ...inp, marginTop: 4 }} />
               </label>
             </>
           )}
