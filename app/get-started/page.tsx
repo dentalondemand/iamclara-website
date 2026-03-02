@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const TIMEZONES = [
   "America/New_York", "America/Chicago", "America/Denver",
@@ -28,6 +28,14 @@ const AD_BUDGETS = [
 
 export default function GetStarted() {
   const [step, setStep] = useState(1)
+  const [isPartner, setIsPartner] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      setIsPartner(params.get("partner") === "true" || params.get("free") === "true")
+    }
+  }, [])
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
@@ -112,24 +120,35 @@ export default function GetStarted() {
         <h1 style={{ color:"#fff", fontSize:28, marginBottom:12 }}>You're all set!</h1>
         <p style={{ color:"rgba(255,255,255,0.6)", lineHeight:1.6, marginBottom:8 }}>
           We received your intake for <strong style={{color:"#fff"}}>{info.practice_name}</strong>.
-          Jay will reach out within 1 business day to get Clara configured for your practice.
+          {isPartner
+            ? " Jay will be in touch shortly to get Clara set up for your practice — no payment needed."
+            : " Jay will reach out within 1 business day to get Clara configured for your practice."
+          }
         </p>
-        <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:28 }}>
-          {info.plan === "growth"
-            ? "Growth plan · $599/mo founding rate (locked for life)"
-            : "Core plan · $199/month"}
-        </p>
-        <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, marginBottom:16 }}>
-          Want to get started sooner? Complete payment now and we'll prioritize your setup.
-        </p>
-        <a href={stripeLink} target="_blank" rel="noopener noreferrer"
-          style={{ display:"block", background:"rgba(20,184,166,0.15)", border:"1px solid #14B8A6",
-                   color:"#14B8A6", padding:"12px 28px",
-                   borderRadius:50, fontWeight:600, textDecoration:"none", fontSize:15, marginBottom:16 }}>
-          Complete Payment (optional) →
-        </a>
+        {!isPartner && (
+          <>
+            <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:24 }}>
+              {info.plan === "growth"
+                ? "Growth plan · $599/mo founding rate (locked for life)"
+                : "Core plan · $199/month"}
+            </p>
+            <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, marginBottom:16 }}>
+              Want to get started sooner? Complete payment now and we'll prioritize your setup.
+            </p>
+            <a href={stripeLink} target="_blank" rel="noopener noreferrer"
+              style={{ display:"block", background:"#14B8A6", color:"#fff", padding:"14px 28px",
+                       borderRadius:50, fontWeight:700, textDecoration:"none", fontSize:16, marginBottom:16 }}>
+              Complete Payment →
+            </a>
+          </>
+        )}
+        {isPartner && (
+          <p style={{ color:"rgba(255,255,255,0.3)", fontSize:13, marginTop:16, marginBottom:8 }}>
+            Questions? Email <a href="mailto:jay@dental-on-demand.com" style={{color:"#14B8A6"}}>jay@dental-on-demand.com</a>
+          </p>
+        )}
         <a href="/" style={{ display:"inline-block", color:"rgba(255,255,255,0.35)", fontSize:13,
-                              textDecoration:"none" }}>
+                              textDecoration:"none", marginTop: isPartner ? 8 : 0 }}>
           Back to iamclara.ai
         </a>
       </div>
