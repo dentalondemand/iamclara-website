@@ -441,8 +441,10 @@ function Footer() {
           <a href="#pricing" className="hover:text-white/70 transition-colors">Pricing</a>
           <a href="mailto:jay@dental-on-demand.com" className="hover:text-white/70 transition-colors">Contact</a>
         </div>
-        <div className="text-white/30 text-sm">
-          © 2026 Clara AI. All rights reserved.
+        <div className="flex items-center gap-4 text-white/30 text-sm">
+          <span>© 2026 Clara AI. All rights reserved.</span>
+          <a href="/privacy" className="hover:text-white/70 transition-colors">Privacy</a>
+          <a href="/terms" className="hover:text-white/70 transition-colors">Terms</a>
         </div>
       </div>
     </footer>
