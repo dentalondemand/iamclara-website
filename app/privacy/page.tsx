@@ -5,7 +5,7 @@ export default function PrivacyPage() {
       <div style={{ maxWidth: 760, margin: "0 auto", color: "rgba(255,255,255,0.8)", fontFamily: "system-ui, sans-serif", lineHeight: 1.7 }}>
         <a href="/" style={{ color: "#2DD4BF", textDecoration: "none", fontSize: 14 }}>← Back to iamclara.ai</a>
         <h1 style={{ color: "#fff", fontSize: 36, fontWeight: 700, marginTop: 32, marginBottom: 8 }}>Privacy Policy</h1>
-        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, marginBottom: 48 }}>Last updated: March 1, 2026</p>
+        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, marginBottom: 48 }}>Last updated: March 3, 2026</p>
 
         {[
           {
@@ -86,27 +86,43 @@ You may request deletion of your data by contacting us at privacy@iamclara.ai.`
 To exercise these rights, contact the dental practice directly or email us at privacy@iamclara.ai with the practice name and your phone number.`
           },
           {
-            title: "8. Facebook & Meta Data",
+            title: "8. SMS Messaging",
+            body: `When dental practices use Clara's SMS follow-up feature, we may send text messages to patient phone numbers on behalf of those practices. These messages are transactional in nature — related to appointment scheduling and follow-up on dental care inquiries.
+
+**Opt-in:** SMS messages are sent only after you have submitted an inquiry, called a Clara-powered practice, or explicitly replied YES to a Clara text message.
+
+**Opt-out:** Reply STOP at any time to opt out. No further messages will be sent.
+
+**Data use:** Your phone number is used solely for appointment-related communication with the dental practice. We do not sell phone numbers or use them for third-party marketing.
+
+**Message frequency:** 1–3 messages per inquiry, depending on scheduling status.
+
+**Rates:** Message and data rates may apply.
+
+For full SMS terms, see iamclara.ai/sms-terms.`
+          },
+          {
+            title: "9. Facebook & Meta Data",
             body: `Clara integrates with Meta's platforms (Facebook, Instagram) for social media posting and lead form data. Lead information received through Facebook Lead Ads is used solely to follow up with prospective patients on behalf of the Practice. We do not use Meta lead data for advertising or share it with other parties. We comply with Meta's Platform Terms and Data Policy.`
           },
           {
-            title: "9. Security",
+            title: "10. Security",
             body: `We use industry-standard security measures including TLS encryption for data in transit, encrypted storage for credentials, JWT-based authentication with short expiry, and role-based access controls. No method of transmission or storage is 100% secure. We will notify affected Practices promptly in the event of a data breach.`
           },
           {
-            title: "10. Cookies",
+            title: "11. Cookies",
             body: `Our marketing website (iamclara.ai) uses minimal cookies for basic functionality and analytics. We do not use advertising or tracking cookies. The Clara dashboard uses local storage to maintain your login session.`
           },
           {
-            title: "11. Children's Privacy",
+            title: "12. Children's Privacy",
             body: `Clara is designed for use by dental practices and their adult patients. We do not knowingly collect information from children under 13. If you believe a child has submitted information through our platform, contact us at privacy@iamclara.ai and we will delete it promptly.`
           },
           {
-            title: "12. Changes to This Policy",
+            title: "13. Changes to This Policy",
             body: `We may update this Privacy Policy from time to time. We will notify Practices of material changes by email or in-app notice. Continued use of Clara after changes constitutes acceptance of the updated policy.`
           },
           {
-            title: "13. Contact Us",
+            title: "14. Contact Us",
             body: `Questions about this Privacy Policy or your data:
 
 **Email:** privacy@iamclara.ai

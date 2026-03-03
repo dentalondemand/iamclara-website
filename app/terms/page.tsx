@@ -126,7 +126,7 @@ Upon termination, your data will be retained for 60 days and then deleted.`
 
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 32, marginTop: 16,
           color: "rgba(255,255,255,0.3)", fontSize: 13, textAlign: "center" }}>
-          © 2026 Dental on Demand LLC · <a href="/privacy" style={{ color: "#2DD4BF", textDecoration: "none" }}>Privacy Policy</a>
+          © 2026 Dental on Demand LLC · <a href="/privacy" style={{ color: "#2DD4BF", textDecoration: "none" }}>Privacy Policy</a> · <a href="/sms-terms" style={{ color: "#2DD4BF", textDecoration: "none" }}>SMS Terms</a>
         </div>
       </div>
     </div>
