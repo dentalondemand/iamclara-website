@@ -159,12 +159,12 @@ function Features() {
     {
       icon: '🧠',
       title: 'LLM-Powered Conversation',
-      desc: 'Clara doesn\'t follow a rigid script. She understands natural speech, handles unexpected questions, and keeps the conversation flowing.',
+      desc: 'Clara doesn\'t follow a rigid script. She understands natural speech, handles unexpected questions, and keeps the conversation flowing naturally.',
     },
     {
       icon: '📋',
-      title: 'Instant Call Summaries',
-      desc: 'Every call ends with a structured summary — caller name, intent, phone number, preferred callback time. Your team sees everything they need at a glance.',
+      title: 'Instant AI Call Summaries',
+      desc: 'Every call ends with a structured AI summary — caller name, intent, phone number, preferred callback time. Your team sees everything they need at a glance.',
     },
     {
       icon: '🚨',
@@ -174,17 +174,47 @@ function Features() {
     {
       icon: '📅',
       title: 'Automatic Consultation Booking',
-      desc: 'Clara checks your Google Calendar in real time and books implant consultations directly — no back-and-forth, no double-booking.',
+      desc: 'Clara checks your Google Calendar in real time and books consultations directly — no back-and-forth, no double-booking.',
     },
     {
       icon: '🎙️',
-      title: 'Call Recording + Dashboard',
-      desc: 'Every call is recorded and accessible from the web or mobile app. Filter by status, play recordings, and review summaries from anywhere.',
+      title: 'Call Recording + Playback',
+      desc: 'Every call is recorded and accessible from the web or mobile app. Filter by status, play recordings, and review full transcripts from anywhere.',
+    },
+    {
+      icon: '🔁',
+      title: 'Repeat Caller Recognition',
+      desc: 'Clara remembers returning patients and greets them by name — a small touch that makes a big impression.',
+    },
+    {
+      icon: '🆘',
+      title: 'Emergency Call Forwarding',
+      desc: 'Dental emergencies get routed directly to your phone — always, or only after hours. Clara handles triage so you only get pulled away when it truly matters.',
+    },
+    {
+      icon: '🌍',
+      title: '21-Language Support',
+      desc: 'Clara auto-detects the caller\'s language and responds in kind — Spanish, French, Arabic, Mandarin, Korean, and 16 more. No setup needed.',
+    },
+    {
+      icon: '🛡️',
+      title: 'Spam & Robocall Detection',
+      desc: 'Clara identifies and filters spam calls automatically, so your dashboard stays clean and your team only sees real patients.',
+    },
+    {
+      icon: '📊',
+      title: 'Lead Management Dashboard',
+      desc: 'Every caller becomes a lead. Tag by service interest, log staff notes, track call-back status, and never let a high-value case fall through the cracks.',
+    },
+    {
+      icon: '📱',
+      title: 'Web + Mobile App',
+      desc: 'Full-featured iOS and Android app. Review calls, manage leads, update settings, and monitor your practice from anywhere.',
     },
     {
       icon: '🔒',
       title: 'HIPAA-Conscious Design',
-      desc: 'Calls are recorded and stored securely. No patient data is shared with third parties. Built specifically for dental practices.',
+      desc: 'Patient data stays secure. No PHI in email bodies, encrypted storage, configurable recording retention. Built specifically for dental practices.',
     },
   ]
 
@@ -217,8 +247,8 @@ function Features() {
           <div className="text-2xl mb-2">🚀</div>
           <h3 className="text-xl font-semibold mb-2">Want Clara to run your marketing too?</h3>
           <p className="text-white/50 max-w-2xl mx-auto">
-            Clara Growth adds outbound lead calling, AI-powered social media, Facebook &amp; Google ad management,
-            and automated lead nurture — replacing your $2,000–5,000/month marketing agency for $999/month.
+            Clara Growth adds outbound lead calling, two-way SMS nurture, AI-powered social media, Facebook &amp; Google ad management,
+            and an auto-generated practice landing page — replacing your $2,000–5,000/month marketing agency for $999/month.
           </p>
         </div>
       </div>
@@ -255,12 +285,18 @@ function Pricing() {
               {[
                 '24/7 AI inbound call answering',
                 'Natural LLM conversation',
-                'Instant call summaries',
+                'AI-powered call summaries',
                 'High-priority SMS + email alerts',
                 'Call recording + playback',
-                'Web + mobile dashboard',
+                'Repeat caller recognition',
+                'Emergency call forwarding',
+                '21-language auto-detect',
+                'Spam & robocall filtering',
+                'Lead management + tags',
+                'Staff notes + activity log',
                 'Google Calendar integration',
                 'Automatic consultation booking',
+                'iOS + Android mobile app',
                 'Unlimited calls',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
@@ -300,12 +336,13 @@ function Pricing() {
                 'Everything in Core',
                 'Lead capture (web forms, JotForm, email)',
                 'Outbound lead calling + retry scheduling',
-                'AI social media (IG, FB, TikTok, GMB)',
-                'Email photos → auto-caption → auto-post',
+                'Two-way SMS lead nurture + auto-booking',
+                'AI social media (IG, FB, TikTok)',
+                'Photo upload → AI caption → auto-schedule',
                 'Facebook & Google Ads management',
-                'Practice landing page (auto-generated)',
-                'Lead nurture email sequences',
-                'Ads analytics dashboard',
+                'AI-generated practice landing page',
+                'Lead nurture sequences',
+                'Analytics dashboard',
                 'Priority support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
