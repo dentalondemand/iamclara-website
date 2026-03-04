@@ -296,7 +296,7 @@ export default function GetStarted() {
               </div>
               {info.plan==="growth" && (
                 <p style={{ marginTop:8, color:"rgba(45,212,191,0.8)", fontSize:12 }}>
-                  🔒 $599/mo locked for life — increases to $799 after founding spots fill.
+                  🔒 $599/mo locked for life — increases to $999 after founding spots fill.
                 </p>
               )}
             </label>

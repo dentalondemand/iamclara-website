@@ -218,7 +218,7 @@ function Features() {
           <h3 className="text-xl font-semibold mb-2">Want Clara to run your marketing too?</h3>
           <p className="text-white/50 max-w-2xl mx-auto">
             Clara Growth adds outbound lead calling, AI-powered social media, Facebook &amp; Google ad management,
-            and automated lead nurture — replacing your $2,000–5,000/month marketing agency for $799/month.
+            and automated lead nurture — replacing your $2,000–5,000/month marketing agency for $999/month.
           </p>
         </div>
       </div>
@@ -289,7 +289,7 @@ function Pricing() {
                 <span className="text-5xl font-bold">$599</span>
                 <span className="text-white/40 mb-2">/month</span>
               </div>
-              <p className="text-white/30 text-xs mb-1 line-through">$799/month after founding rate ends</p>
+              <p className="text-white/30 text-xs mb-1 line-through">$999/month after founding rate ends</p>
               <p className="text-white/50 text-sm">
                 Your AI receptionist plus a full marketing team — outbound calls, social media, and ads — all automated.
               </p>
@@ -331,7 +331,7 @@ function Pricing() {
           </p>
           <p className="text-white/40 text-sm">
             🚀 Growth: The average dental marketing agency costs <span className="text-white/70 font-semibold">$2,000–$5,000/month</span>.
-            Clara Growth replaces all of it for <span className="text-teal-400 font-semibold">$599/month</span>.
+            Clara Growth replaces all of it for <span className="text-teal-400 font-semibold">$599/month</span> (founding rate — $999 after).
           </p>
         </div>
       </div>
