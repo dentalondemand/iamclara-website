@@ -26,7 +26,7 @@ Features and pricing are described at iamclara.ai/pricing and may be updated wit
 
 **Pricing:**
 - Core Plan: $199/month
-- Growth Plan: $799/month (Founding Practices locked at $599/month for life)
+- Growth Plan: $999/month (Founding Practices locked at $599/month for life)
 
 **Founding Rate:** The $599/month founding rate is guaranteed for the life of the account as long as the subscription remains active. A lapse in payment of more than 30 days forfeits the founding rate.
 

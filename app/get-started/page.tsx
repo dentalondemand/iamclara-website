@@ -109,9 +109,15 @@ export default function GetStarted() {
     }
   }
 
+    // Stripe links — flip GROWTH_FOUNDERS_OPEN to false when 10 founding spots fill
+    const GROWTH_FOUNDERS_OPEN = true;
+    const STRIPE_GROWTH_FOUNDERS = "https://buy.stripe.com/7sY00l9W12tmeEp2vmaEE02";   // $599/mo locked
+    const STRIPE_GROWTH_STANDARD = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03";   // $999/mo standard
+    const STRIPE_CORE            = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";   // $199/mo
+
     const stripeLink = info.plan === "growth"
-    ? "https://buy.stripe.com/7sY00l9W12tmeEp2vmaEE02"   // Growth Founders $599/mo
-    : "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01"   // Core $199/mo
+      ? (GROWTH_FOUNDERS_OPEN ? STRIPE_GROWTH_FOUNDERS : STRIPE_GROWTH_STANDARD)
+      : STRIPE_CORE;
 
   if (submitted) return (
     <div style={{ minHeight:"100vh", background:"#141E2B", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
