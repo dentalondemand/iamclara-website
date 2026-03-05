@@ -60,7 +60,7 @@ export default function GetStarted() {
   const [alertPhones, setAlertPhones] = useState([""])
   const [notes, setNotes] = useState("")
 
-  const isGrowth = info.plan === "growth"
+  const isGrowth = info.plan === "growth" || info.plan === "pro"
 
   // Steps: 1 Practice Info | 2 Hours | 3 Services | 4 Alerts & Features
   //        [5 Marketing — Growth only] | 5/6 Review
@@ -109,14 +109,13 @@ export default function GetStarted() {
     }
   }
 
-    // Stripe links — flip GROWTH_FOUNDERS_OPEN to false when 10 founding spots fill
-    const GROWTH_FOUNDERS_OPEN = true;
-    const STRIPE_GROWTH_FOUNDERS = "https://buy.stripe.com/7sY00l9W12tmeEp2vmaEE02";   // $599/mo locked
-    const STRIPE_GROWTH_STANDARD = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03";   // $999/mo standard
-    const STRIPE_CORE            = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";   // $199/mo
+    // Stripe payment links
+    const STRIPE_CORE   = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";   // $199/mo
+    const STRIPE_GROWTH = "https://buy.stripe.com/PLACEHOLDER_GROWTH_349";     // $349/mo — TODO: create in Stripe
+    const STRIPE_PRO    = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03";    // $999/mo (repurposed from old Growth standard)
 
-    const stripeLink = info.plan === "growth"
-      ? (GROWTH_FOUNDERS_OPEN ? STRIPE_GROWTH_FOUNDERS : STRIPE_GROWTH_STANDARD)
+    const stripeLink = info.plan === "pro" ? STRIPE_PRO
+      : info.plan === "growth" ? STRIPE_GROWTH
       : STRIPE_CORE;
 
   if (submitted) return (
@@ -135,7 +134,8 @@ export default function GetStarted() {
           <>
             <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:24 }}>
               {info.plan === "growth"
-                ? "Growth plan · $599/mo founding rate (locked for life)"
+                info.plan === "pro" ? "Pro plan · $999/month"
+                : info.plan === "growth" ? "Growth plan · $349/month"
                 : "Core plan · $199/month"}
             </p>
             <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, marginBottom:16 }}>
@@ -281,7 +281,8 @@ export default function GetStarted() {
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:4 }}>
                 {[
                   { val:"core", name:"Core", price:"$199/mo", desc:"AI receptionist + dashboard" },
-                  { val:"growth", name:"Growth", price:"$599/mo", badge:"Founding", desc:"Receptionist + marketing automation + ads" },
+                  { val:"growth", name:"Growth", price:"$349/mo", desc:"Core + social media automation" },
+                  { val:"pro", name:"Pro", price:"$999/mo", desc:"Growth + landing page, outbound calls & AI texting" },
                 ].map(p => (
                   <div key={p.val} onClick={() => setInfo({...info, plan:p.val})}
                     style={{ cursor:"pointer", borderRadius:12, padding:"14px",
@@ -302,7 +303,7 @@ export default function GetStarted() {
               </div>
               {info.plan==="growth" && (
                 <p style={{ marginTop:8, color:"rgba(45,212,191,0.8)", fontSize:12 }}>
-                  🔒 $599/mo locked for life — increases to $999 after founding spots fill.
+                  Pro includes landing page, outbound lead calling, AI SMS nurture, and automated follow-up.
                 </p>
               )}
             </label>
@@ -492,7 +493,7 @@ export default function GetStarted() {
               ["Phone", info.phone],
               ["Address", info.address],
               ["Timezone", info.timezone.replace(/_/g," ")],
-              ["Plan", info.plan === "growth" ? "Growth — $599/mo (founding)" : "Core — $199/mo"],
+              ["Plan", info.plan === "pro" ? "Pro — $999/mo" : info.plan === "growth" ? "Growth — $349/mo" : "Core — $199/mo"],
               ["Admin", `${info.admin_name} (${info.admin_email})`],
               ["Legal name", info.business_legal_name || info.practice_name],
               ["EIN", info.ein || "—"],

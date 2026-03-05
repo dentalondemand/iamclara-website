@@ -79,7 +79,7 @@ function Hero() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <a href="/get-started"
             className="w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-4 rounded-full text-lg transition-all hover:scale-105 glow">
-            Start for $199/month
+            Get Started — from $199/mo
           </a>
           <a href="#how-it-works"
             className="w-full sm:w-auto border border-white/20 hover:border-white/40 text-white font-medium px-8 py-4 rounded-full text-lg transition-colors">
@@ -242,13 +242,12 @@ function Features() {
           ))}
         </div>
 
-        {/* Growth tier teaser */}
+        {/* Tier upgrade teaser */}
         <div className="mt-10 bg-teal-500/10 border border-teal-500/20 rounded-2xl p-8 text-center">
-          <div className="text-2xl mb-2">🚀</div>
-          <h3 className="text-xl font-semibold mb-2">Want Clara to run your marketing too?</h3>
+          <div className="text-2xl mb-2">📈</div>
+          <h3 className="text-xl font-semibold mb-2">Start with Core. Grow when you're ready.</h3>
           <p className="text-white/50 max-w-2xl mx-auto">
-            Clara Growth adds outbound lead calling, two-way SMS nurture, AI-powered social media, Facebook &amp; Google ad management,
-            and an auto-generated practice landing page — replacing your $2,000–5,000/month marketing agency for $999/month.
+            Add social media automation at $349/mo with Growth, or unlock the full lead machine — landing pages, outbound calling, and AI text follow-up — at $999/mo with Pro. Upgrade anytime, no contracts.
           </p>
         </div>
       </div>
@@ -267,7 +266,7 @@ function Pricing() {
           <p className="text-white/50 text-lg">No setup fees. No contracts. Cancel anytime.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {/* Core Plan */}
           <div className="bg-card-gradient border border-white/10 rounded-3xl p-8 flex flex-col">
             <div className="mb-6">
@@ -277,7 +276,7 @@ function Pricing() {
                 <span className="text-white/40 mb-2">/month</span>
               </div>
               <p className="text-white/50 text-sm">
-                Everything you need to replace your answering service and never miss a patient call.
+                Replace your answering service. Clara answers every call, captures every patient, and never sleeps.
               </p>
             </div>
 
@@ -286,7 +285,7 @@ function Pricing() {
                 '24/7 AI inbound call answering',
                 'Natural LLM conversation',
                 'AI-powered call summaries',
-                'High-priority SMS + email alerts',
+                'SMS + email staff alerts',
                 'Call recording + playback',
                 'Repeat caller recognition',
                 'Emergency call forwarding',
@@ -295,9 +294,51 @@ function Pricing() {
                 'Lead management + tags',
                 'Staff notes + activity log',
                 'Google Calendar integration',
-                'Automatic consultation booking',
                 'iOS + Android mobile app',
                 'Unlimited calls',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm text-white/70">
+                  <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <a href="/get-started"
+              className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
+              Get Started
+            </a>
+            <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
+          </div>
+
+          {/* Growth Plan */}
+          <div className="relative bg-card-gradient border border-teal-500/40 rounded-3xl p-8 flex flex-col glow">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</span>
+            </div>
+
+            <div className="mb-6">
+              <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">GROWTH</div>
+              <div className="flex items-end gap-2 mb-3">
+                <span className="text-5xl font-bold">$349</span>
+                <span className="text-white/40 mb-2">/month</span>
+              </div>
+              <p className="text-white/50 text-sm">
+                Everything in Core plus a full social media team — AI captions, auto-posting, and content scheduling.
+              </p>
+            </div>
+
+            <ul className="space-y-3 mb-8 flex-1">
+              {[
+                'Everything in Core',
+                'Photo upload → AI caption → auto-post',
+                'Instagram + Facebook posting',
+                'AI-generated social content',
+                'Weekly content scheduling',
+                'Sunday photo request workflow',
+                'Content approval queue',
+                'Analytics dashboard',
+                'Priority support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
                   <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
@@ -313,37 +354,30 @@ function Pricing() {
             <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
           </div>
 
-          {/* Growth Plan */}
-          <div className="relative bg-card-gradient border border-teal-500/40 rounded-3xl p-8 flex flex-col glow">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">FOUNDING RATE</span>
-            </div>
-
+          {/* Pro Plan */}
+          <div className="bg-card-gradient border border-white/10 rounded-3xl p-8 flex flex-col">
             <div className="mb-6">
-              <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">GROWTH</div>
+              <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">PRO</div>
               <div className="flex items-end gap-2 mb-3">
-                <span className="text-5xl font-bold">$599</span>
+                <span className="text-5xl font-bold">$999</span>
                 <span className="text-white/40 mb-2">/month</span>
               </div>
-              <p className="text-white/30 text-xs mb-1 line-through">$999/month after founding rate ends</p>
               <p className="text-white/50 text-sm">
-                Your AI receptionist plus a full marketing team — outbound calls, social media, and ads — all automated.
+                The full lead machine. Landing pages, form capture, outbound calling, AI texting, and automated follow-up.
               </p>
             </div>
 
             <ul className="space-y-3 mb-8 flex-1">
               {[
-                'Everything in Core',
-                'Lead capture (web forms, JotForm, email)',
-                'Outbound lead calling + retry scheduling',
-                'Two-way SMS lead nurture + auto-booking',
-                'AI social media (IG, FB, TikTok)',
-                'Photo upload → AI caption → auto-schedule',
-                'Facebook & Google Ads management',
+                'Everything in Growth',
                 'AI-generated practice landing page',
-                'Lead nurture sequences',
-                'Analytics dashboard',
-                'Priority support',
+                'Lead form capture',
+                'Outbound lead calling + retry logic',
+                'Two-way AI SMS lead nurture',
+                'Automated follow-up sequences',
+                'Lead scoring + prioritization',
+                'Facebook & Google lead ads integration',
+                'Dedicated onboarding support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
                   <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
@@ -353,22 +387,26 @@ function Pricing() {
             </ul>
 
             <a href="/get-started"
-              className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
-              Join as Founding Practice
+              className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
+              Get Started
             </a>
-            <p className="text-center text-white/30 text-xs mt-3">Lock in $599/mo for life — limited spots</p>
+            <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
           </div>
         </div>
 
         {/* Savings callout */}
         <div className="mt-12 text-center space-y-2">
           <p className="text-white/40 text-sm">
-            💡 Core: The average dental answering service costs <span className="text-white/70 font-semibold">$500–$700/month</span>.
-            Clara Core saves you <span className="text-teal-400 font-semibold">$350–550/month</span> — and works harder.
+            💡 Core: Dental answering services cost <span className="text-white/70 font-semibold">$500–$700/month</span>.
+            Clara Core saves you <span className="text-teal-400 font-semibold">$300–500/month</span> — and works harder.
           </p>
           <p className="text-white/40 text-sm">
-            🚀 Growth: The average dental marketing agency costs <span className="text-white/70 font-semibold">$2,000–$5,000/month</span>.
-            Clara Growth replaces all of it for <span className="text-teal-400 font-semibold">$599/month</span> (founding rate — $999 after).
+            📸 Growth: A social media manager costs <span className="text-white/70 font-semibold">$800–$1,500/month</span>.
+            Clara Growth does it for <span className="text-teal-400 font-semibold">$349/month</span>.
+          </p>
+          <p className="text-white/40 text-sm">
+            🚀 Pro: Marketing agencies charge <span className="text-white/70 font-semibold">$2,000–$5,000/month</span>.
+            Clara Pro replaces the whole stack for <span className="text-teal-400 font-semibold">$999/month</span>.
           </p>
         </div>
       </div>
