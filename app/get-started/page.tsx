@@ -109,22 +109,23 @@ export default function GetStarted() {
     }
   }
 
-    // Stripe payment links
-    const STRIPE_CORE          = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";  // $199/mo
-    const STRIPE_GROWTH_FOUNDERS = "https://buy.stripe.com/PLACEHOLDER_GROWTH_399"; // $399/mo founders — TODO: create in Stripe
-    const STRIPE_GROWTH_STANDARD = "https://buy.stripe.com/PLACEHOLDER_GROWTH_499"; // $499/mo standard — TODO: create in Stripe
-    const STRIPE_PRO_FOUNDERS    = "https://buy.stripe.com/PLACEHOLDER_PRO_799";    // $799/mo founders — TODO: create in Stripe
-    const STRIPE_PRO_STANDARD    = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03"; // $999/mo standard (repurposed)
+  // Stripe payment links — update TODOs once links are created in Stripe dashboard
+  const STRIPE_CORE            = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";  // $199/mo ✅
+  const STRIPE_GROWTH_FOUNDERS = "https://buy.stripe.com/PLACEHOLDER_GROWTH_399";    // $399/mo founders — TODO
+  const STRIPE_GROWTH_STANDARD = "https://buy.stripe.com/PLACEHOLDER_GROWTH_499";    // $499/mo standard — TODO
+  const STRIPE_PRO_FOUNDERS    = "https://buy.stripe.com/PLACEHOLDER_PRO_799";       // $799/mo founders — TODO
+  const STRIPE_PRO_STANDARD    = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03";   // $999/mo standard ✅
 
-    // Flip GROWTH_FOUNDERS_OPEN / PRO_FOUNDERS_OPEN to false when spots fill
-    const GROWTH_FOUNDERS_OPEN = true;
-    const PRO_FOUNDERS_OPEN    = true;
+  // Flip to false when founding spots fill
+  const GROWTH_FOUNDERS_OPEN = true;
+  const PRO_FOUNDERS_OPEN    = true;
 
-    const stripeLink = info.plan === "pro"
-      ? (PRO_FOUNDERS_OPEN ? STRIPE_PRO_FOUNDERS : STRIPE_PRO_STANDARD)
-      : info.plan === "growth"
-      ? (GROWTH_FOUNDERS_OPEN ? STRIPE_GROWTH_FOUNDERS : STRIPE_GROWTH_STANDARD)
-      : STRIPE_CORE;
+  let stripeLink = STRIPE_CORE;
+  if (info.plan === "pro") {
+    stripeLink = PRO_FOUNDERS_OPEN ? STRIPE_PRO_FOUNDERS : STRIPE_PRO_STANDARD;
+  } else if (info.plan === "growth") {
+    stripeLink = GROWTH_FOUNDERS_OPEN ? STRIPE_GROWTH_FOUNDERS : STRIPE_GROWTH_STANDARD;
+  }
 
   if (submitted) return (
     <div style={{ minHeight:"100vh", background:"#141E2B", display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
@@ -141,8 +142,7 @@ export default function GetStarted() {
         {!isPartner && (
           <>
             <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:24 }}>
-              {info.plan === "growth"
-                info.plan === "pro" ? "Pro plan · $799/mo founding rate (locked for life)"
+              {info.plan === "pro" ? "Pro plan · $799/mo founding rate (locked for life)"
                 : info.plan === "growth" ? "Growth plan · $399/mo founding rate (locked for life)"
                 : "Core plan · $199/month"}
             </p>
@@ -288,9 +288,9 @@ export default function GetStarted() {
               Plan
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:4 }}>
                 {[
-                  { val:"core",   name:"Core",   price:"$199/mo",              desc:"AI receptionist + dashboard" },
-                  { val:"growth", name:"Growth", price:"$399/mo founding rate", desc:"Core + social media automation — $499 after founding spots fill" },
-                  { val:"pro",    name:"Pro",    price:"$799/mo founding rate", desc:"Growth + landing page, outbound calls & AI texting — $999 after founding spots fill" },
+                  { val:"core",   name:"Core",   price:"$199/mo",              badge:"",          desc:"AI receptionist + dashboard" },
+                  { val:"growth", name:"Growth", price:"$399/mo founding rate", badge:"Founding",  desc:"Core + social media automation — $499 after founding spots fill" },
+                  { val:"pro",    name:"Pro",    price:"$799/mo founding rate", badge:"Founding",  desc:"Growth + landing page, outbound calls & AI texting — $999 after founding spots fill" },
                 ].map(p => (
                   <div key={p.val} onClick={() => setInfo({...info, plan:p.val})}
                     style={{ cursor:"pointer", borderRadius:12, padding:"14px",
