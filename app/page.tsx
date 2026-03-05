@@ -5,6 +5,13 @@ import Image from 'next/image'
 
 const DASHBOARD_URL = 'https://app.iamclara.ai'
 
+// ── Founders spot counters — update these as spots fill ──────────────────────
+const GROWTH_FOUNDERS_SPOTS_TOTAL = 10
+const GROWTH_FOUNDERS_SPOTS_TAKEN = 0   // increment as practices sign up
+const PRO_FOUNDERS_SPOTS_TOTAL    = 10
+const PRO_FOUNDERS_SPOTS_TAKEN    = 0   // increment as practices sign up
+// ─────────────────────────────────────────────────────────────────────────────
+
 function Nav() {
   const [open, setOpen] = useState(false)
   return (
@@ -247,7 +254,7 @@ function Features() {
           <div className="text-2xl mb-2">📈</div>
           <h3 className="text-xl font-semibold mb-2">Start with Core. Grow when you're ready.</h3>
           <p className="text-white/50 max-w-2xl mx-auto">
-            Add social media automation at $349/mo with Growth, or unlock the full lead machine — landing pages, outbound calling, and AI text follow-up — at $999/mo with Pro. Upgrade anytime, no contracts.
+            Add social media automation at $399/mo with Growth (founding rate), or unlock the full lead machine — landing pages, outbound calling, and AI text follow-up — at $799/mo with Pro (founding rate). Both lock in for life. Upgrade anytime, no contracts.
           </p>
         </div>
       </div>
@@ -314,15 +321,19 @@ function Pricing() {
           {/* Growth Plan */}
           <div className="relative bg-card-gradient border border-teal-500/40 rounded-3xl p-8 flex flex-col glow">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</span>
+              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">FOUNDING RATE</span>
             </div>
 
             <div className="mb-6">
               <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">GROWTH</div>
-              <div className="flex items-end gap-2 mb-3">
-                <span className="text-5xl font-bold">$349</span>
+              <div className="flex items-end gap-2 mb-1">
+                <span className="text-5xl font-bold">$399</span>
                 <span className="text-white/40 mb-2">/month</span>
               </div>
+              <p className="text-white/30 text-xs mb-1 line-through">$499/month after founding spots fill</p>
+              <p className="text-amber-400 text-xs font-semibold mb-3">
+                🔥 {GROWTH_FOUNDERS_SPOTS_TOTAL - GROWTH_FOUNDERS_SPOTS_TAKEN} of {GROWTH_FOUNDERS_SPOTS_TOTAL} founding spots remaining
+              </p>
               <p className="text-white/50 text-sm">
                 Everything in Core plus a full social media team — AI captions, auto-posting, and content scheduling.
               </p>
@@ -349,19 +360,27 @@ function Pricing() {
 
             <a href="/get-started"
               className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
-              Get Started
+              Claim Founding Rate
             </a>
-            <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
+            <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
           </div>
 
           {/* Pro Plan */}
-          <div className="bg-card-gradient border border-white/10 rounded-3xl p-8 flex flex-col">
+          <div className="relative bg-card-gradient border border-white/10 rounded-3xl p-8 flex flex-col">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+              <span className="bg-amber-500 text-white text-xs font-bold px-4 py-1 rounded-full">FOUNDING RATE</span>
+            </div>
+
             <div className="mb-6">
               <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">PRO</div>
-              <div className="flex items-end gap-2 mb-3">
-                <span className="text-5xl font-bold">$999</span>
+              <div className="flex items-end gap-2 mb-1">
+                <span className="text-5xl font-bold">$799</span>
                 <span className="text-white/40 mb-2">/month</span>
               </div>
+              <p className="text-white/30 text-xs mb-1 line-through">$999/month after founding spots fill</p>
+              <p className="text-amber-400 text-xs font-semibold mb-3">
+                🔥 {PRO_FOUNDERS_SPOTS_TOTAL - PRO_FOUNDERS_SPOTS_TAKEN} of {PRO_FOUNDERS_SPOTS_TOTAL} founding spots remaining
+              </p>
               <p className="text-white/50 text-sm">
                 The full lead machine. Landing pages, form capture, outbound calling, AI texting, and automated follow-up.
               </p>
@@ -387,10 +406,10 @@ function Pricing() {
             </ul>
 
             <a href="/get-started"
-              className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
-              Get Started
+              className="block text-center bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-full transition-colors">
+              Claim Founding Rate
             </a>
-            <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
+            <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
           </div>
         </div>
 
@@ -402,11 +421,11 @@ function Pricing() {
           </p>
           <p className="text-white/40 text-sm">
             📸 Growth: A social media manager costs <span className="text-white/70 font-semibold">$800–$1,500/month</span>.
-            Clara Growth does it for <span className="text-teal-400 font-semibold">$349/month</span>.
+            Clara Growth does it for <span className="text-teal-400 font-semibold">$399/month</span> (founding rate).
           </p>
           <p className="text-white/40 text-sm">
             🚀 Pro: Marketing agencies charge <span className="text-white/70 font-semibold">$2,000–$5,000/month</span>.
-            Clara Pro replaces the whole stack for <span className="text-teal-400 font-semibold">$999/month</span>.
+            Clara Pro replaces the whole stack for <span className="text-teal-400 font-semibold">$799/month</span> (founding rate).
           </p>
         </div>
       </div>

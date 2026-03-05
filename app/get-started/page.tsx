@@ -110,12 +110,20 @@ export default function GetStarted() {
   }
 
     // Stripe payment links
-    const STRIPE_CORE   = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";   // $199/mo
-    const STRIPE_GROWTH = "https://buy.stripe.com/PLACEHOLDER_GROWTH_349";     // $349/mo — TODO: create in Stripe
-    const STRIPE_PRO    = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03";    // $999/mo (repurposed from old Growth standard)
+    const STRIPE_CORE          = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";  // $199/mo
+    const STRIPE_GROWTH_FOUNDERS = "https://buy.stripe.com/PLACEHOLDER_GROWTH_399"; // $399/mo founders — TODO: create in Stripe
+    const STRIPE_GROWTH_STANDARD = "https://buy.stripe.com/PLACEHOLDER_GROWTH_499"; // $499/mo standard — TODO: create in Stripe
+    const STRIPE_PRO_FOUNDERS    = "https://buy.stripe.com/PLACEHOLDER_PRO_799";    // $799/mo founders — TODO: create in Stripe
+    const STRIPE_PRO_STANDARD    = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03"; // $999/mo standard (repurposed)
 
-    const stripeLink = info.plan === "pro" ? STRIPE_PRO
-      : info.plan === "growth" ? STRIPE_GROWTH
+    // Flip GROWTH_FOUNDERS_OPEN / PRO_FOUNDERS_OPEN to false when spots fill
+    const GROWTH_FOUNDERS_OPEN = true;
+    const PRO_FOUNDERS_OPEN    = true;
+
+    const stripeLink = info.plan === "pro"
+      ? (PRO_FOUNDERS_OPEN ? STRIPE_PRO_FOUNDERS : STRIPE_PRO_STANDARD)
+      : info.plan === "growth"
+      ? (GROWTH_FOUNDERS_OPEN ? STRIPE_GROWTH_FOUNDERS : STRIPE_GROWTH_STANDARD)
       : STRIPE_CORE;
 
   if (submitted) return (
@@ -134,8 +142,8 @@ export default function GetStarted() {
           <>
             <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:24 }}>
               {info.plan === "growth"
-                info.plan === "pro" ? "Pro plan · $999/month"
-                : info.plan === "growth" ? "Growth plan · $349/month"
+                info.plan === "pro" ? "Pro plan · $799/mo founding rate (locked for life)"
+                : info.plan === "growth" ? "Growth plan · $399/mo founding rate (locked for life)"
                 : "Core plan · $199/month"}
             </p>
             <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, marginBottom:16 }}>
@@ -280,9 +288,9 @@ export default function GetStarted() {
               Plan
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:4 }}>
                 {[
-                  { val:"core", name:"Core", price:"$199/mo", desc:"AI receptionist + dashboard" },
-                  { val:"growth", name:"Growth", price:"$349/mo", desc:"Core + social media automation" },
-                  { val:"pro", name:"Pro", price:"$999/mo", desc:"Growth + landing page, outbound calls & AI texting" },
+                  { val:"core",   name:"Core",   price:"$199/mo",              desc:"AI receptionist + dashboard" },
+                  { val:"growth", name:"Growth", price:"$399/mo founding rate", desc:"Core + social media automation — $499 after founding spots fill" },
+                  { val:"pro",    name:"Pro",    price:"$799/mo founding rate", desc:"Growth + landing page, outbound calls & AI texting — $999 after founding spots fill" },
                 ].map(p => (
                   <div key={p.val} onClick={() => setInfo({...info, plan:p.val})}
                     style={{ cursor:"pointer", borderRadius:12, padding:"14px",
@@ -303,7 +311,7 @@ export default function GetStarted() {
               </div>
               {info.plan==="growth" && (
                 <p style={{ marginTop:8, color:"rgba(45,212,191,0.8)", fontSize:12 }}>
-                  Pro includes landing page, outbound lead calling, AI SMS nurture, and automated follow-up.
+                  Pro founding rate is $799/mo, locked for life. Increases to $999 after founding spots fill.
                 </p>
               )}
             </label>
@@ -493,7 +501,7 @@ export default function GetStarted() {
               ["Phone", info.phone],
               ["Address", info.address],
               ["Timezone", info.timezone.replace(/_/g," ")],
-              ["Plan", info.plan === "pro" ? "Pro — $999/mo" : info.plan === "growth" ? "Growth — $349/mo" : "Core — $199/mo"],
+              ["Plan", info.plan === "pro" ? "Pro — $799/mo (founding)" : info.plan === "growth" ? "Growth — $399/mo (founding)" : "Core — $199/mo"],
               ["Admin", `${info.admin_name} (${info.admin_email})`],
               ["Legal name", info.business_legal_name || info.practice_name],
               ["EIN", info.ein || "—"],
