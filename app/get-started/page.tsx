@@ -49,8 +49,9 @@ export default function GetStarted() {
     // Social media (Growth + Pro)
     instagram: "", facebook_page: "", tiktok: "", google_business: "",
     photo_contact_email: "",
-    posting_approval: "review",   // "auto" | "review"
-    posting_frequency: "3x",      // "daily" | "4x" | "3x" | "2x" | "1x"
+    posting_approval: "review",     // "auto" | "review"
+    posting_frequency: "3x",       // "daily" | "4x" | "3x" | "2x" | "1x"
+    caption_style: "real_person",  // "real_person" | "expert"
     // A2P Compliance (Pro only)
     business_legal_name: "", ein: "", business_type: "",
     street_address: "", city: "", state: "", zip: "",
@@ -455,6 +456,30 @@ export default function GetStarted() {
                     style={{ flex:1, padding:"12px 14px", borderRadius:12, cursor:"pointer",
                       border: info.posting_approval === val ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.08)",
                       background: info.posting_approval === val ? "rgba(45,212,191,0.08)" : "rgba(255,255,255,0.03)" }}>
+                    <div style={{ color:"#fff", fontWeight:700, fontSize:13, marginBottom:4 }}>{title}</div>
+                    <div style={{ color:"rgba(255,255,255,0.45)", fontSize:12, lineHeight:1.4 }}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Caption style */}
+            <div style={{ marginBottom:16 }}>
+              <div style={{ color:"rgba(255,255,255,0.7)", fontSize:13, fontWeight:500, marginBottom:4 }}>
+                Caption voice
+              </div>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, margin:"0 0 10px" }}>
+                How should Clara write your social media captions?
+              </p>
+              <div style={{ display:"flex", gap:10 }}>
+                {([
+                  ["real_person", "💬 Real Person", "Casual & authentic — sounds like someone on your team posted it. Conversational, no marketing speak."],
+                  ["expert",      "✍️ Expert",       "Polished & sharp — elevated copy that feels premium. Confident, clear, strong CTAs."],
+                ] as [string,string,string][]).map(([val, title, desc]) => (
+                  <div key={val} onClick={() => setInfo({...info, caption_style: val})}
+                    style={{ flex:1, padding:"12px 14px", borderRadius:12, cursor:"pointer",
+                      border: info.caption_style === val ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                      background: info.caption_style === val ? "rgba(45,212,191,0.08)" : "rgba(255,255,255,0.03)" }}>
                     <div style={{ color:"#fff", fontWeight:700, fontSize:13, marginBottom:4 }}>{title}</div>
                     <div style={{ color:"rgba(255,255,255,0.45)", fontSize:12, lineHeight:1.4 }}>{desc}</div>
                   </div>
