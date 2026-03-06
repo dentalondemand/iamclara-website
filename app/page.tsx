@@ -7,7 +7,7 @@ const DASHBOARD_URL = 'https://app.iamclara.ai'
 
 // ── Founders spot counters — update these as spots fill ──────────────────────
 const GROWTH_FOUNDERS_SPOTS_TOTAL = 10
-const GROWTH_FOUNDERS_SPOTS_TAKEN = 0   // increment as practices sign up
+const GROWTH_FOUNDERS_SPOTS_TAKEN = 1   // increment as practices sign up
 const PRO_FOUNDERS_SPOTS_TOTAL    = 10
 const PRO_FOUNDERS_SPOTS_TAKEN    = 0   // increment as practices sign up
 // ─────────────────────────────────────────────────────────────────────────────
@@ -79,8 +79,8 @@ function Hero() {
         </h1>
 
         <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Clara handles every inbound call, captures patient intent, sends your team instant summaries,
-          and follows up on leads automatically — so you never miss a case.
+          Clara answers every call, identifies patient intent, sends your team instant summaries,
+          and gives you the tools to grow — so you never miss a case.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -291,15 +291,17 @@ function Pricing() {
               {[
                 '24/7 AI inbound call answering',
                 'Natural LLM conversation',
-                'AI-powered call summaries',
-                'SMS + email staff alerts',
+                'AI-powered call summaries + lead scoring',
+                'SMS + email + push staff alerts',
                 'Call recording + playback',
                 'Repeat caller recognition',
                 'Emergency call forwarding',
                 '21-language auto-detect',
                 'Spam & robocall filtering',
-                'Lead management + tags',
+                'Call intelligence analytics',
                 'Staff notes + activity log',
+                'Lab case + follow-up tracker',
+                'Patient review request tool',
                 'Google Calendar integration',
                 'iOS + Android mobile app',
                 'Unlimited calls',
@@ -335,7 +337,7 @@ function Pricing() {
                 🔥 {GROWTH_FOUNDERS_SPOTS_TOTAL - GROWTH_FOUNDERS_SPOTS_TAKEN} of {GROWTH_FOUNDERS_SPOTS_TOTAL} founding spots remaining
               </p>
               <p className="text-white/50 text-sm">
-                Everything in Core plus a full social media team — AI captions, auto-posting, and content scheduling.
+                Everything in Core plus a full social media team — upload a photo, Clara writes the caption and posts it.
               </p>
             </div>
 
@@ -344,11 +346,11 @@ function Pricing() {
                 'Everything in Core',
                 'Photo upload → AI caption → auto-post',
                 'Instagram + Facebook posting',
-                'AI-generated social content',
-                'Weekly content scheduling',
+                'Real-person caption voice (no AI slop)',
+                'Weekly content calendar',
                 'Sunday photo request workflow',
-                'Content approval queue',
-                'Analytics dashboard',
+                'Caption approval queue',
+                'TikTok + Google Business (coming soon)',
                 'Priority support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
@@ -382,20 +384,20 @@ function Pricing() {
                 🔥 {PRO_FOUNDERS_SPOTS_TOTAL - PRO_FOUNDERS_SPOTS_TAKEN} of {PRO_FOUNDERS_SPOTS_TOTAL} founding spots remaining
               </p>
               <p className="text-white/50 text-sm">
-                The full lead machine. Landing pages, form capture, outbound calling, AI texting, and automated follow-up.
+                Everything in Growth plus the full lead machine — Clara captures leads from ads and texts them until they book.
               </p>
             </div>
 
             <ul className="space-y-3 mb-8 flex-1">
               {[
                 'Everything in Growth',
-                'AI-generated practice landing page',
-                'Lead form capture',
-                'Outbound lead calling + retry logic',
-                'Two-way AI SMS lead nurture',
-                'Automated follow-up sequences',
+                'Custom practice landing page',
+                'Facebook & Google lead form capture',
+                'Clara calls new leads within minutes',
+                'Outbound retry logic (calls until answered)',
+                'Two-way AI SMS nurture sequences',
                 'Lead scoring + prioritization',
-                'Facebook & Google lead ads integration',
+                'A2P 10DLC SMS compliance (included)',
                 'Dedicated onboarding support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
@@ -416,16 +418,16 @@ function Pricing() {
         {/* Savings callout */}
         <div className="mt-12 text-center space-y-2">
           <p className="text-white/40 text-sm">
-            💡 Core: Dental answering services cost <span className="text-white/70 font-semibold">$500–$700/month</span>.
-            Clara Core saves you <span className="text-teal-400 font-semibold">$300–500/month</span> — and works harder.
+            💡 Core: Traditional dental answering services cost <span className="text-white/70 font-semibold">$500–$700/month</span> and miss half your calls.
+            Clara Core is <span className="text-teal-400 font-semibold">$199/month</span> and never misses one.
           </p>
           <p className="text-white/40 text-sm">
-            📸 Growth: A social media manager costs <span className="text-white/70 font-semibold">$800–$1,500/month</span>.
-            Clara Growth does it for <span className="text-teal-400 font-semibold">$399/month</span> (founding rate).
+            📸 Growth: A dental social media manager costs <span className="text-white/70 font-semibold">$800–$1,500/month</span>.
+            Clara Growth does it for <span className="text-teal-400 font-semibold">$399/month</span> (founding rate) — and it's faster.
           </p>
           <p className="text-white/40 text-sm">
-            🚀 Pro: Marketing agencies charge <span className="text-white/70 font-semibold">$2,000–$5,000/month</span>.
-            Clara Pro replaces the whole stack for <span className="text-teal-400 font-semibold">$799/month</span> (founding rate).
+            🚀 Pro: A lead generation agency charges <span className="text-white/70 font-semibold">$2,000–$5,000/month</span> plus ad spend management fees.
+            Clara Pro is <span className="text-teal-400 font-semibold">$799/month</span>, flat — bring your own ads.
           </p>
         </div>
       </div>
