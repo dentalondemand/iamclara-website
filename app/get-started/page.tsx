@@ -111,9 +111,9 @@ export default function GetStarted() {
 
   // Stripe payment links — update TODOs once links are created in Stripe dashboard
   const STRIPE_CORE            = "https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01";  // $199/mo ✅
-  const STRIPE_GROWTH_FOUNDERS = "https://buy.stripe.com/PLACEHOLDER_GROWTH_399";    // $399/mo founders — TODO
-  const STRIPE_GROWTH_STANDARD = "https://buy.stripe.com/PLACEHOLDER_GROWTH_499";    // $499/mo standard — TODO
-  const STRIPE_PRO_FOUNDERS    = "https://buy.stripe.com/PLACEHOLDER_PRO_799";       // $799/mo founders — TODO
+  const STRIPE_GROWTH_FOUNDERS = "https://buy.stripe.com/bJe8wRechgkc2VH6LCaEE05";  // $399/mo founders ✅
+  const STRIPE_GROWTH_STANDARD = "https://buy.stripe.com/fZu00l7NTgkc53P8TKaEE04";  // $499/mo standard ✅
+  const STRIPE_PRO_FOUNDERS    = "https://buy.stripe.com/fZuaEZ1pvfg83ZLc5WaEE00";  // $799/mo founders ✅
   const STRIPE_PRO_STANDARD    = "https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03";   // $999/mo standard ✅
 
   // Flip to false when founding spots fill
