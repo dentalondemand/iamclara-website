@@ -73,7 +73,7 @@ export default function GetStarted() {
   const stepLabels = isPro
     ? ["Practice","Hours","Services","Alerts","Social Media","Compliance","Review"]
     : isGrowthOrPro
-    ? ["Practice","Hours","Services","Alerts","Social Media","Review"]
+    ? ["Practice","Hours","Services","Alerts","Social Media","Compliance","Review"]
     : ["Practice","Hours","Services","Alerts","Review"]
   const totalSteps = stepLabels.length
 
@@ -510,12 +510,12 @@ export default function GetStarted() {
           </>
         )}
 
-        {/* ── Step 6: Compliance (Pro only) ── */}
-        {step === 6 && isPro && (
+        {/* ── Step 6: Compliance (Growth + Pro) ── */}
+        {step === 6 && isGrowthOrPro && (
           <>
             <h2 style={sh}>Texting Compliance (A2P)</h2>
             <p style={subText}>
-              Required for SMS lead nurturing. Twilio needs this to register your brand so texts actually deliver.
+              Required for sending review request texts to patients. Twilio needs this to register your brand so texts actually deliver.
               All info is kept private and used only for carrier registration.
             </p>
 
