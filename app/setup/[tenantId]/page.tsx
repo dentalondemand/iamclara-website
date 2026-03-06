@@ -80,6 +80,17 @@ export default function SetupPage() {
     { video_url: "", patient_name: "", result: "" },
   ]);
 
+  // Step 5 — Social Media
+  const [social, setSocial] = useState({
+    instagram: "",
+    facebook_page: "",
+    tiktok: "",
+    google_business: "",
+    photo_contact_email: "",
+    posting_approval: "review",
+    posting_frequency: "3x",
+  });
+
   // Step 4 — Differentiators, before/afters, stats, CTA
   const [selectedTheme, setSelectedTheme] = useState("teal");
   const [selectedDiffs, setSelectedDiffs] = useState<string[]>([]);
@@ -90,7 +101,7 @@ export default function SetupPage() {
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
   const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "" });
 
-  const TOTAL = 5;
+  const TOTAL = 6;
 
   function toggleDiff(d: string) {
     setSelectedDiffs(p => p.includes(d) ? p.filter(x => x !== d) : [...p, d]);
@@ -126,6 +137,7 @@ export default function SetupPage() {
       cta_offer: cta.offer,
       cta_offer_detail: cta.offer_detail,
       theme: selectedTheme,
+      social,
     };
     try {
       const res = await fetch(`${BACKEND}/public/setup/${tenantId}/content`, {
@@ -416,8 +428,81 @@ export default function SetupPage() {
             </>
           )}
 
-          {/* ── Step 5: Review ── */}
+          {/* ── Step 5: Social Media ── */}
           {step === 5 && (
+            <>
+              <h2 style={sh}>Social Media Setup</h2>
+              <p style={sub}>Connect your social channels so Clara can post your content automatically.</p>
+
+              <div style={{ background:"rgba(45,212,191,0.08)", border:"1px solid rgba(45,212,191,0.2)",
+                             borderRadius:12, padding:"14px 16px", marginBottom:20 }}>
+                <div style={{ color:"#2DD4BF", fontWeight:700, fontSize:13, marginBottom:4 }}>📧 Your content submission email</div>
+                <div style={{ color:"#fff", fontSize:14, fontWeight:600, marginBottom:4 }}>
+                  {tenantId}@submit.iamclara.ai
+                </div>
+                <div style={{ color:"rgba(255,255,255,0.5)", fontSize:12, lineHeight:1.5 }}>
+                  Email photos here and Clara writes captions + posts automatically.
+                </div>
+              </div>
+
+              {([
+                ["Instagram handle", "instagram", "@yourpractice"],
+                ["Facebook Page URL", "facebook_page", "https://facebook.com/yourpractice"],
+                ["TikTok handle", "tiktok", "@yourpractice"],
+                ["Google Business Profile URL", "google_business", "https://g.page/yourpractice"],
+              ] as [string,string,string][]).map(([lbl, key, ph]) => (
+                <label key={key} style={{ ...label, marginBottom: 14 }}>
+                  {lbl} <span style={{color:"rgba(255,255,255,0.35)", fontWeight:400}}>(optional)</span>
+                  <input value={(social as Record<string,string>)[key]}
+                    onChange={e => setSocial(s => ({...s, [key]: e.target.value}))}
+                    placeholder={ph} style={{...inp, marginTop:4}} />
+                </label>
+              ))}
+
+              <label style={{ ...label, marginBottom: 14 }}>
+                Sunday photo request email
+                <span style={{display:"block", color:"rgba(255,255,255,0.4)", fontSize:12, fontWeight:400, marginBottom:4}}>
+                  Who should Clara email each Sunday asking for photos/videos to post that week?
+                </span>
+                <input value={social.photo_contact_email}
+                  onChange={e => setSocial(s => ({...s, photo_contact_email: e.target.value}))}
+                  placeholder="office@yourpractice.com" style={inp} />
+              </label>
+
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ ...label, marginBottom: 10 }}>Posting approval workflow</div>
+                <div style={{ display:"flex", gap:10 }}>
+                  {([
+                    ["review", "📋 Review first", "AI drafts → you approve in dashboard"],
+                    ["auto",   "⚡ Auto-post",    "AI drafts and posts automatically"],
+                  ] as [string,string,string][]).map(([val, title, desc]) => (
+                    <div key={val} onClick={() => setSocial(s => ({...s, posting_approval: val}))}
+                      style={{ flex:1, padding:"12px 14px", borderRadius:12, cursor:"pointer",
+                        border: social.posting_approval === val ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                        background: social.posting_approval === val ? "rgba(45,212,191,0.08)" : "rgba(255,255,255,0.03)" }}>
+                      <div style={{ color:"#fff", fontWeight:700, fontSize:13, marginBottom:4 }}>{title}</div>
+                      <div style={{ color:"rgba(255,255,255,0.45)", fontSize:12 }}>{desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <label style={label}>
+                Posting frequency
+                <select value={social.posting_frequency} onChange={e => setSocial(s => ({...s, posting_frequency: e.target.value}))}
+                  style={{...inp, marginTop:6}}>
+                  <option value="daily">Daily (7x/week)</option>
+                  <option value="4x">4x per week</option>
+                  <option value="3x">3x per week (recommended)</option>
+                  <option value="2x">2x per week</option>
+                  <option value="1x">Once per week</option>
+                </select>
+              </label>
+            </>
+          )}
+
+          {/* ── Step 6: Review ── */}
+          {step === 6 && (
             <>
               <h2 style={sh}>Review & Submit</h2>
               <p style={sub}>Everything looks good? We'll build your landing page and send you the link within 24 hours.</p>
@@ -431,6 +516,10 @@ export default function SetupPage() {
                 ["Testimonials", `${testimonials.filter(t => t.video_url).length} video(s)`],
                 ["Before/Afters", `${beforeAfters.filter(Boolean).length} photo(s)`],
                 ["Differentiators", `${selectedDiffs.length} selected`],
+                ["Instagram", social.instagram || "—"],
+                ["Facebook", social.facebook_page || "—"],
+                ["TikTok", social.tiktok || "—"],
+                ["Posting", `${social.posting_frequency}/week · ${social.posting_approval === "auto" ? "auto-post" : "review first"}`],
               ].map(([k, v]) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0",
                   borderBottom: "1px solid rgba(255,255,255,0.06)", fontSize: 14 }}>

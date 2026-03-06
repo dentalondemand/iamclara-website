@@ -45,12 +45,18 @@ export default function GetStarted() {
     website: "", admin_name: "", admin_email: "", plan: "core",
     voip_provider: "", rings_before_forward: "3",
     wants_calendar: "yes", wants_outbound: "no",
-    priority_cases: "both",   // implants / cosmetic / both
-    // Business / Legal (for A2P 10DLC + tax)
+    priority_cases: "both",
+    // Social media (Growth + Pro)
+    instagram: "", facebook_page: "", tiktok: "", google_business: "",
+    photo_contact_email: "",
+    posting_approval: "review",   // "auto" | "review"
+    posting_frequency: "3x",      // "daily" | "4x" | "3x" | "2x" | "1x"
+    // A2P Compliance (Pro only)
     business_legal_name: "", ein: "", business_type: "",
     street_address: "", city: "", state: "", zip: "",
-    // Growth
-    instagram: "", facebook_page: "", tiktok: "", google_business: "", ad_budget: "",
+    compliance_contact_name: "", compliance_contact_email: "",
+    // Ads (Pro only)
+    ad_budget: "",
   })
   const [hours, setHours] = useState<Record<string,string>>({
     Monday:"", Tuesday:"", Wednesday:"", Thursday:"", Friday:"", Saturday:"Closed", Sunday:"Closed",
@@ -60,12 +66,13 @@ export default function GetStarted() {
   const [alertPhones, setAlertPhones] = useState([""])
   const [notes, setNotes] = useState("")
 
-  const isGrowth = info.plan === "growth" || info.plan === "pro"
+  const isPro = info.plan === "pro"
+  const isGrowthOrPro = info.plan === "growth" || info.plan === "pro"
 
-  // Steps: 1 Practice Info | 2 Hours | 3 Services | 4 Alerts & Features
-  //        [5 Marketing — Growth only] | 5/6 Review
-  const stepLabels = isGrowth
-    ? ["Practice","Hours","Services","Alerts","Marketing","Review"]
+  const stepLabels = isPro
+    ? ["Practice","Hours","Services","Alerts","Social Media","Compliance","Review"]
+    : isGrowthOrPro
+    ? ["Practice","Hours","Services","Alerts","Social Media","Review"]
     : ["Practice","Hours","Services","Alerts","Review"]
   const totalSteps = stepLabels.length
 
@@ -81,6 +88,7 @@ export default function GetStarted() {
     4: !!(alertEmails[0]),
     5: true,
     6: true,
+    7: true,
   }
 
   async function submit() {
@@ -227,61 +235,6 @@ export default function GetStarted() {
                 {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz.replace(/_/g," ")}</option>)}
               </select>
             </label>
-
-            {/* Business / Legal */}
-            <div style={{ borderTop:"1px solid rgba(255,255,255,0.08)", marginTop:8, paddingTop:20, marginBottom:4 }}>
-              <h3 style={{ color:"#fff", fontSize:15, fontWeight:700, marginBottom:4, marginTop:0 }}>Business & Legal Info</h3>
-              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginBottom:14, marginTop:0 }}>
-                Required for SMS text messaging compliance (Twilio A2P) and tax purposes. Kept private.
-              </p>
-            </div>
-
-            <label style={labelStyle}>
-              Business legal name <span style={{color:"rgba(255,255,255,0.35)", fontWeight:400}}>(if different from practice name)</span>
-              <input value={info.business_legal_name}
-                onChange={e => setInfo({...info, business_legal_name: e.target.value})}
-                placeholder="Radiant Dental Care LLC" style={inputStyle} />
-            </label>
-
-            <label style={labelStyle}>
-              EIN / Tax ID <span style={{color:"#f87171", fontWeight:600}}>*</span>
-              <input value={info.ein}
-                onChange={e => setInfo({...info, ein: e.target.value})}
-                placeholder="XX-XXXXXXX" style={inputStyle} />
-            </label>
-
-            <label style={labelStyle}>
-              Business type <span style={{color:"#f87171", fontWeight:600}}>*</span>
-              <select value={info.business_type} onChange={e => setInfo({...info, business_type: e.target.value})} style={inputStyle}>
-                <option value="">Select…</option>
-                <option value="sole_proprietorship">Sole Proprietorship</option>
-                <option value="llc">LLC</option>
-                <option value="s_corp">S-Corp</option>
-                <option value="c_corp">C-Corp</option>
-                <option value="partnership">Partnership</option>
-                <option value="non_profit">Non-Profit</option>
-              </select>
-            </label>
-
-            <label style={labelStyle}>Street address
-              <input value={info.street_address}
-                onChange={e => setInfo({...info, street_address: e.target.value})}
-                placeholder="123 Main St, Suite 100" style={inputStyle} />
-            </label>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 80px 100px", gap:10 }}>
-              <label style={labelStyle}>City
-                <input value={info.city} onChange={e => setInfo({...info, city: e.target.value})}
-                  placeholder="Chevy Chase" style={inputStyle} />
-              </label>
-              <label style={labelStyle}>State
-                <input value={info.state} onChange={e => setInfo({...info, state: e.target.value})}
-                  placeholder="MD" maxLength={2} style={inputStyle} />
-              </label>
-              <label style={labelStyle}>ZIP
-                <input value={info.zip} onChange={e => setInfo({...info, zip: e.target.value})}
-                  placeholder="20815" style={inputStyle} />
-              </label>
-            </div>
 
             {/* Plan selector */}
             <label style={labelStyle}>
@@ -443,16 +396,15 @@ export default function GetStarted() {
           </>
         )}
 
-        {/* ── Step 5: Marketing (Growth only) ── */}
-        {step === 5 && isGrowth && (
+        {/* ── Step 5: Social Media (Growth + Pro) ── */}
+        {step === 5 && isGrowthOrPro && (
           <>
-            <h2 style={sh}>Marketing Setup</h2>
+            <h2 style={sh}>Social Media Setup</h2>
             <p style={subText}>
-              Clara will auto-post content and manage ads on these channels.
-              Connect whatever you have — nothing is required to get started.
+              Clara will generate captions and post content to your connected channels.
+              Add whatever you have — nothing is required to start.
             </p>
 
-            {/* Content submission email */}
             <div style={{ background:"rgba(45,212,191,0.08)", border:"1px solid rgba(45,212,191,0.2)",
                            borderRadius:12, padding:"14px 16px", marginBottom:20 }}>
               <div style={{ color:"#2DD4BF", fontWeight:700, fontSize:13, marginBottom:4 }}>📧 Your content submission email</div>
@@ -462,7 +414,7 @@ export default function GetStarted() {
                   : "yourpractice@submit.iamclara.ai"}
               </div>
               <div style={{ color:"rgba(255,255,255,0.5)", fontSize:12, lineHeight:1.5 }}>
-                Email photos to this address. Clara automatically writes captions and posts them to all your channels.
+                Email photos to this address and Clara automatically writes captions and posts them.
               </div>
             </div>
 
@@ -471,9 +423,9 @@ export default function GetStarted() {
               ["Facebook Page URL", "facebook_page", "https://facebook.com/yourpractice"],
               ["TikTok handle", "tiktok", "@yourpractice"],
               ["Google Business Profile URL", "google_business", "https://g.page/yourpractice"],
-            ] as [string,string,string][]).map(([label, key, ph]) => (
+            ] as [string,string,string][]).map(([lbl, key, ph]) => (
               <label key={key} style={labelStyle}>
-                {label} <span style={{color:"rgba(255,255,255,0.35)", fontWeight:400}}>(optional)</span>
+                {lbl} <span style={{color:"rgba(255,255,255,0.35)", fontWeight:400}}>(optional)</span>
                 <input value={(info as Record<string,string>)[key]}
                   onChange={e => setInfo({...info, [key]: e.target.value})}
                   placeholder={ph} style={inputStyle} />
@@ -481,12 +433,143 @@ export default function GetStarted() {
             ))}
 
             <label style={labelStyle}>
-              Monthly Facebook & Google ad budget
-              <select value={info.ad_budget} onChange={e => setInfo({...info, ad_budget: e.target.value})} style={inputStyle}>
-                <option value="">Select a range…</option>
-                {AD_BUDGETS.map(b => <option key={b} value={b}>{b}</option>)}
+              Who should receive the Sunday photo request?
+              <span style={{color:"rgba(255,255,255,0.4)", fontWeight:400, fontSize:12, display:"block", marginTop:2}}>
+                Every Sunday, Clara emails this person asking for photos/videos to post that week.
+              </span>
+              <input value={info.photo_contact_email}
+                onChange={e => setInfo({...info, photo_contact_email: e.target.value})}
+                placeholder="office@yourpractice.com" style={{...inputStyle, marginTop:6}} />
+            </label>
+
+            <div style={{ marginBottom:16 }}>
+              <div style={{ color:"rgba(255,255,255,0.7)", fontSize:13, fontWeight:500, marginBottom:8 }}>
+                Posting approval workflow
+              </div>
+              <div style={{ display:"flex", gap:10 }}>
+                {([
+                  ["review", "📋 Review first", "AI drafts captions → you approve in dashboard → Clara posts"],
+                  ["auto",   "⚡ Auto-post",    "AI drafts and posts automatically — no approval needed"],
+                ] as [string,string,string][]).map(([val, title, desc]) => (
+                  <div key={val} onClick={() => setInfo({...info, posting_approval: val})}
+                    style={{ flex:1, padding:"12px 14px", borderRadius:12, cursor:"pointer",
+                      border: info.posting_approval === val ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                      background: info.posting_approval === val ? "rgba(45,212,191,0.08)" : "rgba(255,255,255,0.03)" }}>
+                    <div style={{ color:"#fff", fontWeight:700, fontSize:13, marginBottom:4 }}>{title}</div>
+                    <div style={{ color:"rgba(255,255,255,0.45)", fontSize:12, lineHeight:1.4 }}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <label style={labelStyle}>
+              How often do you want to post?
+              <select value={info.posting_frequency} onChange={e => setInfo({...info, posting_frequency: e.target.value})} style={{...inputStyle, marginTop:4}}>
+                <option value="daily">Daily (7x/week)</option>
+                <option value="4x">4x per week</option>
+                <option value="3x">3x per week (recommended)</option>
+                <option value="2x">2x per week</option>
+                <option value="1x">Once per week</option>
               </select>
             </label>
+
+            {isPro && (
+              <label style={labelStyle}>
+                Monthly Facebook & Google ad budget
+                <select value={info.ad_budget} onChange={e => setInfo({...info, ad_budget: e.target.value})} style={{...inputStyle, marginTop:4}}>
+                  <option value="">Select a range…</option>
+                  {AD_BUDGETS.map(b => <option key={b} value={b}>{b}</option>)}
+                </select>
+              </label>
+            )}
+          </>
+        )}
+
+        {/* ── Step 6: Compliance (Pro only) ── */}
+        {step === 6 && isPro && (
+          <>
+            <h2 style={sh}>Texting Compliance (A2P)</h2>
+            <p style={subText}>
+              Required for SMS lead nurturing. Twilio needs this to register your brand so texts actually deliver.
+              All info is kept private and used only for carrier registration.
+            </p>
+
+            <label style={labelStyle}>
+              Legal business name <span style={{color:"rgba(255,255,255,0.35)", fontWeight:400}}>(as it appears on your EIN)</span>
+              <input value={info.business_legal_name}
+                onChange={e => setInfo({...info, business_legal_name: e.target.value})}
+                placeholder="Radiant Dental Care LLC" style={inputStyle} />
+            </label>
+
+            <label style={labelStyle}>
+              EIN / Tax ID <span style={{color:"#f87171", fontWeight:600}}>*</span>
+              <input value={info.ein}
+                onChange={e => setInfo({...info, ein: e.target.value})}
+                placeholder="XX-XXXXXXX" style={inputStyle} />
+            </label>
+
+            <label style={labelStyle}>
+              Business type <span style={{color:"#f87171", fontWeight:600}}>*</span>
+              <select value={info.business_type} onChange={e => setInfo({...info, business_type: e.target.value})} style={inputStyle}>
+                <option value="">Select…</option>
+                <option value="sole_proprietorship">Sole Proprietorship</option>
+                <option value="llc">LLC</option>
+                <option value="s_corp">S-Corp / PC</option>
+                <option value="c_corp">C-Corp</option>
+                <option value="partnership">Partnership</option>
+                <option value="non_profit">Non-Profit</option>
+              </select>
+            </label>
+
+            <label style={labelStyle}>Street address
+              <input value={info.street_address}
+                onChange={e => setInfo({...info, street_address: e.target.value})}
+                placeholder="123 Main St, Suite 100" style={inputStyle} />
+            </label>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 80px 100px", gap:10 }}>
+              <label style={labelStyle}>City
+                <input value={info.city} onChange={e => setInfo({...info, city: e.target.value})}
+                  placeholder="Chevy Chase" style={inputStyle} />
+              </label>
+              <label style={labelStyle}>State
+                <input value={info.state} onChange={e => setInfo({...info, state: e.target.value})}
+                  placeholder="MD" maxLength={2} style={inputStyle} />
+              </label>
+              <label style={labelStyle}>ZIP
+                <input value={info.zip} onChange={e => setInfo({...info, zip: e.target.value})}
+                  placeholder="20815" style={inputStyle} />
+              </label>
+            </div>
+
+            <div style={{ borderTop:"1px solid rgba(255,255,255,0.08)", marginTop:16, paddingTop:16 }}>
+              <div style={{ color:"rgba(255,255,255,0.7)", fontSize:13, fontWeight:600, marginBottom:4 }}>
+                Authorized contact
+              </div>
+              <p style={{ color:"rgba(255,255,255,0.4)", fontSize:12, marginTop:0, marginBottom:10 }}>
+                Person legally authorized to register on behalf of the business.
+              </p>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                <label style={labelStyle}>Full name
+                  <input value={info.compliance_contact_name}
+                    onChange={e => setInfo({...info, compliance_contact_name: e.target.value})}
+                    placeholder="Dr. Jay Siddiqui" style={inputStyle} />
+                </label>
+                <label style={labelStyle}>Email
+                  <input value={info.compliance_contact_email}
+                    onChange={e => setInfo({...info, compliance_contact_email: e.target.value})}
+                    placeholder="jay@yourpractice.com" style={inputStyle} />
+                </label>
+              </div>
+            </div>
+
+            <div style={{ background:"rgba(251,191,36,0.08)", border:"1px solid rgba(251,191,36,0.2)",
+                           borderRadius:10, padding:"12px 14px", marginTop:16 }}>
+              <div style={{ color:"#fbbf24", fontWeight:700, fontSize:13, marginBottom:4 }}>⏱ Timeline note</div>
+              <div style={{ color:"rgba(255,255,255,0.55)", fontSize:13, lineHeight:1.6 }}>
+                SMS brand registration takes 1–7 business days with Twilio. Clara will begin outbound calling immediately;
+                texting activates once registration is approved.
+              </div>
+            </div>
           </>
         )}
 
@@ -513,9 +596,20 @@ export default function GetStarted() {
               ["Google Calendar booking", info.wants_calendar === "yes" ? "Yes" : "No"],
               ["Priority cases", info.priority_cases === "implants" ? "Implants" : info.priority_cases === "cosmetic" ? "Cosmetics" : "Both"],
               ["VoIP", info.voip_provider || "Not specified"],
-              ...(isGrowth ? [
+              ...(isGrowthOrPro ? [
                 ["Instagram", info.instagram || "—"],
                 ["Facebook", info.facebook_page || "—"],
+                ["TikTok", info.tiktok || "—"],
+                ["Photo contact", info.photo_contact_email || info.admin_email],
+                ["Posting approval", info.posting_approval === "auto" ? "Auto-post" : "Review in dashboard"],
+                ["Posting frequency", info.posting_frequency + "/week"],
+              ] : []),
+              ...(isPro ? [
+                ["Legal name", info.business_legal_name || "—"],
+                ["EIN", info.ein || "—"],
+                ["Business type", info.business_type.replace(/_/g," ") || "—"],
+                ["Business address", [info.street_address, info.city, info.state, info.zip].filter(Boolean).join(", ") || "—"],
+                ["Compliance contact", info.compliance_contact_name || "—"],
                 ["Ad budget", info.ad_budget || "—"],
               ] : []),
             ] as [string,string][]).map(([k,v]) => (
