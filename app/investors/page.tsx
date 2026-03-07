@@ -186,7 +186,7 @@ export default function InvestorsPage() {
               },
               {
                 tier: "Growth",
-                price: "$799–999/mo",
+                price: "$999/mo",
                 color: "border-teal-500/50",
                 accent: "text-teal-400",
                 features: ["Everything in Core", "Outbound lead calling", "Facebook & Google ad leads", "Landing page system", "Social media automation"],
