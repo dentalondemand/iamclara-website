@@ -7,7 +7,7 @@ function Nav() {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-md bg-navy-800/80">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold tracking-tight text-white">Clara<span className="text-teal-400">.</span></span>
+          <span className="text-2xl font-bold tracking-tight text-white">Clara <span className="text-teal-400">AI</span></span>
         </Link>
         <Link href="/get-started"
           className="bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors">
@@ -310,7 +310,7 @@ export default function InvestorsPage() {
 
       {/* ── Footer ── */}
       <footer className="py-8 px-6 border-t border-white/10 text-center text-white/30 text-sm">
-        <span className="font-semibold text-white/50">Clara.</span> © {new Date().getFullYear()} · All rights reserved ·{" "}
+        <span className="font-semibold text-white/50">Clara AI</span> © {new Date().getFullYear()} · All rights reserved ·{" "}
         <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy</Link>
       </footer>
     </div>

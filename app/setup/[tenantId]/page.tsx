@@ -176,7 +176,7 @@ export default function SetupPage() {
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <a href="/" style={{ textDecoration: "none" }}>
-            <span style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>Clara<span style={{ color: "#2DD4BF" }}>.</span></span>
+            <span style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>Clara <span style={{ color: "#2DD4BF" }}>AI</span></span>
           </a>
           <h1 style={{ color: "#fff", fontSize: 24, fontWeight: 700, marginTop: 16, marginBottom: 4 }}>Build Your Landing Page</h1>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14 }}>Takes about 10 minutes. This powers your Clara ads funnel.</p>
