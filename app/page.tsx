@@ -300,8 +300,6 @@ function Pricing() {
                 'Spam & robocall filtering',
                 'Call intelligence analytics',
                 'Staff notes + activity log',
-                'Lab case + follow-up tracker',
-                'Patient review request tool',
                 'Google Calendar integration',
                 'iOS + Android mobile app',
                 'Unlimited calls',
@@ -344,6 +342,8 @@ function Pricing() {
             <ul className="space-y-3 mb-8 flex-1">
               {[
                 'Everything in Core',
+                'Lab case + follow-up tracker',
+                'Patient review request tool',
                 'Photo upload → AI caption → auto-post',
                 'Instagram + Facebook posting',
                 'Real-person caption voice (no AI slop)',
