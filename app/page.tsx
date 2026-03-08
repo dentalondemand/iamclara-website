@@ -373,7 +373,7 @@ function Pricing() {
                 <p className="text-teal-400 font-bold text-sm">Save ~$800/mo</p>
                 <p className="text-white/40 text-xs mt-0.5">vs. a social media manager ($800–1,500/mo)</p>
               </div>
-              <a href="https://buy.stripe.com/7sY00l9W12tmeEp2vmaEE02"
+              <a href="https://buy.stripe.com/bJe8wRechgkc2VH6LCaEE05"
                 className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
                 Claim Founding Rate — $399/mo
               </a>
@@ -427,7 +427,7 @@ function Pricing() {
                 <p className="text-amber-400 font-bold text-sm">Save $6,000–$11,000/mo</p>
                 <p className="text-white/40 text-xs mt-0.5">vs. agency + social media + answering service — you keep your ad budget</p>
               </div>
-              <a href="https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03"
+              <a href="https://buy.stripe.com/fZuaEZ1pvfg83ZLc5WaEE00"
                 className="block text-center bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-full transition-colors">
                 Claim Founding Rate — $799/mo
               </a>
