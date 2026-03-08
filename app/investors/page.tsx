@@ -56,7 +56,7 @@ const COMPARISON = [
   {
     category: "Lead Gen / Marketing Agency",
     traditional: "$2,000–$5,000/mo",
-    traditionalNote: "Plus ad spend management fees. Slow follow-up. No guarantees.",
+    traditionalNote: "Charges 10–20% of your ad budget on top. Slow follow-up. No guarantees.",
     claraCore: "✓ Included",
     claraTier: "Pro ($999/mo)",
     savings: "Save ~$2,000+/mo",

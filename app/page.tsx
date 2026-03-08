@@ -425,7 +425,7 @@ function Pricing() {
             <div className="mt-auto">
               <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl px-4 py-3 mb-4 text-center">
                 <p className="text-amber-400 font-bold text-sm">Save $6,000–$11,000/mo</p>
-                <p className="text-white/40 text-xs mt-0.5">vs. answering service + social media + lead gen agency combined</p>
+                <p className="text-white/40 text-xs mt-0.5">vs. agency + social media + answering service — you keep your ad budget</p>
               </div>
               <a href="https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03"
                 className="block text-center bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-full transition-colors">
@@ -469,7 +469,7 @@ function Pricing() {
                   },
                   {
                     what: "Lead gen / marketing agency",
-                    note: "Plus ad spend fees. Slow follow-up. No guarantees.",
+                    note: "Charges 10–20% of your ad budget on top. Slow follow-up. No guarantees.",
                     cost: "$2,000–$5,000/mo",
                     with: "Pro — $799/mo ✦",
                     save: "~$2,000+/mo",
