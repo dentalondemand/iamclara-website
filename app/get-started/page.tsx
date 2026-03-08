@@ -146,10 +146,10 @@ export default function GetStarted() {
             <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, marginBottom:16 }}>
               Want to get started sooner? Complete payment now and we'll prioritize your setup.
             </p>
-            <a href={stripeLink} target="_blank" rel="noopener noreferrer"
+            <a href={`/get-started?plan=${info.plan}`}
               style={{ display:"block", background:"#14B8A6", color:"#fff", padding:"14px 28px",
                        borderRadius:50, fontWeight:700, textDecoration:"none", fontSize:16, marginBottom:16 }}>
-              Complete Payment →
+              Continue to Payment →
             </a>
           </>
         )}
