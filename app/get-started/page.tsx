@@ -34,6 +34,10 @@ export default function GetStarted() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search)
       setIsPartner(params.get("partner") === "true" || params.get("free") === "true")
+      const planParam = params.get("plan")
+      if (planParam && ["core", "growth", "pro", "founders"].includes(planParam)) {
+        setInfo(prev => ({ ...prev, plan: planParam }))
+      }
     }
   }, [])
   const [submitting, setSubmitting] = useState(false)
