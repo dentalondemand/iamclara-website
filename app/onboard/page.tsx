@@ -63,14 +63,36 @@ export default function OnboardPage() {
   const [provTenantId, setProvTenantId] = useState<string | null>(null)
   const [error, setError] = useState("")
 
-  // Pre-fill email from URL params (Stripe success URL passes it)
+  const [verified, setVerified] = useState<"checking" | "ok" | "fail">("checking")
+  const [plan, setPlan] = useState<string>("core")
+
+  // Verify Stripe session_id before showing anything
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
+    const sessionId = params.get("session_id") || ""
     const e = params.get("email") || ""
-    if (e) {
-      setEmail(e)
-      setForm(f => ({ ...f, admin_email: e }))
+
+    if (!sessionId) {
+      setVerified("fail")
+      return
     }
+
+    fetch(`${BACKEND}/public/verify-stripe-session?session_id=${encodeURIComponent(sessionId)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          setVerified("ok")
+          setPlan(data.plan || "core")
+          const resolvedEmail = data.email || e
+          if (resolvedEmail) {
+            setEmail(resolvedEmail)
+            setForm(f => ({ ...f, admin_email: resolvedEmail }))
+          }
+        } else {
+          setVerified("fail")
+        }
+      })
+      .catch(() => setVerified("fail"))
   }, [])
 
   // Poll provisioning status when on provisioning step
@@ -140,7 +162,29 @@ export default function OnboardPage() {
       <Nav />
       <div className="max-w-2xl mx-auto px-6 pt-32 pb-20">
 
-        {step !== "welcome" && step !== "provisioning" && step !== "done" && step !== "submitting" && (
+          {/* ── Not verified ── */}
+        {verified === "checking" && (
+          <div className="text-center py-24">
+            <div className="text-4xl mb-4 animate-spin inline-block">⚙️</div>
+            <p className="text-white/50">Verifying your payment…</p>
+          </div>
+        )}
+
+        {verified === "fail" && (
+          <div className="text-center py-24">
+            <div className="text-5xl mb-6">🔒</div>
+            <h2 className="text-2xl font-bold mb-4">Payment required</h2>
+            <p className="text-white/50 mb-8">This page is only accessible after completing a Clara AI subscription.</p>
+            <a href="/#pricing"
+              className="inline-block bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-3.5 rounded-full transition-colors">
+              View Plans →
+            </a>
+          </div>
+        )}
+
+        {verified === "ok" && (<>
+
+      {step !== "welcome" && step !== "provisioning" && step !== "done" && step !== "submitting" && (
           <ProgressBar step={stepNum - 1} total={4} />
         )}
 
@@ -384,7 +428,9 @@ export default function OnboardPage() {
           </div>
         )}
 
+        </>)}
       </div>
     </div>
   )
 }
+
