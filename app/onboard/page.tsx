@@ -61,6 +61,7 @@ export default function OnboardPage() {
   const [alertEmailInput, setAlertEmailInput] = useState("")
   const [provStatus, setProvStatus] = useState<string>("waiting")
   const [provTenantId, setProvTenantId] = useState<string | null>(null)
+  const [provTimedOut, setProvTimedOut] = useState(false)
   const [error, setError] = useState("")
 
   const [verified, setVerified] = useState<"checking" | "ok" | "fail">("checking")
@@ -101,6 +102,9 @@ export default function OnboardPage() {
     const checkEmail = form.admin_email || email
     if (!checkEmail) return
 
+    // Safety net: if not provisioned after 3 min, show contact screen
+    const timeout = setTimeout(() => setProvTimedOut(true), 3 * 60 * 1000)
+
     const interval = setInterval(async () => {
       try {
         const res = await fetch(`${BACKEND}/public/onboard-status?email=${encodeURIComponent(checkEmail)}`)
@@ -110,10 +114,13 @@ export default function OnboardPage() {
           setProvTenantId(data.tenant_id)
           setStep("done")
           clearInterval(interval)
+        } else if (data.status === "error") {
+          // Keep polling — transient DB issue
+          console.warn("onboard-status error, retrying...")
         }
       } catch {}
     }, 3000)
-    return () => clearInterval(interval)
+    return () => { clearInterval(interval); clearTimeout(timeout) }
   }, [step, form.admin_email, email])
 
   function toggleService(svc: string) {
@@ -379,7 +386,18 @@ export default function OnboardPage() {
         )}
 
         {/* ── Provisioning (polling) ── */}
-        {step === "provisioning" && (
+        {step === "provisioning" && provTimedOut && (
+          <div className="text-center py-12">
+            <div className="text-5xl mb-6">⏳</div>
+            <h2 className="text-2xl font-bold mb-4">Taking longer than usual…</h2>
+            <p className="text-white/50 mb-8">Your account is still being set up. We'll email you at <strong className="text-white">{form.admin_email}</strong> as soon as it's ready — usually within a few minutes.</p>
+            <a href="mailto:support@iamclara.ai" className="inline-block bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-3.5 rounded-full transition-colors">
+              Contact Support
+            </a>
+          </div>
+        )}
+
+        {step === "provisioning" && !provTimedOut && (
           <div className="text-center py-12">
             <div className="text-6xl mb-6">🏗️</div>
             <h2 className="text-2xl font-bold mb-4">Clara AI is spinning up for {form.practice_name}…</h2>
@@ -405,6 +423,7 @@ export default function OnboardPage() {
             <p className="text-white/30 text-sm">Usually ready in under 60 seconds…</p>
           </div>
         )}
+
 
         {/* ── Done ── */}
         {step === "done" && (
