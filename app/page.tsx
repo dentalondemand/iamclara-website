@@ -311,11 +311,18 @@ function Pricing() {
               ))}
             </ul>
 
-            <a href="/get-started"
-              className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
-              Get Started
-            </a>
-            <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
+            {/* Savings + CTA */}
+            <div className="mt-auto">
+              <div className="bg-teal-500/10 border border-teal-500/20 rounded-2xl px-4 py-3 mb-4 text-center">
+                <p className="text-teal-400 font-bold text-sm">Save ~$400/mo</p>
+                <p className="text-white/40 text-xs mt-0.5">vs. a traditional answering service ($500–700/mo)</p>
+              </div>
+              <a href="https://buy.stripe.com/14AfZj4BH7NGeEp4DuaEE01"
+                className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
+                Get Started — $199/mo
+              </a>
+              <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
+            </div>
           </div>
 
           {/* Growth Plan */}
@@ -360,11 +367,18 @@ function Pricing() {
               ))}
             </ul>
 
-            <a href="/get-started"
-              className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
-              Claim Founding Rate
-            </a>
-            <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
+            {/* Savings + CTA */}
+            <div className="mt-auto">
+              <div className="bg-teal-500/10 border border-teal-500/20 rounded-2xl px-4 py-3 mb-4 text-center">
+                <p className="text-teal-400 font-bold text-sm">Save ~$800/mo</p>
+                <p className="text-white/40 text-xs mt-0.5">vs. a social media manager ($800–1,500/mo)</p>
+              </div>
+              <a href="https://buy.stripe.com/7sY00l9W12tmeEp2vmaEE02"
+                className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
+                Claim Founding Rate — $399/mo
+              </a>
+              <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
+            </div>
           </div>
 
           {/* Pro Plan */}
@@ -407,11 +421,18 @@ function Pricing() {
               ))}
             </ul>
 
-            <a href="/get-started"
-              className="block text-center bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-full transition-colors">
-              Claim Founding Rate
-            </a>
-            <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
+            {/* Savings + CTA */}
+            <div className="mt-auto">
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl px-4 py-3 mb-4 text-center">
+                <p className="text-amber-400 font-bold text-sm">Save $6,000–$11,000/mo</p>
+                <p className="text-white/40 text-xs mt-0.5">vs. answering service + social media + lead gen agency combined</p>
+              </div>
+              <a href="https://buy.stripe.com/9B66oJ5FL4Bu53P8TKaEE03"
+                className="block text-center bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-full transition-colors">
+                Claim Founding Rate — $799/mo
+              </a>
+              <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
+            </div>
           </div>
         </div>
 
