@@ -415,20 +415,80 @@ function Pricing() {
           </div>
         </div>
 
-        {/* Savings callout */}
-        <div className="mt-12 text-center space-y-2">
-          <p className="text-white/40 text-sm">
-            💡 Core: Traditional dental answering services cost <span className="text-white/70 font-semibold">$500–$700/month</span> and miss half your calls.
-            Clara Core is <span className="text-teal-400 font-semibold">$199/month</span> and never misses one.
+        {/* ── Savings comparison table ── */}
+        <div className="mt-16">
+          <p className="text-center text-white/50 text-sm uppercase tracking-widest font-semibold mb-6">
+            What practices pay today vs. Clara AI
           </p>
-          <p className="text-white/40 text-sm">
-            📸 Growth: A dental social media manager costs <span className="text-white/70 font-semibold">$800–$1,500/month</span>.
-            Clara Growth does it for <span className="text-teal-400 font-semibold">$399/month</span> (founding rate) — and it's faster.
-          </p>
-          <p className="text-white/40 text-sm">
-            🚀 Pro: A lead generation agency charges <span className="text-white/70 font-semibold">$2,000–$5,000/month</span> plus ad spend management fees.
-            Clara Pro is <span className="text-teal-400 font-semibold">$799/month</span>, flat — bring your own ads.
-          </p>
+          <div className="overflow-x-auto rounded-2xl border border-white/10">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/[0.04]">
+                  <th className="text-left px-5 py-4 text-white/50 font-semibold">What you're paying for</th>
+                  <th className="text-center px-4 py-4 text-white/50 font-semibold">Typical cost</th>
+                  <th className="text-center px-4 py-4 text-teal-400 font-semibold">With Clara AI</th>
+                  <th className="text-center px-4 py-4 text-white/50 font-semibold">You save</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    what: "After-hours answering service",
+                    note: "Misses 40–60% of calls. No intake. No follow-up.",
+                    cost: "$500–$700/mo",
+                    with: "Core — $199/mo",
+                    save: "~$400/mo",
+                  },
+                  {
+                    what: "Social media manager",
+                    note: "1–2 posts/week. Slow turnaround. No clinical voice.",
+                    cost: "$800–$1,500/mo",
+                    with: "Growth — $399/mo ✦",
+                    save: "~$800/mo",
+                  },
+                  {
+                    what: "Lead gen / marketing agency",
+                    note: "Plus ad spend fees. Slow follow-up. No guarantees.",
+                    cost: "$2,000–$5,000/mo",
+                    with: "Pro — $799/mo ✦",
+                    save: "~$2,000+/mo",
+                  },
+                  {
+                    what: "Front desk receptionist",
+                    note: "$45–60K/year + benefits. Can't work 24/7.",
+                    cost: "$3,750–$5,000/mo",
+                    with: "Partially replaced",
+                    save: "~$3,500/mo",
+                  },
+                ].map((row, i) => (
+                  <tr key={row.what} className={`border-b border-white/[0.06] ${i % 2 === 0 ? "" : "bg-white/[0.02]"}`}>
+                    <td className="px-5 py-4">
+                      <div className="font-medium text-white">{row.what}</div>
+                      <div className="text-white/30 text-xs mt-0.5">{row.note}</div>
+                    </td>
+                    <td className="px-4 py-4 text-center text-white/50 font-medium">{row.cost}</td>
+                    <td className="px-4 py-4 text-center text-teal-400 font-semibold text-xs leading-snug">{row.with}</td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="bg-teal-500/15 text-teal-400 font-semibold text-xs px-3 py-1.5 rounded-full whitespace-nowrap">
+                        {row.save}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                <tr className="bg-teal-500/[0.06] border-t-2 border-teal-500/30">
+                  <td className="px-5 py-4 font-bold text-white">All 4 combined</td>
+                  <td className="px-4 py-4 text-center font-bold text-white">$7,050–$12,200/mo</td>
+                  <td className="px-4 py-4 text-center font-bold text-teal-400">Pro — $799/mo ✦</td>
+                  <td className="px-4 py-4 text-center">
+                    <span className="bg-teal-500/20 text-teal-300 font-bold text-sm px-3 py-1.5 rounded-full whitespace-nowrap">
+                      Save $6K–$11K/mo
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-center text-white/25 text-xs mt-4">✦ Founding rate — locked for life while spots remain</p>
         </div>
       </div>
     </section>
