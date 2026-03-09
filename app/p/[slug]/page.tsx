@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
 
@@ -150,9 +150,11 @@ const FAQS_COSMETIC = [
 export default function LandingPage() {
   const params = useParams();
   const slug = params?.slug as string || "";
+  const router = useRouter();
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [marketingDiffs, setMarketingDiffs] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -162,6 +164,26 @@ export default function LandingPage() {
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  // Fetch practice-level marketing config (BUILD 2 & 4)
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`${BACKEND}/marketing/config/public?tenant_id=${encodeURIComponent(slug)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (!d) return;
+        // BUILD 4: if exactly one procedure configured, redirect to procedure page
+        if (Array.isArray(d.procedures) && d.procedures.length === 1 && d.procedures[0]?.slug) {
+          router.replace(`/p/${slug}/${d.procedures[0].slug}`);
+          return;
+        }
+        // BUILD 2: store practice differentiators for display
+        if (d.practice_differentiators) {
+          setMarketingDiffs(d.practice_differentiators);
+        }
+      })
+      .catch(() => { /* silent — backend endpoint may not be live yet */ });
+  }, [slug, router]);
 
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#0a1628", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -310,6 +332,20 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── PRACTICE DIFFERENTIATORS (from marketing config) ── */}
+      {marketingDiffs && (
+        <section style={{ padding: "48px 20px", background: "#f8fafc", borderBottom: "1px solid #e5e7eb" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+            <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 16 }}>
+              WHY {c.practice_name?.toUpperCase()}
+            </div>
+            <p style={{ color: "#374151", fontSize: 17, lineHeight: 1.8, margin: "0 auto", maxWidth: 680 }}>
+              {marketingDiffs}
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* ── OFFER BANNER ── */}
       {c.cta_offer && (

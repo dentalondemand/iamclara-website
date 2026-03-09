@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 
 const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
@@ -36,6 +36,42 @@ const PACKAGE_INCLUSIONS = [
   "Free consultation", "Abutments included",
 ];
 
+const TECH_OPTIONS = [
+  { id: "cbct",             label: "3D CBCT Imaging" },
+  { id: "xnav",             label: "xNav Guided Implants" },
+  { id: "3d_printing",      label: "In-House 3D Printing" },
+  { id: "same_day_crowns",  label: "Same-Day Crowns" },
+  { id: "intraoral_scanner",label: "Digital Intraoral Scanner" },
+  { id: "exocad",           label: "Exocad Digital Design" },
+  { id: "same_day_implants",label: "Same-Day Implants" },
+];
+
+const PROCEDURE_NAME_OPTIONS = [
+  "Full Arch Implants",
+  "Single Implants",
+  "Veneers",
+  "Invisalign",
+  "Smile Makeover",
+  "Other",
+];
+
+function slugify(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+interface ProcedureEntry {
+  id: string;
+  name: string;
+  customName: string;
+  starting_price: string;
+  headline: string;
+  selling_points: string;
+  age_min: string;
+  age_max: string;
+  slug: string;
+  show_price: "ab_test" | "always" | "never";
+}
+
 const inp = {
   width: "100%", padding: "10px 14px", borderRadius: 10, fontSize: 15,
   border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)",
@@ -53,6 +89,14 @@ export default function SetupPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  // Detect plan from URL query params (e.g. /setup/tenant?plan=pro)
+  const [plan, setPlan] = useState<string>("pro");
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search).get("plan");
+    if (p) setPlan(p.toLowerCase());
+  }, []);
+  const isMarketingPlan = plan === "pro" || plan === "growth";
 
   // Step 1 — Procedures & Pricing
   const [pricing, setPricing] = useState({
@@ -91,6 +135,46 @@ export default function SetupPage() {
     posting_frequency: "3x",
   });
 
+  // Marketing Setup state (Pro / Growth plans only)
+  const [mktDiffs, setMktDiffs] = useState("");
+  const [mktFreeConsult, setMktFreeConsult] = useState(false);
+  const [mktFinancing, setMktFinancing] = useState(false);
+  const [mktFinancingDetails, setMktFinancingDetails] = useState("");
+  const [mktTech, setMktTech] = useState<string[]>([]);
+  const [procedures, setProcedures] = useState<ProcedureEntry[]>([]);
+
+  function toggleTech(id: string) {
+    setMktTech(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
+  }
+
+  function addProcedure() {
+    const id = `proc_${Date.now()}`;
+    setProcedures(p => [...p, {
+      id, name: "Full Arch Implants", customName: "", starting_price: "",
+      headline: "", selling_points: "", age_min: "30", age_max: "65",
+      slug: slugify("Full Arch Implants"), show_price: "ab_test",
+    }]);
+  }
+
+  function removeProcedure(id: string) {
+    setProcedures(p => p.filter(x => x.id !== id));
+  }
+
+  function updateProcedure(id: string, field: keyof ProcedureEntry, value: string) {
+    setProcedures(p => p.map(x => {
+      if (x.id !== id) return x;
+      const updated = { ...x, [field]: value };
+      // Auto-update slug when name or customName changes
+      if (field === "name" && value !== "Other") {
+        updated.slug = slugify(value);
+      }
+      if (field === "customName") {
+        updated.slug = slugify(value);
+      }
+      return updated;
+    }));
+  }
+
   // Step 4 — Differentiators, before/afters, stats, CTA
   const [selectedTheme, setSelectedTheme] = useState("teal");
   const [selectedDiffs, setSelectedDiffs] = useState<string[]>([]);
@@ -101,7 +185,10 @@ export default function SetupPage() {
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
   const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "" });
 
-  const TOTAL = 6;
+  const TOTAL = isMarketingPlan ? 7 : 6;
+  // Step numbers: 1-5 same, then for pro/growth: 6=Marketing, 7=Review; else: 6=Review
+  const REVIEW_STEP = TOTAL;
+  const MARKETING_STEP = isMarketingPlan ? 6 : null;
 
   function toggleDiff(d: string) {
     setSelectedDiffs(p => p.includes(d) ? p.filter(x => x !== d) : [...p, d]);
@@ -138,6 +225,28 @@ export default function SetupPage() {
       cta_offer_detail: cta.offer_detail,
       theme: selectedTheme,
       social,
+      ...(isMarketingPlan && {
+        marketing: {
+          practice_differentiators: mktDiffs,
+          free_consultation: mktFreeConsult,
+          financing_available: mktFinancing,
+          financing_details: mktFinancingDetails,
+          tech_highlights: mktTech,
+          procedures: procedures.map(p => ({
+            name: p.name === "Other" ? p.customName : p.name,
+            slug: p.slug,
+            starting_price: p.starting_price ? Number(p.starting_price) : undefined,
+            headline: p.headline,
+            selling_points: p.selling_points
+              .split("\n")
+              .map(s => s.trim())
+              .filter(Boolean),
+            target_age_min: p.age_min ? Number(p.age_min) : 30,
+            target_age_max: p.age_max ? Number(p.age_max) : 65,
+            show_price_in_ads: p.show_price,
+          })),
+        },
+      }),
     };
     try {
       const res = await fetch(`${BACKEND}/public/setup/${tenantId}/content`, {
@@ -501,8 +610,280 @@ export default function SetupPage() {
             </>
           )}
 
-          {/* ── Step 6: Review ── */}
-          {step === 6 && (
+          {/* ── Step 6: Marketing Setup (Pro / Growth only) ── */}
+          {isMarketingPlan && step === MARKETING_STEP && (
+            <>
+              <h2 style={sh}>Marketing Setup</h2>
+              <p style={sub}>
+                This powers your procedure-specific ad landing pages. The more detail you add, the better Clara can personalize your ads funnel.
+              </p>
+
+              {/* Practice differentiators */}
+              <label style={label}>
+                Practice differentiators{" "}
+                <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>
+                  (what makes your practice unique — shown on landing pages)
+                </span>
+                <textarea
+                  value={mktDiffs}
+                  onChange={e => setMktDiffs(e.target.value)}
+                  placeholder="e.g. We use guided navigation for every implant case, have an on-site 3D printer, and place temporary teeth the same day as surgery..."
+                  rows={3}
+                  style={{ ...inp, resize: "vertical" as const, lineHeight: 1.6, marginTop: 4 }}
+                />
+              </label>
+
+              {/* Free consult + Financing */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 20 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={mktFreeConsult}
+                    onChange={e => setMktFreeConsult(e.target.checked)}
+                    style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#2DD4BF" }}
+                  />
+                  <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, fontWeight: 600 }}>
+                    Free consultation offered
+                  </span>
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={mktFinancing}
+                    onChange={e => setMktFinancing(e.target.checked)}
+                    style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#2DD4BF" }}
+                  />
+                  <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, fontWeight: 600 }}>
+                    Financing available
+                  </span>
+                </label>
+                {mktFinancing && (
+                  <input
+                    value={mktFinancingDetails}
+                    onChange={e => setMktFinancingDetails(e.target.value)}
+                    placeholder="e.g. CareCredit, Cherry, in-house payment plans"
+                    style={{ ...inp, marginLeft: 28 }}
+                  />
+                )}
+              </div>
+
+              {/* Technology */}
+              <div style={{ marginTop: 24 }}>
+                <div style={{ ...label, marginBottom: 10 }}>Technology at your practice (check all that apply)</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {TECH_OPTIONS.map(t => (
+                    <div
+                      key={t.id}
+                      onClick={() => toggleTech(t.id)}
+                      style={{
+                        padding: "8px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 500,
+                        border: mktTech.includes(t.id) ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                        background: mktTech.includes(t.id) ? "rgba(45,212,191,0.12)" : "rgba(255,255,255,0.03)",
+                        color: mktTech.includes(t.id) ? "#2DD4BF" : "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {mktTech.includes(t.id) ? "✓ " : ""}{t.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Procedures to Market */}
+              <div style={{ marginTop: 32 }}>
+                <h3 style={{ color: "#fff", fontSize: 17, fontWeight: 700, margin: "0 0 6px" }}>
+                  Procedures to Market
+                </h3>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, margin: "0 0 16px", lineHeight: 1.5 }}>
+                  Each procedure gets its own landing page URL and can be targeted by specific ads.
+                </p>
+
+                {procedures.length === 0 && (
+                  <div style={{
+                    background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.12)",
+                    borderRadius: 12, padding: "24px 20px", textAlign: "center",
+                    color: "rgba(255,255,255,0.35)", fontSize: 14, marginBottom: 12,
+                  }}>
+                    No procedures added yet. Click below to add one.
+                  </div>
+                )}
+
+                {procedures.map((proc, idx) => (
+                  <div
+                    key={proc.id}
+                    style={{
+                      background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: 14, padding: 20, marginBottom: 14,
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                      <div style={{ color: "#2DD4BF", fontWeight: 700, fontSize: 13 }}>
+                        Procedure {idx + 1}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeProcedure(proc.id)}
+                        style={{
+                          background: "rgba(220,38,38,0.1)", border: "1px solid rgba(220,38,38,0.25)",
+                          color: "#f87171", borderRadius: 8, padding: "4px 12px",
+                          fontSize: 12, cursor: "pointer", fontWeight: 600,
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+
+                    {/* Procedure name */}
+                    <label style={label}>
+                      Procedure name
+                      <select
+                        value={proc.name}
+                        onChange={e => updateProcedure(proc.id, "name", e.target.value)}
+                        style={{ ...inp, marginTop: 4 }}
+                      >
+                        {PROCEDURE_NAME_OPTIONS.map(o => (
+                          <option key={o} value={o}>{o}</option>
+                        ))}
+                      </select>
+                    </label>
+                    {proc.name === "Other" && (
+                      <label style={{ ...label, marginTop: 10 }}>
+                        Custom procedure name
+                        <input
+                          value={proc.customName}
+                          onChange={e => updateProcedure(proc.id, "customName", e.target.value)}
+                          placeholder="e.g. Teeth-in-a-Day"
+                          style={{ ...inp, marginTop: 4 }}
+                        />
+                      </label>
+                    )}
+
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 12 }}>
+                      {/* Starting price */}
+                      <label style={label}>
+                        Starting price ($)
+                        <div style={{ position: "relative" }}>
+                          <span style={{
+                            position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)",
+                            color: "rgba(255,255,255,0.4)", fontSize: 15, pointerEvents: "none",
+                          }}>$</span>
+                          <input
+                            value={proc.starting_price}
+                            onChange={e => updateProcedure(proc.id, "starting_price", e.target.value)}
+                            placeholder="Leave blank to hide"
+                            type="number"
+                            min="0"
+                            style={{ ...inp, marginTop: 4, paddingLeft: 26 }}
+                          />
+                        </div>
+                      </label>
+
+                      {/* Landing page slug */}
+                      <label style={label}>
+                        Landing page URL slug
+                        <input
+                          value={proc.slug}
+                          onChange={e => updateProcedure(proc.id, "slug", e.target.value)}
+                          placeholder="full-arch-implants"
+                          style={{ ...inp, marginTop: 4 }}
+                        />
+                        <span style={{ color: "rgba(255,255,255,0.25)", fontSize: 11 }}>
+                          /p/your-practice/<strong style={{ color: "rgba(255,255,255,0.4)" }}>{proc.slug || "…"}</strong>
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Ad headline */}
+                    <label style={{ ...label, marginTop: 12 }}>
+                      Ad headline
+                      <input
+                        value={proc.headline}
+                        onChange={e => updateProcedure(proc.id, "headline", e.target.value)}
+                        placeholder='e.g. "Restore Your Smile in One Day"'
+                        style={{ ...inp, marginTop: 4 }}
+                      />
+                    </label>
+
+                    {/* Selling points */}
+                    <label style={{ ...label, marginTop: 12 }}>
+                      Selling points{" "}
+                      <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(one per line)</span>
+                      <textarea
+                        value={proc.selling_points}
+                        onChange={e => updateProcedure(proc.id, "selling_points", e.target.value)}
+                        placeholder={"Same-day temporary teeth\nGuided navigation — no guesswork\nFinancing available"}
+                        rows={3}
+                        style={{ ...inp, resize: "vertical" as const, lineHeight: 1.6, marginTop: 4 }}
+                      />
+                    </label>
+
+                    {/* Target age range */}
+                    <div style={{ marginTop: 12 }}>
+                      <div style={label}>Target age range</div>
+                      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                        <input
+                          value={proc.age_min}
+                          onChange={e => updateProcedure(proc.id, "age_min", e.target.value)}
+                          type="number" min="18" max="99"
+                          style={{ ...inp, width: 90 }}
+                        />
+                        <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>to</span>
+                        <input
+                          value={proc.age_max}
+                          onChange={e => updateProcedure(proc.id, "age_max", e.target.value)}
+                          type="number" min="18" max="99"
+                          style={{ ...inp, width: 90 }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Show price in ads */}
+                    <div style={{ marginTop: 16 }}>
+                      <div style={label}>Show price in ads</div>
+                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                        {([
+                          ["ab_test", "⚗️ A/B test it", "Recommended — let data decide"],
+                          ["always",  "✅ Always show",  "Attracts price-ready leads"],
+                          ["never",   "🚫 Never show",   "Focus on value first"],
+                        ] as [string, string, string][]).map(([val, title, desc]) => (
+                          <div
+                            key={val}
+                            onClick={() => updateProcedure(proc.id, "show_price", val)}
+                            style={{
+                              flex: "1 1 120px", padding: "10px 12px", borderRadius: 10, cursor: "pointer",
+                              border: proc.show_price === val
+                                ? "1px solid rgba(45,212,191,0.5)"
+                                : "1px solid rgba(255,255,255,0.08)",
+                              background: proc.show_price === val
+                                ? "rgba(45,212,191,0.08)"
+                                : "rgba(255,255,255,0.03)",
+                            }}
+                          >
+                            <div style={{ color: "#fff", fontWeight: 700, fontSize: 12, marginBottom: 2 }}>{title}</div>
+                            <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 11 }}>{desc}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={addProcedure}
+                  style={{
+                    width: "100%", padding: "12px", borderRadius: 12,
+                    border: "1px dashed rgba(45,212,191,0.35)", background: "rgba(45,212,191,0.05)",
+                    color: "#2DD4BF", fontSize: 14, fontWeight: 700, cursor: "pointer",
+                  }}
+                >
+                  + Add Procedure
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* ── Step 6 (non-marketing) or Step 7: Review ── */}
+          {step === REVIEW_STEP && (
             <>
               <h2 style={sh}>Review & Submit</h2>
               <p style={sub}>Everything looks good? We'll build your landing page and send you the link within 24 hours.</p>
@@ -520,6 +901,10 @@ export default function SetupPage() {
                 ["Facebook", social.facebook_page || "—"],
                 ["TikTok", social.tiktok || "—"],
                 ["Posting", `${social.posting_frequency}/week · ${social.posting_approval === "auto" ? "auto-post" : "review first"}`],
+                ...(isMarketingPlan ? [
+                  ["Marketing tech", mktTech.length > 0 ? `${mktTech.length} item(s)` : "—"],
+                  ["Procedures to market", procedures.length > 0 ? `${procedures.length} procedure(s)` : "—"],
+                ] : []),
               ].map(([k, v]) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0",
                   borderBottom: "1px solid rgba(255,255,255,0.06)", fontSize: 14 }}>
