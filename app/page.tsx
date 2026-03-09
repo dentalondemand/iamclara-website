@@ -406,13 +406,14 @@ function Pricing() {
               {[
                 'Everything in Growth',
                 'Managed Facebook & Instagram ad campaigns',
-                'AI-built targeting by area, age & service',
+                'A/B tests price vs. outcome copy automatically',
                 'Clara calls new leads within 60 seconds',
-                'Daily automated campaign optimization',
-                'Weekly performance reports & insights',
+                'Lead quality scoring on every single call',
+                'Smart optimizer: adjusts targeting weekly based on who actually books',
+                'Pauses bad adsets, scales winning ones — no agency meeting',
+                'Weekly plain-English report: what worked, what didn\'t, what changed',
                 'Up to $3K/mo ad spend included flat',
                 '8% management fee above $3K/mo spend',
-                'Two-way AI SMS nurture sequences',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
                   <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
@@ -631,6 +632,112 @@ function Footer() {
   )
 }
 
+function ProOptimizer() {
+  const steps = [
+    {
+      icon: '📋',
+      label: 'Lead submits form',
+      detail: 'Clara scores them instantly on credit, timeline, savings, and procedure fit',
+    },
+    {
+      icon: '📞',
+      label: 'Clara calls in 60 sec',
+      detail: 'Asks one smart qualifying question — "Is this something you\'re looking at soon?" — and records the answer',
+    },
+    {
+      icon: '🧠',
+      label: 'Pattern detected',
+      detail: 'Clara compares good leads vs. bad leads across every dimension: age, objections, timeline, which ad brought them',
+    },
+    {
+      icon: '⚙️',
+      label: 'Campaign adjusted',
+      detail: 'Clara acts automatically — pauses bad adsets, raises the age floor, shifts budget, or swaps copy. No agency meeting needed.',
+    },
+  ]
+
+  const adjustments = [
+    { signal: '"Too expensive" ×3', action: 'Pause price-shown variant → lead with financing instead' },
+    { signal: '"Not ready yet" ×3', action: 'Raise target age by 5 years — audience is too young to buy' },
+    { signal: '65%+ leads qualified', action: 'Increase daily budget 20% — scale what\'s working' },
+    { signal: 'One adset underperforming', action: 'Pause it, redistribute budget to the winning creative' },
+    { signal: 'New patient video added', action: 'A/B test new video vs. current winner automatically' },
+    { signal: 'Price vs. no-price unclear', action: 'Run both for 2 weeks, pick the winner by CPQ — not just CPL' },
+  ]
+
+  return (
+    <section className="py-24 px-6 bg-navy-900/80" id="pro-optimizer">
+      <div className="max-w-5xl mx-auto">
+
+        {/* Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-6">
+            <span className="text-amber-400 text-xs font-semibold uppercase tracking-widest">Pro Plan Only</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Clara's ads get smarter every week
+          </h2>
+          <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            Most agencies report <span className="text-white/70 line-through">cost per lead</span>. We optimize for the only number that matters: <span className="text-teal-400 font-semibold">cost per booked patient</span>.
+          </p>
+        </div>
+
+        {/* CPL vs CPQ callout */}
+        <div className="grid md:grid-cols-2 gap-4 mb-16">
+          <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
+            <div className="text-white/30 text-xs font-semibold uppercase tracking-widest mb-3">Typical agency</div>
+            <div className="text-2xl font-bold text-white/40 mb-2 line-through">60 leads at $45 CPL</div>
+            <p className="text-white/30 text-sm">Looks great on the monthly report. But 50 of them were tire-kickers who never answered the phone.</p>
+          </div>
+          <div className="bg-teal-500/[0.06] border border-teal-500/20 rounded-2xl p-6">
+            <div className="text-teal-400 text-xs font-semibold uppercase tracking-widest mb-3">Clara AI</div>
+            <div className="text-2xl font-bold text-white mb-2">12 leads at $210 CPQ</div>
+            <p className="text-white/50 text-sm">Every lead scored, called within 60 seconds, and qualified. Clara knows which 12 are worth your front desk's time.</p>
+          </div>
+        </div>
+
+        {/* Feedback loop */}
+        <div className="mb-16">
+          <h3 className="text-center text-white/60 text-sm uppercase tracking-widest font-semibold mb-8">The self-improving loop</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {steps.map((step, i) => (
+              <div key={i} className="relative">
+                <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-5 h-full">
+                  <div className="text-2xl mb-3">{step.icon}</div>
+                  <div className="text-white font-semibold text-sm mb-2">{step.label}</div>
+                  <div className="text-white/40 text-xs leading-relaxed">{step.detail}</div>
+                </div>
+                {i < steps.length - 1 && (
+                  <div className="hidden md:flex absolute top-1/2 -right-2 z-10 text-teal-400/40 text-lg">→</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Smart adjustments */}
+        <div>
+          <h3 className="text-center text-white/60 text-sm uppercase tracking-widest font-semibold mb-8">What Clara adjusts automatically</h3>
+          <div className="grid md:grid-cols-2 gap-3">
+            {adjustments.map((adj, i) => (
+              <div key={i} className="flex items-start gap-4 bg-white/[0.03] border border-white/[0.07] rounded-xl px-5 py-4">
+                <div className="flex-shrink-0 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs font-mono text-amber-400 whitespace-nowrap">
+                  {adj.signal}
+                </div>
+                <div className="text-white/60 text-sm leading-relaxed">→ {adj.action}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-white/25 text-xs mt-6">
+            Clara only acts when the signal is clear. When it's not, she tells you what she found and waits for your input.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  )
+}
+
 export default function Home() {
   return (
     <>
@@ -638,6 +745,7 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <Features />
+      <ProOptimizer />
       <Pricing />
       <FAQ />
       <CTA />
