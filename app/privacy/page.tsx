@@ -60,7 +60,7 @@ We do not sell personal information to third parties.`
 - **Google** — calendar integration, Google Sheets for lead data
 - **ElevenLabs** — AI voice synthesis
 - **Stripe** — payment processing
-- **Meta (Facebook/Instagram)** — social media posting and lead form integration (Growth plan)
+- **Meta (Facebook/Instagram)** — social media posting, lead form integration, and managed ad campaign creation and optimization (Growth and Pro plans)
 - **Gemini (Google AI)** — AI conversation, caption generation, image analysis
 
 These providers are contractually bound to protect your data and may not use it for their own purposes.`
@@ -103,7 +103,7 @@ For full SMS terms, see iamclara.ai/sms-terms.`
           },
           {
             title: "9. Facebook & Meta Data",
-            body: `Clara integrates with Meta's platforms (Facebook, Instagram) for social media posting and lead form data. Lead information received through Facebook Lead Ads is used solely to follow up with prospective patients on behalf of the Practice. We do not use Meta lead data for advertising or share it with other parties. We comply with Meta's Platform Terms and Data Policy.`
+            body: `Clara integrates with Meta's platforms (Facebook, Instagram) for social media posting, lead form data retrieval, and managed advertising (Pro plan). Lead information received through Facebook Lead Ads is used solely to follow up with prospective patients on behalf of the Practice. For Pro plan customers who connect their Facebook Ad Account, Clara creates and manages ad campaigns within their Business Ad Account using permissions explicitly granted via OAuth. We use ads_management and ads_read permissions solely to create, monitor, and optimize campaigns the Practice has authorized. We do not use Meta lead data for advertising or share it with other parties. Ad account access tokens are stored encrypted and deleted immediately upon disconnection. We comply with Meta's Platform Terms, Data Policy, and Advertising Policies.`
           },
           {
             title: "10. Security",
