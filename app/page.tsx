@@ -66,10 +66,16 @@ function Hero() {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/20 rounded-full px-4 py-1.5 mb-8">
-          <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse" />
-          <span className="text-teal-400 text-sm font-medium">AI-Powered Dental Receptionist</span>
+        {/* Badges */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+          <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/20 rounded-full px-4 py-1.5">
+            <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse" />
+            <span className="text-teal-400 text-sm font-medium">AI-Powered Dental Receptionist</span>
+          </div>
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
+            <span className="text-base">🦷</span>
+            <span className="text-white/60 text-sm font-medium">Built by dentists, for dentists</span>
+          </div>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
@@ -612,9 +618,12 @@ function Footer() {
   return (
     <footer className="border-t border-white/10 py-10 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-bold text-white">Clara <span className="text-teal-400">AI</span></span>
-          <span className="text-white/30 text-sm ml-2">AI Dental Receptionist</span>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold text-white">Clara <span className="text-teal-400">AI</span></span>
+            <span className="text-white/30 text-sm ml-2">AI Dental Receptionist</span>
+          </div>
+          <span className="text-white/25 text-xs">🦷 Built by dentists, for dentists</span>
         </div>
         <div className="flex items-center gap-6 text-sm text-white/40">
           <a href="#how-it-works" className="hover:text-white/70 transition-colors">How it works</a>
