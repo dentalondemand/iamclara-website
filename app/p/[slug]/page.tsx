@@ -18,12 +18,12 @@ function ytEmbed(url: string) {
   return m ? `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0&modestbranding=1` : "";
 }
 
-function LeadForm({ tenantId, offer, offerDetail, interestOptions, primary = "#0d9488", accent = "#2DD4BF" }: {
+function LeadForm({ tenantId, offer, offerDetail, interestOptions, focus, primary = "#0d9488", accent = "#2DD4BF" }: {
   tenantId: string; offer: string; offerDetail?: string; interestOptions: string[];
-  primary?: string; accent?: string;
+  focus?: string; primary?: string; accent?: string;
 }) {
   const P = primary; const A = accent;
-  const [form, setForm] = useState({ name: "", phone: "", interest: interestOptions[0] ?? "" });
+  const [form, setForm] = useState({ name: "", phone: "", interest: interestOptions[0] ?? "", credit_score: "", timeline: "", savings: "", procedure_detail: "" });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState("");
@@ -77,6 +77,45 @@ function LeadForm({ tenantId, offer, offerDetail, interestOptions, primary = "#0
             background: "rgba(20,30,45,0.95)", color: "#fff", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }}>
           {interestOptions.map(o => <option key={o} value={o}>{o}</option>)}
         </select>
+      )}
+      <select value={form.credit_score} onChange={e => setForm(p => ({ ...p, credit_score: e.target.value }))}
+        style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
+          background: "rgba(20,30,45,0.95)", color: form.credit_score ? "#fff" : "rgba(255,255,255,0.45)", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }}>
+        <option value="" style={{ color: "rgba(255,255,255,0.45)" }}>What is your credit score range?</option>
+        <option value="Excellent (750+)" style={{ color: "#fff" }}>Excellent (750+)</option>
+        <option value="Good (650–749)" style={{ color: "#fff" }}>Good (650–749)</option>
+        <option value="Fair (550–649)" style={{ color: "#fff" }}>Fair (550–649)</option>
+        <option value="Below 550" style={{ color: "#fff" }}>Below 550</option>
+        <option value="Not sure" style={{ color: "#fff" }}>Not sure</option>
+      </select>
+      <select value={form.timeline} onChange={e => setForm(p => ({ ...p, timeline: e.target.value }))}
+        style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
+          background: "rgba(20,30,45,0.95)", color: form.timeline ? "#fff" : "rgba(255,255,255,0.45)", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }}>
+        <option value="" style={{ color: "rgba(255,255,255,0.45)" }}>When are you looking to get started?</option>
+        <option value="As soon as possible" style={{ color: "#fff" }}>As soon as possible</option>
+        <option value="Within 1–3 months" style={{ color: "#fff" }}>Within 1–3 months</option>
+        <option value="Within 3–6 months" style={{ color: "#fff" }}>Within 3–6 months</option>
+        <option value="6+ months from now" style={{ color: "#fff" }}>6+ months from now</option>
+      </select>
+      <select value={form.savings} onChange={e => setForm(p => ({ ...p, savings: e.target.value }))}
+        style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
+          background: "rgba(20,30,45,0.95)", color: form.savings ? "#fff" : "rgba(255,255,255,0.45)", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }}>
+        <option value="" style={{ color: "rgba(255,255,255,0.45)" }}>Do you have savings set aside?</option>
+        <option value="Yes, I have funds ready" style={{ color: "#fff" }}>Yes, I have funds ready</option>
+        <option value="I'll need financing" style={{ color: "#fff" }}>I&apos;ll need financing</option>
+        <option value="Not sure yet" style={{ color: "#fff" }}>Not sure yet</option>
+      </select>
+      {(focus === "implants") && (
+        <input value={form.procedure_detail} onChange={e => setForm(p => ({ ...p, procedure_detail: e.target.value }))}
+          placeholder="How many teeth are you missing?" type="number" min="1"
+          style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(255,255,255,0.08)", color: "#fff", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }} />
+      )}
+      {(focus === "veneers" || focus === "cosmetic") && (
+        <input value={form.procedure_detail} onChange={e => setForm(p => ({ ...p, procedure_detail: e.target.value }))}
+          placeholder="How many veneers are you interested in?" type="number" min="1"
+          style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(255,255,255,0.08)", color: "#fff", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }} />
       )}
       {err && <div style={{ color: "#f87171", fontSize: 13 }}>{err}</div>}
       <button type="submit" disabled={submitting}
@@ -267,7 +306,7 @@ export default function LandingPage() {
             <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "0 0 20px" }}>
               Takes 10 seconds. We'll call you.
             </p>
-            <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail} interestOptions={interestOptions} primary={P} accent={A} />
+            <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail} interestOptions={interestOptions} focus={focus} primary={P} accent={A} />
           </div>
         </div>
       </section>
@@ -549,7 +588,7 @@ export default function LandingPage() {
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 17, margin: "0 0 40px", lineHeight: 1.6 }}>
             Your free consultation takes about an hour. We'll give you a complete treatment plan and exact pricing — no pressure, no surprises.
           </p>
-          <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail} interestOptions={interestOptions} primary={P} accent={A} />
+          <LeadForm tenantId={slug} offer={c.cta_offer} offerDetail={c.cta_offer_detail} interestOptions={interestOptions} focus={focus} primary={P} accent={A} />
         </div>
       </section>
 
