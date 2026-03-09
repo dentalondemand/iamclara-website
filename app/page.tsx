@@ -398,7 +398,7 @@ function Pricing() {
                 🔒 Founding rate locked for waitlist members
               </p>
               <p className="text-white/50 text-sm">
-                Everything in Growth plus managed Facebook &amp; Instagram ads — Clara builds your campaigns, targets your area, calls leads in 60 seconds, and optimizes daily.
+                Everything in Growth plus managed Facebook &amp; Instagram ads — Clara builds your campaigns, targets your area, calls leads in 60 seconds, and optimizes daily. Includes up to $3K/mo in managed ad spend. 8% of spend above that.
               </p>
             </div>
 
@@ -410,9 +410,9 @@ function Pricing() {
                 'Clara calls new leads within 60 seconds',
                 'Daily automated campaign optimization',
                 'Weekly performance reports & insights',
-                'Custom practice landing page',
+                'Up to $3K/mo ad spend included flat',
+                '8% management fee above $3K/mo spend',
                 'Two-way AI SMS nurture sequences',
-                'A2P 10DLC SMS compliance (included)',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
                   <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
