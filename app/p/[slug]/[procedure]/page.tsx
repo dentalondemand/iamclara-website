@@ -73,6 +73,18 @@ function LeadForm({
   const [done, setDone] = useState(false);
   const [err, setErr] = useState("");
 
+  // Capture UTM params from URL so Clara knows which Meta adset sent this lead
+  const [utmParams, setUtmParams] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const utm: Record<string, string> = {};
+    for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
+      const v = sp.get(key);
+      if (v) utm[key] = v;
+    }
+    setUtmParams(utm);
+  }, []);
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.phone) { setErr("Please enter your phone number."); return; }
@@ -82,7 +94,7 @@ function LeadForm({
       const res = await fetch(`${BACKEND}/public/${tenantId}/lead`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, ...utmParams }),  // UTMs ride along with form data
       });
       const data = await res.json();
       if (data.ok) setDone(true);
