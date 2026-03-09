@@ -641,6 +641,101 @@ function Footer() {
   )
 }
 
+function TieredIntelligence() {
+  const tiers = [
+    {
+      plan: 'Core',
+      price: '$199/mo',
+      color: '#2DD4BF',
+      border: 'rgba(45,212,191,0.2)',
+      bg: 'rgba(45,212,191,0.05)',
+      icon: '🧠',
+      headline: 'Clara learns which callers book',
+      bullets: [
+        'Auto-scores every lead on interest, urgency & case type',
+        'Flags high-value callers (implants, full arch, cosmetics) instantly',
+        'Learns your practice patterns — fewer missed cases over time',
+        'Staff scores refine Clara\'s model with every interaction',
+      ],
+    },
+    {
+      plan: 'Growth',
+      price: '$399/mo',
+      color: '#818cf8',
+      border: 'rgba(129,140,248,0.2)',
+      bg: 'rgba(129,140,248,0.05)',
+      icon: '📈',
+      headline: 'Clara learns what content drives calls',
+      bullets: [
+        'Tracks which posts generate the most inbound inquiries',
+        'Optimizes posting schedule to your highest-engagement windows',
+        'Connects social engagement directly to lead pipeline',
+        'Weekly content performance report — what worked, what didn\'t',
+      ],
+    },
+    {
+      plan: 'Pro',
+      price: '$799/mo',
+      color: '#f59e0b',
+      border: 'rgba(245,158,11,0.2)',
+      bg: 'rgba(245,158,11,0.05)',
+      icon: '⚙️',
+      headline: 'Clara optimizes your ad spend automatically',
+      bullets: [
+        'Pauses underperforming adsets, scales winning ones weekly',
+        'A/B tests price-shown vs. outcome copy — picks the winner',
+        'Raises age floor when leads are too young, shifts budget when one variant tanks',
+        'Optimizes for Cost Per Booked Patient — not just cost per click',
+      ],
+    },
+  ]
+
+  return (
+    <section className="py-20 px-6" id="intelligence">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Unrivaled optimization — <span className="gradient-text">at every level</span>
+          </h2>
+          <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            Clara isn't just an answering service. Every plan includes AI that learns your practice, improves week over week, and tells you exactly what's working.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {tiers.map((tier) => (
+            <div key={tier.plan} style={{ background: tier.bg, border: `1px solid ${tier.border}` }}
+              className="rounded-2xl p-6 flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <span className="text-white font-bold text-lg">{tier.plan}</span>
+                  <span className="text-white/30 text-sm ml-2">{tier.price}</span>
+                </div>
+                <span className="text-2xl">{tier.icon}</span>
+              </div>
+              <p style={{ color: tier.color }} className="font-semibold text-sm mb-4 leading-snug">
+                {tier.headline}
+              </p>
+              <ul className="space-y-2.5 flex-1">
+                {tier.bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2.5 text-sm text-white/55">
+                    <span style={{ color: tier.color }} className="mt-0.5 flex-shrink-0 text-xs">✓</span>
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-center text-white/25 text-xs mt-8">
+          Intelligence compounds over time. The longer Clara runs, the better she gets — for your practice specifically.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 function ProOptimizer() {
   const steps = [
     {
@@ -754,6 +849,7 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <Features />
+      <TieredIntelligence />
       <ProOptimizer />
       <Pricing />
       <FAQ />
