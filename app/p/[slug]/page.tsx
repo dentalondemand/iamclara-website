@@ -319,6 +319,16 @@ export default function LandingPage() {
               </div>
             )}
 
+            {/* Smile Simulator CTA */}
+            <a href={`https://app.iamclara.ai/smile/${slug}`} target="_blank" rel="noopener noreferrer"
+              style={{ display: "inline-flex", alignItems: "center", gap: 10,
+                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                borderRadius: 50, padding: "14px 28px", textDecoration: "none",
+                color: "#fff", fontWeight: 800, fontSize: 16, marginBottom: 20,
+                boxShadow: "0 4px 20px rgba(99,102,241,0.4)" }}>
+              ✨ Preview Your New Smile — Free
+            </a>
+
             {/* Trust badges */}
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
               {["📞 Call back in minutes", "🔒 No obligation", "🆓 Free consultation"].map(b => (
