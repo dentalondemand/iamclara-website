@@ -18,6 +18,7 @@ function Nav() {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-md bg-navy-800/80">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
+          <img src="/clara-logo.png" alt="Clara AI" className="w-9 h-9 rounded-xl object-cover" />
           <span className="text-2xl font-bold tracking-tight text-white">Clara <span className="text-teal-400">AI</span></span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
@@ -620,6 +621,7 @@ function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
+            <img src="/clara-logo.png" alt="Clara AI" className="w-7 h-7 rounded-lg object-cover" />
             <span className="text-xl font-bold text-white">Clara <span className="text-teal-400">AI</span></span>
             <span className="text-white/30 text-sm ml-2">AI Dental Receptionist</span>
           </div>
