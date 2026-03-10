@@ -124,6 +124,15 @@ export default function SetupPage() {
     { video_url: "", patient_name: "", result: "" },
   ]);
 
+  // Step 6 — Consult Scheduling
+  const [consultDays, setConsultDays] = useState<string[]>(["Monday","Tuesday","Wednesday","Thursday","Friday"]);
+  const [consultStartTime, setConsultStartTime] = useState("09:00");
+  const [consultEndTime, setConsultEndTime] = useState("17:00");
+  const [consultDuration, setConsultDuration] = useState("60"); // minutes
+  const [consultBuffer, setConsultBuffer] = useState("15"); // minutes between appointments
+  const [consultMaxPerDay, setConsultMaxPerDay] = useState("4");
+  const [consultProcedures, setConsultProcedures] = useState<string[]>(["implant_consult","cosmetic_consult","new_patient"]);
+
   // Step 5 — Social Media
   const [social, setSocial] = useState({
     instagram: "",
@@ -185,10 +194,11 @@ export default function SetupPage() {
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
   const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "" });
 
-  const TOTAL = isMarketingPlan ? 7 : 6;
-  // Step numbers: 1-5 same, then for pro/growth: 6=Marketing, 7=Review; else: 6=Review
+  const TOTAL = isMarketingPlan ? 8 : 7;
+  // Step numbers: 1-5 same, then 6=Consult Scheduling (all plans), then for pro/growth: 7=Marketing, 8=Review; else: 7=Review
   const REVIEW_STEP = TOTAL;
-  const MARKETING_STEP = isMarketingPlan ? 6 : null;
+  const CONSULT_STEP = 6;
+  const MARKETING_STEP = isMarketingPlan ? 7 : null;
 
   function toggleDiff(d: string) {
     setSelectedDiffs(p => p.includes(d) ? p.filter(x => x !== d) : [...p, d]);
@@ -225,6 +235,15 @@ export default function SetupPage() {
       cta_offer_detail: cta.offer_detail,
       theme: selectedTheme,
       social,
+      consult_schedule: {
+        days: consultDays,
+        start_time: consultStartTime,
+        end_time: consultEndTime,
+        duration_minutes: Number(consultDuration),
+        buffer_minutes: Number(consultBuffer),
+        max_per_day: Number(consultMaxPerDay),
+        procedure_types: consultProcedures,
+      },
       ...(isMarketingPlan && {
         marketing: {
           practice_differentiators: mktDiffs,
@@ -610,7 +629,142 @@ export default function SetupPage() {
             </>
           )}
 
-          {/* ── Step 6: Marketing Setup (Pro / Growth only) ── */}
+          {/* ── Step 6: Consult Scheduling ── */}
+          {step === CONSULT_STEP && (() => {
+            const ALL_DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+            const DAY_ABBR: Record<string,string> = {
+              Monday:"Mon", Tuesday:"Tue", Wednesday:"Wed", Thursday:"Thu",
+              Friday:"Fri", Saturday:"Sat", Sunday:"Sun",
+            };
+            const TIME_OPTIONS: { value: string; label: string }[] = [];
+            for (let h = 7; h <= 20; h++) {
+              ["00","30"].forEach(m => {
+                if (h === 20 && m === "30") return;
+                const val = `${String(h).padStart(2,"0")}:${m}`;
+                const hour12 = h > 12 ? h - 12 : h === 0 ? 12 : h;
+                const ampm = h >= 12 ? "PM" : "AM";
+                TIME_OPTIONS.push({ value: val, label: `${hour12}:${m} ${ampm}` });
+              });
+            }
+            function toggleConsultDay(day: string) {
+              setConsultDays(p => p.includes(day) ? p.filter(d => d !== day) : [...p, day]);
+            }
+            function toggleConsultProcedure(proc: string) {
+              setConsultProcedures(p => p.includes(proc) ? p.filter(x => x !== proc) : [...p, proc]);
+            }
+            return (
+              <>
+                <h2 style={sh}>Consult Scheduling</h2>
+                <p style={sub}>Set when Clara can book new patient consultations into your Google Calendar. She checks for conflicts automatically and won't book outside these windows.</p>
+
+                {/* Available Days */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={label}>Available days for consults</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {ALL_DAYS.map(day => (
+                      <div key={day} onClick={() => toggleConsultDay(day)} style={{
+                        padding: "8px 14px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontWeight: 600,
+                        border: consultDays.includes(day) ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                        background: consultDays.includes(day) ? "rgba(45,212,191,0.12)" : "rgba(255,255,255,0.03)",
+                        color: consultDays.includes(day) ? "#2DD4BF" : "rgba(255,255,255,0.5)",
+                      }}>
+                        {consultDays.includes(day) ? "✓ " : ""}{DAY_ABBR[day]}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Consult Window */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={label}>Consult time window</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, marginBottom: 4 }}>From</div>
+                      <select value={consultStartTime} onChange={e => setConsultStartTime(e.target.value)} style={inp}>
+                        {TIME_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                      </select>
+                    </div>
+                    <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, paddingTop: 18 }}>to</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, marginBottom: 4 }}>To</div>
+                      <select value={consultEndTime} onChange={e => setConsultEndTime(e.target.value)} style={inp}>
+                        {TIME_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Appointment Duration */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={label}>Appointment duration</div>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    {[["30","30 min"],["45","45 min"],["60","60 min"],["90","90 min"]].map(([val, lbl]) => (
+                      <div key={val} onClick={() => setConsultDuration(val)} style={{
+                        flex: "1 1 80px", padding: "12px 10px", borderRadius: 10, cursor: "pointer", textAlign: "center",
+                        border: consultDuration === val ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                        background: consultDuration === val ? "rgba(45,212,191,0.1)" : "rgba(255,255,255,0.03)",
+                        color: consultDuration === val ? "#2DD4BF" : "rgba(255,255,255,0.6)",
+                        fontWeight: 600, fontSize: 14,
+                      }}>
+                        {lbl}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Buffer & Max Per Day */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+                  <label style={label}>
+                    Buffer between appointments
+                    <select value={consultBuffer} onChange={e => setConsultBuffer(e.target.value)} style={{ ...inp, marginTop: 4 }}>
+                      <option value="0">0 min</option>
+                      <option value="10">10 min</option>
+                      <option value="15">15 min</option>
+                      <option value="20">20 min</option>
+                      <option value="30">30 min</option>
+                    </select>
+                  </label>
+                  <label style={label}>
+                    Max new patient consults/day
+                    <select value={consultMaxPerDay} onChange={e => setConsultMaxPerDay(e.target.value)} style={{ ...inp, marginTop: 4 }}>
+                      {["1","2","3","4","5","6","8","10"].map(n => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                  </label>
+                </div>
+
+                {/* Procedure Types */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={label}>Procedure types to book</div>
+                  {[
+                    ["implant_consult", "Full arch / implant consults"],
+                    ["cosmetic_consult", "Cosmetic / veneers consults"],
+                    ["new_patient", "General new patient exams"],
+                    ["emergency", "Emergency appointments"],
+                  ].map(([val, lbl]) => (
+                    <label key={val} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginBottom: 12 }}>
+                      <input
+                        type="checkbox"
+                        checked={consultProcedures.includes(val)}
+                        onChange={() => toggleConsultProcedure(val)}
+                        style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#2DD4BF" }}
+                      />
+                      <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, fontWeight: 500 }}>{lbl}</span>
+                    </label>
+                  ))}
+                </div>
+
+                {/* Helper note */}
+                <div style={{ background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.2)", borderRadius: 10, padding: 14 }}>
+                  <div style={{ color: "#2DD4BF", fontWeight: 700, fontSize: 13, marginBottom: 6 }}>📅 How this works</div>
+                  <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.6 }}>
+                    Clara checks your Google Calendar for conflicts automatically. These blocks tell her when consult slots are available — she won't book outside these windows.
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+
+          {/* ── Step 7: Marketing Setup (Pro / Growth only) ── */}
           {isMarketingPlan && step === MARKETING_STEP && (
             <>
               <h2 style={sh}>Marketing Setup</h2>
@@ -882,7 +1036,7 @@ export default function SetupPage() {
             </>
           )}
 
-          {/* ── Step 6 (non-marketing) or Step 7: Review ── */}
+          {/* ── Step 7 (non-marketing) or Step 8: Review ── */}
           {step === REVIEW_STEP && (
             <>
               <h2 style={sh}>Review & Submit</h2>
@@ -897,6 +1051,20 @@ export default function SetupPage() {
                 ["Testimonials", `${testimonials.filter(t => t.video_url).length} video(s)`],
                 ["Before/Afters", `${beforeAfters.filter(Boolean).length} photo(s)`],
                 ["Differentiators", `${selectedDiffs.length} selected`],
+                ["Consult blocks", (() => {
+                  if (consultDays.length === 0) return "No days selected";
+                  const DAY_ABBR: Record<string,string> = {
+                    Monday:"Mon", Tuesday:"Tue", Wednesday:"Wed", Thursday:"Thu",
+                    Friday:"Fri", Saturday:"Sat", Sunday:"Sun",
+                  };
+                  const dayStr = consultDays.map(d => DAY_ABBR[d] || d).join(", ");
+                  const fmt = (t: string) => {
+                    const [h, m] = t.split(":").map(Number);
+                    const h12 = h > 12 ? h - 12 : h === 0 ? 12 : h;
+                    return `${h12}${m > 0 ? `:${String(m).padStart(2,"0")}` : ""}${h >= 12 ? "pm" : "am"}`;
+                  };
+                  return `${dayStr} ${fmt(consultStartTime)}–${fmt(consultEndTime)}, ${consultDuration} min slots`;
+                })()],
                 ["Instagram", social.instagram || "—"],
                 ["Facebook", social.facebook_page || "—"],
                 ["TikTok", social.tiktok || "—"],
