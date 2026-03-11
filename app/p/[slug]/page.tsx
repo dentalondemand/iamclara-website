@@ -304,9 +304,46 @@ export default function LandingPage() {
             </h1>
 
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 18, lineHeight: 1.6,
-              margin: "0 0 32px", maxWidth: 500 }}>
+              margin: "0 0 28px", maxWidth: 500 }}>
               {subheadline}
             </p>
+
+            {/* Hero Before/After — show first pair prominently */}
+            {beforeAfters.length > 0 && (
+              <div style={{ marginBottom: 32, borderRadius: 16, overflow: "hidden",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.5)", maxWidth: 500 }}>
+                <div style={{ display: "flex" }}>
+                  <div style={{ flex: 1, position: "relative" }}>
+                    <img src={beforeAfters[0].before} alt="Before"
+                      style={{ width: "100%", display: "block", height: 220, objectFit: "cover" }} />
+                    <div style={{ position: "absolute", bottom: 8, left: 8,
+                      background: "rgba(0,0,0,0.75)", color: "#fff", fontSize: 11,
+                      fontWeight: 800, padding: "3px 10px", borderRadius: 4,
+                      letterSpacing: 1, textTransform: "uppercase" }}>
+                      Before
+                    </div>
+                  </div>
+                  <div style={{ width: 3, background: "#fff", flexShrink: 0 }} />
+                  <div style={{ flex: 1, position: "relative" }}>
+                    <img src={beforeAfters[0].after} alt="After"
+                      style={{ width: "100%", display: "block", height: 220, objectFit: "cover" }} />
+                    <div style={{ position: "absolute", bottom: 8, left: 8,
+                      background: P, color: "#fff", fontSize: 11,
+                      fontWeight: 800, padding: "3px 10px", borderRadius: 4,
+                      letterSpacing: 1, textTransform: "uppercase" }}>
+                      After
+                    </div>
+                  </div>
+                </div>
+                {beforeAfters[0].label && (
+                  <div style={{ background: "rgba(0,0,0,0.6)", padding: "8px 14px",
+                    fontSize: 12, color: "rgba(255,255,255,0.7)", textAlign: "center",
+                    letterSpacing: 0.5 }}>
+                    ✓ {beforeAfters[0].label} · Real Patient · Dr. {dr.name || "Siddiqui"}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Stats */}
             {statItems.length > 0 && (
