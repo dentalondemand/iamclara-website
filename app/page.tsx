@@ -328,7 +328,7 @@ function Pricing() {
                 className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
                 Get Started — $199/mo
               </a>
-              <p className="text-center text-white/30 text-xs mt-3">No credit card required to start</p>
+
             </div>
           </div>
 
@@ -364,7 +364,7 @@ function Pricing() {
                 'Weekly content calendar',
                 'Sunday photo request workflow',
                 'Caption approval queue',
-                'TikTok + Google Business (coming soon)',
+                'TikTok + Google Business',
                 'Priority support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
