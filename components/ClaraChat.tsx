@@ -25,11 +25,51 @@ export default function ClaraChat({
   const [collected, setCollected] = useState<Record<string, any>>({});
   const [leadCreated, setLeadCreated] = useState(false);
   const [sessionId] = useState(() => Math.random().toString(36).slice(2));
+  const exitFiredRef = useRef(false);
+  const lastScrollY = useRef(0);
+
+  // Exit-intent: mouse racing toward top of page (desktop — about to close tab)
+  useEffect(() => {
+    function onMouseMove(e: MouseEvent) {
+      if (exitFiredRef.current || open) return;
+      if (e.clientY < 60 && e.movementY < -6) {
+        exitFiredRef.current = true;
+        setOpen(true);
+      }
+    }
+    document.addEventListener("mousemove", onMouseMove);
+    return () => document.removeEventListener("mousemove", onMouseMove);
+  }, [open]);
+
+  // Exit-intent: scroll-up momentum (mobile — swiping back up = about to leave)
+  useEffect(() => {
+    let ticking = false;
+    function onScroll() {
+      if (exitFiredRef.current || open || ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const currentY = window.scrollY;
+        const delta = lastScrollY.current - currentY; // positive = scrolled up
+        if (delta > 80 && currentY < 400) {
+          // Rapid upward scroll near top = exit signal
+          exitFiredRef.current = true;
+          setExitIntent(true);
+          setOpen(true);
+        }
+        lastScrollY.current = currentY;
+        ticking = false;
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [open]);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const greeting = openingMessage ||
-    `👋 Thinking about implants or a smile makeover? I'm Clara — ${practiceName}'s AI receptionist. I can answer any questions or help you schedule a free consultation. What brings you in today?`;
+  const [exitIntent, setExitIntent] = useState(false);
+  const greeting = exitIntent
+    ? `Wait — before you go! 😊 I'm Clara, ${practiceName}'s AI receptionist. A lot of patients who browse for implants or veneers have questions about cost or process. What's on your mind? I can answer honestly in seconds.`
+    : (openingMessage || `👋 Thinking about implants or a smile makeover? I'm Clara — ${practiceName}'s AI receptionist. I can answer any questions or help you schedule a free consultation. What brings you in today?`);
 
   // Open chat → show greeting
   useEffect(() => {
@@ -81,14 +121,31 @@ export default function ClaraChat({
           position: "fixed", bottom: 24, right: 24, zIndex: 9999,
           width: 60, height: 60, borderRadius: "50%", border: "none",
           background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-          color: "#fff", fontSize: 26, cursor: "pointer",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.35)",
+          color: "#fff", fontSize: exitIntent && !open ? 28 : 26, cursor: "pointer",
+          boxShadow: exitIntent && !open
+            ? `0 0 0 6px ${primaryColor}40, 0 4px 24px rgba(0,0,0,0.35)`
+            : "0 4px 24px rgba(0,0,0,0.35)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "transform 0.2s",
+          transition: "all 0.3s",
         }}
         aria-label="Chat with Clara"
       >
-        {open ? "✕" : "💬"}
+        {open ? "✕" : (
+          <>
+            💬
+            {exitIntent && !open && (
+              <span style={{
+                position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)",
+                background: "#ef4444", color: "#fff",
+                fontSize: 9, fontWeight: 800, borderRadius: 20,
+                padding: "2px 6px", whiteSpace: "nowrap",
+                animation: "none",
+              }}>
+                Wait!
+              </span>
+            )}
+          </>
+        )}
       </button>
 
       {/* Chat window */}
