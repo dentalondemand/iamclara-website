@@ -72,6 +72,18 @@ interface ProcedureEntry {
   show_price: "ab_test" | "always" | "never";
 }
 
+interface BAFile {
+  id: string;
+  beforeFile: File | null;
+  afterFile: File | null;
+  label: string;
+  beforeUrl: string;
+  afterUrl: string;
+  beforePreview: string;
+  afterPreview: string;
+  uploading: boolean;
+}
+
 const inp = {
   width: "100%", padding: "10px 14px", borderRadius: 10, fontSize: 15,
   border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)",
@@ -190,15 +202,55 @@ export default function SetupPage() {
   const [selectedFinancing, setSelectedFinancing] = useState<string[]>([]);
   const [selectedInclusions, setSelectedInclusions] = useState<string[]>([]);
   const [beforeAfters, setBeforeAfters] = useState(["", "", ""]);
+
+  // Before/After upload pairs (dedicated upload step)
+  const [baPairs, setBaPairs] = useState<BAFile[]>([
+    { id: "ba1", beforeFile: null, afterFile: null, label: "", beforeUrl: "", afterUrl: "", beforePreview: "", afterPreview: "", uploading: false },
+    { id: "ba2", beforeFile: null, afterFile: null, label: "", beforeUrl: "", afterUrl: "", beforePreview: "", afterPreview: "", uploading: false },
+    { id: "ba3", beforeFile: null, afterFile: null, label: "", beforeUrl: "", afterUrl: "", beforePreview: "", afterPreview: "", uploading: false },
+  ]);
+  const isBAEnabled = plan === "pro" || plan === "growth";
+
+  async function uploadBAFile(pairId: string, side: "before" | "after", file: File) {
+    setBaPairs(p => p.map(x => x.id === pairId ? { ...x, uploading: true } : x));
+    const preview = URL.createObjectURL(file);
+    setBaPairs(p => p.map(x => x.id === pairId ? { ...x, [side === "before" ? "beforePreview" : "afterPreview"]: preview } : x));
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("filename", file.name);
+      fd.append("content_type", file.type || "image/jpeg");
+      const res = await fetch(`${BACKEND}/public/upload/before-after/${tenantId}`, { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.ok) {
+        setBaPairs(p => p.map(x => x.id === pairId ? { ...x, [side === "before" ? "beforeUrl" : "afterUrl"]: data.url, uploading: false } : x));
+      } else {
+        alert("Upload failed: " + (data.detail || "Unknown error"));
+        setBaPairs(p => p.map(x => x.id === pairId ? { ...x, uploading: false } : x));
+      }
+    } catch {
+      alert("Upload failed. Please try again.");
+      setBaPairs(p => p.map(x => x.id === pairId ? { ...x, uploading: false } : x));
+    }
+  }
+
+  function addBAPair() {
+    if (baPairs.length >= 5) return;
+    setBaPairs(p => [...p, { id: `ba${Date.now()}`, beforeFile: null, afterFile: null, label: "", beforeUrl: "", afterUrl: "", beforePreview: "", afterPreview: "", uploading: false }]);
+  }
+  function removeBAPair(id: string) {
+    setBaPairs(p => p.filter(x => x.id !== id));
+  }
   const [stats, setStats] = useState({ implants_placed: "", years_practice: "", custom_stat_label: "", custom_stat_value: "" });
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
   const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "" });
 
-  const TOTAL = isMarketingPlan ? 8 : 7;
+  const TOTAL = isMarketingPlan ? 9 : 8;
   // Step numbers: 1-5 same, then 6=Consult Scheduling (all plans), then for pro/growth: 7=Marketing, 8=Review; else: 7=Review
   const REVIEW_STEP = TOTAL;
-  const CONSULT_STEP = 6;
-  const MARKETING_STEP = isMarketingPlan ? 7 : null;
+  const BEFORE_AFTER_STEP = 4;
+  const CONSULT_STEP = 7;
+  const MARKETING_STEP = isMarketingPlan ? 8 : null;
 
   function toggleDiff(d: string) {
     setSelectedDiffs(p => p.includes(d) ? p.filter(x => x !== d) : [...p, d]);
@@ -229,7 +281,13 @@ export default function SetupPage() {
       doctor,
       testimonials: testimonials.filter(t => t.video_url || t.patient_name),
       differentiators: selectedDiffs,
-      before_afters: beforeAfters.filter(Boolean),
+      before_afters: [
+        ...baPairs.filter(p => p.beforeUrl || p.afterUrl).map(p => ({
+          before: p.beforeUrl,
+          after: p.afterUrl,
+          label: p.label,
+        })),
+      ],
       stats,
       cta_offer: cta.offer,
       cta_offer_detail: cta.offer_detail,
@@ -479,8 +537,164 @@ export default function SetupPage() {
             </>
           )}
 
-          {/* ── Step 4: Differentiators & CTA ── */}
-          {step === 4 && (
+          {/* ── Step 4: Before & After Photos ── */}
+          {step === BEFORE_AFTER_STEP && (
+            <>
+              <h2 style={sh}>Before & After Photos</h2>
+              <p style={sub}>
+                {isBAEnabled
+                  ? "Upload before/after pairs to showcase your clinical results. These appear on your landing page and dramatically increase conversions for cosmetic and implant cases."
+                  : "Before & after photo galleries are available on Growth and Pro plans."}
+              </p>
+
+              {!isBAEnabled && (
+                <div style={{
+                  background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 14, padding: 32, textAlign: "center",
+                }}>
+                  <div style={{ fontSize: 48, marginBottom: 12 }}>🔒</div>
+                  <div style={{ color: "#fff", fontWeight: 700, fontSize: 17, marginBottom: 8 }}>
+                    Available on Growth & Pro
+                  </div>
+                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, marginBottom: 24, lineHeight: 1.7 }}>
+                    Before & after galleries are one of the highest-converting elements for cosmetic and implant cases.
+                    Patients want to see real results from your practice — not stock photos.
+                  </div>
+                  <a href="https://iamclara.ai/#pricing" style={{
+                    display: "inline-block", background: "#14B8A6", color: "#fff",
+                    padding: "11px 28px", borderRadius: 50, fontWeight: 700, fontSize: 14, textDecoration: "none",
+                  }}>
+                    Upgrade to Growth or Pro →
+                  </a>
+                </div>
+              )}
+
+              {isBAEnabled && (
+                <>
+                  {baPairs.map((pair, i) => (
+                    <div key={pair.id} style={{
+                      background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 14, padding: 18, marginBottom: 16, position: "relative" as const,
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                        <div style={{ color: "#2DD4BF", fontWeight: 700, fontSize: 13 }}>
+                          {i < 2 ? `★ Before/After ${i + 1} (recommended)` : `Before/After ${i + 1} (optional)`}
+                        </div>
+                        {baPairs.length > 1 && (
+                          <button onClick={() => removeBAPair(pair.id)} style={{
+                            background: "rgba(220,38,38,0.1)", border: "1px solid rgba(220,38,38,0.25)",
+                            color: "#f87171", borderRadius: 8, padding: "4px 12px",
+                            fontSize: 12, cursor: "pointer", fontWeight: 600,
+                          }}>Remove</button>
+                        )}
+                      </div>
+
+                      <label style={{ ...label, marginBottom: 14 }}>
+                        Procedure label <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(e.g. Full Arch Implants, Veneers)</span>
+                        <input
+                          value={pair.label}
+                          onChange={e => setBaPairs(p => p.map(x => x.id === pair.id ? { ...x, label: e.target.value } : x))}
+                          placeholder="Full Arch Implants"
+                          style={{ ...inp, marginTop: 4 }}
+                        />
+                      </label>
+
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                        {(["before", "after"] as const).map(side => {
+                          const preview = side === "before" ? pair.beforePreview : pair.afterPreview;
+                          const uploaded = side === "before" ? pair.beforeUrl : pair.afterUrl;
+                          return (
+                            <div key={side}>
+                              <div style={{ ...label, marginBottom: 8 }}>
+                                {side === "before" ? "📷 Before" : "✨ After"}
+                              </div>
+                              {preview ? (
+                                <div style={{ position: "relative" as const }}>
+                                  <img src={preview} alt={side} style={{
+                                    width: "100%", aspectRatio: "4/3", objectFit: "cover" as const,
+                                    borderRadius: 10, border: uploaded ? "2px solid #2DD4BF" : "2px solid rgba(255,165,0,0.5)",
+                                  }} />
+                                  {pair.uploading && (
+                                    <div style={{
+                                      position: "absolute" as const, inset: 0, background: "rgba(0,0,0,0.55)",
+                                      borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center",
+                                      color: "#fff", fontSize: 13, fontWeight: 600,
+                                    }}>Uploading…</div>
+                                  )}
+                                  {uploaded && !pair.uploading && (
+                                    <div style={{
+                                      position: "absolute" as const, top: 6, right: 6, background: "#14B8A6",
+                                      borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700, color: "#fff",
+                                    }}>✓ Saved</div>
+                                  )}
+                                  <button type="button" onClick={() => {
+                                    setBaPairs(p => p.map(x => x.id === pair.id ? {
+                                      ...x,
+                                      [side === "before" ? "beforePreview" : "afterPreview"]: "",
+                                      [side === "before" ? "beforeUrl" : "afterUrl"]: "",
+                                      [side === "before" ? "beforeFile" : "afterFile"]: null,
+                                    } : x));
+                                  }} style={{
+                                    position: "absolute" as const, top: 6, left: 6, background: "rgba(0,0,0,0.65)",
+                                    border: "none", borderRadius: 20, padding: "2px 8px",
+                                    fontSize: 11, fontWeight: 700, color: "#fff", cursor: "pointer",
+                                  }}>✕</button>
+                                </div>
+                              ) : (
+                                <label style={{
+                                  display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center",
+                                  width: "100%", aspectRatio: "4/3", borderRadius: 10,
+                                  border: "1px dashed rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.03)",
+                                  cursor: "pointer", gap: 8, minHeight: 100,
+                                }}>
+                                  <span style={{ fontSize: 28 }}>{side === "before" ? "📷" : "✨"}</span>
+                                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, textAlign: "center" as const }}>
+                                    Tap to upload<br />{side} photo
+                                  </span>
+                                  <input
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp,image/heic"
+                                    style={{ display: "none" }}
+                                    onChange={e => {
+                                      const f = e.target.files?.[0];
+                                      if (f) uploadBAFile(pair.id, side, f);
+                                    }}
+                                  />
+                                </label>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+
+                  {baPairs.length < 5 && (
+                    <button type="button" onClick={addBAPair} style={{
+                      width: "100%", padding: "12px", borderRadius: 12, marginBottom: 16,
+                      border: "1px dashed rgba(45,212,191,0.35)", background: "rgba(45,212,191,0.05)",
+                      color: "#2DD4BF", fontSize: 14, fontWeight: 700, cursor: "pointer",
+                    }}>
+                      + Add Another Pair
+                    </button>
+                  )}
+
+                  <div style={{ background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.2)", borderRadius: 10, padding: 14 }}>
+                    <div style={{ color: "#2DD4BF", fontWeight: 700, fontSize: 13, marginBottom: 6 }}>💡 Tips for great before/afters</div>
+                    <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.7 }}>
+                      • Same angle and lighting for both shots<br />
+                      • Full-face smile or close-up depending on case<br />
+                      • Always get written patient consent<br />
+                      • Crop consistently — these display side by side on your page
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+
+          {/* ── Step 5: Differentiators & CTA ── */}
+          {step === 5 && (
             <>
               <h2 style={sh}>Page Style</h2>
               <p style={{ ...sub, marginBottom: 16 }}>Choose a color theme for your landing page.</p>
@@ -542,22 +756,12 @@ export default function SetupPage() {
                   placeholder="Limited to 10 consultations per month. New patients only." style={{ ...inp, marginTop: 4 }} />
               </label>
 
-              <h2 style={{ ...sh, marginTop: 24, marginBottom: 6 }}>Before/After Photos</h2>
-              <p style={{ ...sub, marginBottom: 16 }}>Paste URLs of 3-5 before/after images (with patient permission).</p>
-              {beforeAfters.map((url, i) => (
-                <input key={i} value={url} onChange={e => setBeforeAfters(p => p.map((x, j) => j === i ? e.target.value : x))}
-                  placeholder={`Before/after photo ${i + 1} URL`} style={{ ...inp, marginBottom: 10 }} />
-              ))}
-              <button onClick={() => setBeforeAfters(p => [...p, ""])}
-                style={{ background: "none", border: "1px dashed rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.5)",
-                  borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, marginBottom: 8 }}>
-                + Add another
-              </button>
+
             </>
           )}
 
-          {/* ── Step 5: Social Media ── */}
-          {step === 5 && (
+          {/* ── Step 6: Social Media ── */}
+          {step === 6 && (
             <>
               <h2 style={sh}>Social Media Setup</h2>
               <p style={sub}>Connect your social channels so Clara can post your content automatically.</p>
@@ -629,7 +833,7 @@ export default function SetupPage() {
             </>
           )}
 
-          {/* ── Step 6: Consult Scheduling ── */}
+          {/* ── Step 7: Consult Scheduling ── */}
           {step === CONSULT_STEP && (() => {
             const ALL_DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
             const DAY_ABBR: Record<string,string> = {
@@ -764,7 +968,7 @@ export default function SetupPage() {
             );
           })()}
 
-          {/* ── Step 7: Marketing Setup (Pro / Growth only) ── */}
+          {/* ── Step 8: Marketing Setup (Pro / Growth only) ── */}
           {isMarketingPlan && step === MARKETING_STEP && (
             <>
               <h2 style={sh}>Marketing Setup</h2>
@@ -1049,7 +1253,10 @@ export default function SetupPage() {
                 ["Doctor", `${doctor.full_name}${doctor.credentials ? `, ${doctor.credentials}` : ""}` || "—"],
                 ["Doctor video", doctor.intro_video_url ? "✓ Provided" : "Not provided"],
                 ["Testimonials", `${testimonials.filter(t => t.video_url).length} video(s)`],
-                ["Before/Afters", `${beforeAfters.filter(Boolean).length} photo(s)`],
+                ["Before/Afters", (() => {
+                  const uploaded = baPairs.filter(p => p.beforeUrl && p.afterUrl).length;
+                  return uploaded > 0 ? `${uploaded} pair(s) uploaded` : "—";
+                })()],
                 ["Differentiators", `${selectedDiffs.length} selected`],
                 ["Consult blocks", (() => {
                   if (consultDays.length === 0) return "No days selected";
