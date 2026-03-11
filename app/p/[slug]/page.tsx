@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import ClaraChat from "../../../components/ClaraChat";
 
 const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
 
@@ -659,6 +660,14 @@ export default function LandingPage() {
           <a href="https://iamclara.ai/privacy" style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none" }}>Privacy</a>
         </div>
       </footer>
+
+      {/* Clara live chat widget */}
+      <ClaraChat
+        tenantId={c.tenant_id || slug}
+        practiceName={c.practice_name || "our practice"}
+        primaryColor={P}
+        accentColor={A}
+      />
     </div>
   );
 }
