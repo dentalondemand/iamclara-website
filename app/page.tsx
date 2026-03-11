@@ -71,7 +71,7 @@ function Hero() {
         <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
           <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/20 rounded-full px-4 py-1.5">
             <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse" />
-            <span className="text-teal-400 text-sm font-medium">AI-Powered Dental Receptionist</span>
+            <span className="text-teal-400 text-sm font-medium">AI Practice Growth Platform</span>
           </div>
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
             <span className="text-base">🦷</span>
@@ -80,14 +80,14 @@ function Hero() {
         </div>
 
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-          Your front desk,
+          While you&#39;re in the chair,
           <br />
-          <span className="gradient-text">always answered.</span>
+          <span className="gradient-text">Clara&#39;s filling your schedule.</span>
         </h1>
 
         <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Clara answers every call, identifies patient intent, sends your team instant summaries,
-          and gives you the tools to grow — so you never miss a case.
+          Calls answered. Leads followed up. Content posted. Cases booked — automatically.
+          Clara is the AI platform that runs your practice growth while you focus on patients.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -623,7 +623,7 @@ function Footer() {
           <div className="flex items-center gap-2">
             <img src="/clara-logo.png" alt="Clara AI" className="w-7 h-7 rounded-lg object-cover" />
             <span className="text-xl font-bold text-white">Clara <span className="text-teal-400">AI</span></span>
-            <span className="text-white/30 text-sm ml-2">AI Dental Receptionist</span>
+            <span className="text-white/30 text-sm ml-2">AI Practice Growth Platform</span>
           </div>
           <span className="text-white/25 text-xs">🦷 Built by dentists, for dentists</span>
         </div>
