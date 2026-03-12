@@ -7,7 +7,7 @@ const DASHBOARD_URL = 'https://app.iamclara.ai'
 
 // ── Founders spot counters — update these as spots fill ──────────────────────
 const GROWTH_FOUNDERS_SPOTS_TOTAL = 10
-const GROWTH_FOUNDERS_SPOTS_TAKEN = 1   // increment as practices sign up
+const GROWTH_FOUNDERS_SPOTS_TAKEN = 0   // increment as practices sign up
 const PRO_FOUNDERS_SPOTS_TOTAL    = 10
 const PRO_FOUNDERS_SPOTS_TAKEN    = 0   // increment as practices sign up
 // ─────────────────────────────────────────────────────────────────────────────
@@ -358,6 +358,7 @@ function Pricing() {
                 'Everything in Core',
                 'Lab case + follow-up tracker',
                 'Patient review request tool',
+                'Before & after photo gallery',
                 'Photo upload → AI caption → auto-post',
                 'Instagram + Facebook posting',
                 'Real-person caption voice (no AI slop)',
@@ -389,9 +390,9 @@ function Pricing() {
           </div>
 
           {/* Pro Plan */}
-          <div className="relative bg-card-gradient border border-amber-500/30 rounded-3xl p-8 flex flex-col opacity-90">
+          <div className="relative bg-card-gradient border border-amber-500/30 rounded-3xl p-8 flex flex-col">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-amber-500 text-white text-xs font-bold px-4 py-1 rounded-full">COMING SOON</span>
+              <span className="bg-amber-500 text-white text-xs font-bold px-4 py-1 rounded-full">FOUNDING RATE</span>
             </div>
 
             <div className="mb-6">
@@ -402,7 +403,7 @@ function Pricing() {
               </div>
               <p className="text-white/30 text-xs mb-1 line-through">$999/month after founding spots fill</p>
               <p className="text-amber-400 text-xs font-semibold mb-3">
-                🔒 Founding rate locked for waitlist members
+                🔥 {PRO_FOUNDERS_SPOTS_TOTAL - PRO_FOUNDERS_SPOTS_TAKEN} of {PRO_FOUNDERS_SPOTS_TOTAL} founding spots remaining
               </p>
               <p className="text-white/50 text-sm">
                 Everything in Growth plus managed Facebook &amp; Instagram ads — Clara builds your campaigns, targets your area, calls leads in 60 seconds, and optimizes daily. Includes up to $3K/mo in managed ad spend. 8% of spend above that.
@@ -412,15 +413,20 @@ function Pricing() {
             <ul className="space-y-3 mb-8 flex-1">
               {[
                 'Everything in Growth',
+                'Lead pipeline with deal tracking + revenue board',
+                'Automated SMS reminder sequences',
+                'AI outbound calling — calls new leads in 60 seconds',
+                'Lead quality scoring on every call',
+                'Before & after photo galleries on your landing page',
+                'Custom practice landing page (iamclara.ai/p/yourpractice)',
                 'Managed Facebook & Instagram ad campaigns',
-                'A/B tests price vs. outcome copy automatically',
-                'Clara calls new leads within 60 seconds',
-                'Lead quality scoring on every single call',
-                'Smart optimizer: adjusts targeting weekly based on who actually books',
+                'Smart ad optimizer — adjusts targeting weekly based on who books',
                 'Pauses bad adsets, scales winning ones — no agency meeting',
+                'A/B tests price vs. outcome copy automatically',
                 'Weekly plain-English report: what worked, what didn\'t, what changed',
                 'Up to $3K/mo ad spend included flat',
                 '8% management fee above $3K/mo spend',
+                'Dedicated onboarding support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
                   <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
@@ -435,14 +441,11 @@ function Pricing() {
                 <p className="text-amber-400 font-bold text-sm">Save $6,000–$11,000/mo</p>
                 <p className="text-white/40 text-xs mt-0.5">vs. agency + social media + answering service — you keep your ad budget</p>
               </div>
-              <div className="block text-center bg-white/10 border border-white/20 text-white/60 font-semibold py-3.5 rounded-full cursor-not-allowed">
-                🚧 Coming Soon
-              </div>
-              <p className="text-center text-white/30 text-xs mt-3">Founding rate locked when you join the waitlist</p>
-              <a href="mailto:hello@iamclara.ai?subject=Clara Pro Waitlist&body=I'm interested in Clara Pro for my dental practice."
-                className="block text-center text-teal-400 hover:text-teal-300 text-xs mt-2 transition-colors underline underline-offset-2">
-                Join the waitlist →
+              <a href="https://buy.stripe.com/fZuaEZ1pvfg83ZLc5WaEE00"
+                className="block text-center bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-full transition-colors">
+                Claim Founding Rate — $799/mo
               </a>
+              <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
             </div>
           </div>
         </div>
