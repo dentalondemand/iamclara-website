@@ -219,6 +219,13 @@ export default function ProcedureLandingPage() {
   const [loading, setLoading] = useState(true);
   const formRef = useRef<HTMLDivElement>(null);
 
+  // Set browser tab title: "Full Arch Implants | Radiant Dental Care"
+  useEffect(() => {
+    const pName = config?.practice_name || slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    const procName = config?.procedure?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    document.title = `${procName} | ${pName}`;
+  }, [config, slug, procedure]);
+
   useEffect(() => {
     fetch(`${BACKEND}/marketing/config/public?tenant_id=${encodeURIComponent(slug)}&procedure_id=${encodeURIComponent(procedure)}`)
       .then(r => {
