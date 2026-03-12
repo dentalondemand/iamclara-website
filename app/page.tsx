@@ -8,8 +8,6 @@ const DASHBOARD_URL = 'https://app.iamclara.ai'
 // ── Founders spot counters — update these as spots fill ──────────────────────
 const GROWTH_FOUNDERS_SPOTS_TOTAL = 10
 const GROWTH_FOUNDERS_SPOTS_TAKEN = 0   // increment as practices sign up
-const PRO_FOUNDERS_SPOTS_TOTAL    = 10
-const PRO_FOUNDERS_SPOTS_TAKEN    = 0   // increment as practices sign up
 // ─────────────────────────────────────────────────────────────────────────────
 
 function Nav() {
@@ -245,9 +243,9 @@ function Features() {
         {/* Tier upgrade teaser */}
         <div className="bg-teal-500/10 border border-teal-500/20 rounded-2xl p-8 text-center">
           <div className="text-2xl mb-2">📈</div>
-          <h3 className="text-xl font-semibold mb-2">Start with Core. Grow when you're ready.</h3>
+          <h3 className="text-xl font-semibold mb-2">Two plans. No complexity.</h3>
           <p className="text-white/50 max-w-2xl mx-auto">
-            Add social media automation at $399/mo with Growth (founding rate), or unlock the full lead machine — landing pages, outbound calling, and AI text follow-up — at $799/mo with Pro (founding rate). Both lock in for life. Upgrade anytime, no contracts.
+            Start with Core at $199/mo for the AI receptionist, or go all-in with Growth at $599/mo (founding rate) — ads, social media, lead nurturing, and more. All-inclusive, no per-minute fees, no agency markups.
           </p>
         </div>
       </div>
@@ -282,7 +280,7 @@ function Differentiators() {
             </p>
             <div className="flex items-center gap-2 text-xs text-white/30">
               <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Growth plan</span>
-              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Pro plan</span>
+              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Growth plan</span>
             </div>
           </div>
 
@@ -298,7 +296,7 @@ function Differentiators() {
               Drop your best before/after or testimonial video into Clara's dashboard. She writes the caption, builds the Facebook and Instagram campaign, A/B tests price vs. outcome copy, and goes live — no agency, no creative brief, no waiting.
             </p>
             <div className="flex items-center gap-2 text-xs text-white/30">
-              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Pro plan</span>
+              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Growth plan</span>
             </div>
           </div>
 
@@ -314,7 +312,7 @@ function Differentiators() {
               Urban patients drive 10 miles. Rural patients drive 45. Generic agencies use one radius for everyone. Clara adjusts targeting radius, age range, and budget allocation based on your market type — and optimizes weekly based on who actually books.
             </p>
             <div className="flex items-center gap-2 text-xs text-white/30">
-              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Pro plan</span>
+              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Growth plan</span>
             </div>
           </div>
         </div>
@@ -334,7 +332,7 @@ function Pricing() {
           <p className="text-white/50 text-lg">No setup fees. No contracts. Cancel anytime.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Core Plan */}
           <div className="bg-card-gradient border border-white/10 rounded-3xl p-8 flex flex-col">
             <div className="mb-6">
@@ -352,6 +350,7 @@ function Pricing() {
               {[
                 '24/7 AI inbound call answering',
                 'Natural LLM conversation',
+                'Insurance + DOB intake on new patients',
                 'AI-powered call summaries + lead scoring',
                 'SMS + email + push staff alerts',
                 'Call recording + playback',
@@ -360,7 +359,6 @@ function Pricing() {
                 '21-language auto-detect',
                 'Spam & robocall filtering',
                 'Call intelligence analytics',
-                'Staff notes + activity log',
                 'Google Calendar integration',
                 'iOS + Android mobile app',
                 'Unlimited calls',
@@ -372,7 +370,6 @@ function Pricing() {
               ))}
             </ul>
 
-            {/* Savings + CTA */}
             <div className="mt-auto">
               <div className="bg-teal-500/10 border border-teal-500/20 rounded-2xl px-4 py-3 mb-4 text-center">
                 <p className="text-teal-400 font-bold text-sm">Save ~$400/mo</p>
@@ -382,44 +379,47 @@ function Pricing() {
                 className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
                 Get Started — $199/mo
               </a>
-
             </div>
           </div>
 
           {/* Growth Plan */}
           <div className="relative bg-card-gradient border border-teal-500/40 rounded-3xl p-8 flex flex-col glow">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">FOUNDING RATE</span>
+              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR — FOUNDING RATE</span>
             </div>
 
             <div className="mb-6">
               <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">GROWTH</div>
               <div className="flex items-end gap-2 mb-1">
-                <span className="text-5xl font-bold">$399</span>
+                <span className="text-5xl font-bold">$599</span>
                 <span className="text-white/40 mb-2">/month</span>
               </div>
-              <p className="text-white/30 text-xs mb-1 line-through">$499/month after founding spots fill</p>
+              <p className="text-white/30 text-xs mb-1 line-through">$699/month after founding spots fill</p>
               <p className="text-amber-400 text-xs font-semibold mb-3">
                 🔥 {GROWTH_FOUNDERS_SPOTS_TOTAL - GROWTH_FOUNDERS_SPOTS_TAKEN} of {GROWTH_FOUNDERS_SPOTS_TOTAL} founding spots remaining
               </p>
               <p className="text-white/50 text-sm">
-                Everything in Core plus a full social media team — upload a photo, Clara writes the caption and posts it.
+                Everything in Core — plus AI-managed ads, social media automation, and a full lead machine. All-inclusive, no per-minute fees.
               </p>
             </div>
 
             <ul className="space-y-3 mb-8 flex-1">
               {[
                 'Everything in Core',
-                'Lab case + follow-up tracker',
-                'Patient review request tool',
-                'Before & after photo gallery',
+                'Facebook & Instagram ad campaigns',
+                'Google Ads management',
+                'A/B tests price vs. outcome copy automatically',
+                'AI ad copy from your real differentiators',
+                'Weekly ad performance report',
                 'Photo upload → AI caption → auto-post',
-                'Instagram + Facebook posting',
-                'Real-person caption voice (no AI slop)',
-                'Weekly content calendar',
-                'Sunday photo request workflow',
-                'Caption approval queue',
-                'TikTok + Google Business',
+                'Instagram, Facebook & TikTok posting',
+                'Weekly AI content ideas calendar',
+                'Before & after photo gallery on landing page',
+                'Custom practice landing page',
+                'AI outbound calling — calls leads in 60 seconds',
+                'Automated SMS + email follow-up sequences',
+                'Lead pipeline with deal tracking',
+                'Patient review request tool',
                 'Priority support',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-white/70">
@@ -429,77 +429,16 @@ function Pricing() {
               ))}
             </ul>
 
-            {/* Savings + CTA */}
             <div className="mt-auto">
               <div className="bg-teal-500/10 border border-teal-500/20 rounded-2xl px-4 py-3 mb-4 text-center">
-                <p className="text-teal-400 font-bold text-sm">Save ~$800/mo</p>
-                <p className="text-white/40 text-xs mt-0.5">vs. a social media manager ($800–1,500/mo)</p>
+                <p className="text-teal-400 font-bold text-sm">Save $6,000–$11,000/mo</p>
+                <p className="text-white/40 text-xs mt-0.5">vs. agency + social media manager + answering service</p>
               </div>
-              <a href="/get-started?plan=growth"
+              <a href="https://buy.stripe.com/eVq00lgkp4Bu9k50neaEE07"
                 className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
-                Claim Founding Rate — $399/mo
+                Claim Founding Rate — $599/mo
               </a>
-              <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
-            </div>
-          </div>
-
-          {/* Pro Plan */}
-          <div className="relative bg-card-gradient border border-amber-500/30 rounded-3xl p-8 flex flex-col">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-amber-500 text-white text-xs font-bold px-4 py-1 rounded-full">FOUNDING RATE</span>
-            </div>
-
-            <div className="mb-6">
-              <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">PRO</div>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="text-5xl font-bold">$799</span>
-                <span className="text-white/40 mb-2">/month</span>
-              </div>
-              <p className="text-white/30 text-xs mb-1 line-through">$999/month after founding spots fill</p>
-              <p className="text-amber-400 text-xs font-semibold mb-3">
-                🔥 {PRO_FOUNDERS_SPOTS_TOTAL - PRO_FOUNDERS_SPOTS_TAKEN} of {PRO_FOUNDERS_SPOTS_TOTAL} founding spots remaining
-              </p>
-              <p className="text-white/50 text-sm">
-                Everything in Growth plus managed Facebook &amp; Instagram ads — Clara builds your campaigns, targets your area, calls leads in 60 seconds, and optimizes daily. Includes up to $3K/mo in managed ad spend. 8% of spend above that.
-              </p>
-            </div>
-
-            <ul className="space-y-3 mb-8 flex-1">
-              {[
-                'Everything in Growth',
-                'Lead pipeline with deal tracking + revenue board',
-                'Automated SMS reminder sequences',
-                'AI outbound calling — calls new leads in 60 seconds',
-                'Lead quality scoring on every call',
-                'Before & after photo galleries on your landing page',
-                'Custom practice landing page (iamclara.ai/p/yourpractice)',
-                'Managed Facebook & Instagram ad campaigns',
-                'Smart ad optimizer — adjusts targeting weekly based on who books',
-                'Pauses bad adsets, scales winning ones — no agency meeting',
-                'A/B tests price vs. outcome copy automatically',
-                'Weekly plain-English report: what worked, what didn\'t, what changed',
-                'Up to $3K/mo ad spend included flat',
-                '8% management fee above $3K/mo spend',
-                'Dedicated onboarding support',
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-white/70">
-                  <span className="text-teal-400 mt-0.5 flex-shrink-0">✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            {/* Savings + CTA */}
-            <div className="mt-auto">
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl px-4 py-3 mb-4 text-center">
-                <p className="text-amber-400 font-bold text-sm">Save $6,000–$11,000/mo</p>
-                <p className="text-white/40 text-xs mt-0.5">vs. agency + social media + answering service — you keep your ad budget</p>
-              </div>
-              <a href="https://buy.stripe.com/fZuaEZ1pvfg83ZLc5WaEE00"
-                className="block text-center bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3.5 rounded-full transition-colors">
-                Claim Founding Rate — $799/mo
-              </a>
-              <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life — never increases</p>
+              <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life · No contracts · Cancel anytime</p>
             </div>
           </div>
         </div>
@@ -532,14 +471,14 @@ function Pricing() {
                     what: "Social media manager",
                     note: "1–2 posts/week. Slow turnaround. No clinical voice.",
                     cost: "$800–$1,500/mo",
-                    with: "Growth — $399/mo ✦",
+                    with: "Growth — $599/mo ✦",
                     save: "~$800/mo",
                   },
                   {
                     what: "Lead gen / marketing agency",
                     note: "Charges 10–20% of your ad budget on top. Slow follow-up. No guarantees.",
                     cost: "$2,000–$5,000/mo",
-                    with: "Pro — $799/mo ✦",
+                    with: "Growth — $599/mo ✦",
                     save: "~$2,000+/mo",
                   },
                   {
@@ -567,7 +506,7 @@ function Pricing() {
                 <tr className="bg-teal-500/[0.06] border-t-2 border-teal-500/30">
                   <td className="px-5 py-4 font-bold text-white">All 4 combined</td>
                   <td className="px-4 py-4 text-center font-bold text-white">$7,050–$12,200/mo</td>
-                  <td className="px-4 py-4 text-center font-bold text-teal-400">Pro — $799/mo ✦</td>
+                  <td className="px-4 py-4 text-center font-bold text-teal-400">Growth — $599/mo ✦</td>
                   <td className="px-4 py-4 text-center">
                     <span className="bg-teal-500/20 text-teal-300 font-bold text-sm px-3 py-1.5 rounded-full whitespace-nowrap">
                       Save $6K–$11K/mo
