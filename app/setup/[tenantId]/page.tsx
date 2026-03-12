@@ -468,24 +468,51 @@ export default function SetupPage() {
                   placeholder="e.g. Price includes final zirconia. Save $4,000 vs. standard rates. Limited time." style={{ ...inp, marginTop: 4 }} />
               </label>
 
-              <label style={{ ...label, marginTop: 20 }}>
-                Meta Pixel ID <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional — for conversion tracking on your ads)</span>
-                <input
-                  value={practiceInfo.meta_pixel_id || ""}
-                  onChange={e => setPracticeInfo(p => ({ ...p, meta_pixel_id: e.target.value }))}
-                  placeholder="e.g. 1234567890123456"
-                  style={{ ...inp, marginTop: 4 }}
-                />
-              </label>
-              <label style={{ ...label, marginTop: 14 }}>
-                Google Tag ID <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional — GA4 or GTM tag for your landing page)</span>
-                <input
-                  value={practiceInfo.google_tag_id || ""}
-                  onChange={e => setPracticeInfo(p => ({ ...p, google_tag_id: e.target.value }))}
-                  placeholder="e.g. G-XXXXXXXXXX or GTM-XXXXXXX"
-                  style={{ ...inp, marginTop: 4, marginBottom: 16 }}
-                />
-              </label>
+              {/* ── Tracking pixels ── */}
+              <div style={{ marginTop: 28, padding: "16px 18px", background: "rgba(96,190,255,0.07)", borderRadius: 12, border: "1px solid rgba(96,190,255,0.18)" }}>
+                <p style={{ margin: "0 0 4px", fontWeight: 600, fontSize: 14, color: "#60beff" }}>📊 Ad Tracking <span style={{ fontWeight: 400, color: "rgba(255,255,255,0.45)", fontSize: 13 }}>(optional but highly recommended)</span></p>
+                <p style={{ margin: "0 0 16px", fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
+                  Add your tracking IDs so Clara&apos;s landing page fires conversion events directly to your ad accounts — so Meta and Google can optimize your campaigns toward patients who actually book.
+                </p>
+
+                <label style={{ ...label }}>
+                  Meta Pixel ID
+                  <input
+                    value={practiceInfo.meta_pixel_id || ""}
+                    onChange={e => setPracticeInfo(p => ({ ...p, meta_pixel_id: e.target.value }))}
+                    placeholder="e.g. 1234567890123456"
+                    style={{ ...inp, marginTop: 4 }}
+                  />
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 5, display: "block", lineHeight: 1.6 }}>
+                    Find it at{" "}
+                    <a href="https://business.facebook.com/events_manager" target="_blank" rel="noopener noreferrer" style={{ color: "#60beff", textDecoration: "underline" }}>
+                      business.facebook.com/events_manager
+                    </a>
+                    {" "}→ Data Sources → your Pixel → Settings. Looks like a 15-16 digit number.
+                  </span>
+                </label>
+
+                <label style={{ ...label, marginTop: 16 }}>
+                  Google Tag ID
+                  <input
+                    value={practiceInfo.google_tag_id || ""}
+                    onChange={e => setPracticeInfo(p => ({ ...p, google_tag_id: e.target.value }))}
+                    placeholder="e.g. G-XXXXXXXXXX or GT-XXXXXXXX or GTM-XXXXXXX"
+                    style={{ ...inp, marginTop: 4 }}
+                  />
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 5, display: "block", lineHeight: 1.6 }}>
+                    Find it at{" "}
+                    <a href="https://tagmanager.google.com" target="_blank" rel="noopener noreferrer" style={{ color: "#60beff", textDecoration: "underline" }}>
+                      tagmanager.google.com
+                    </a>
+                    {" "}(under Google tags) or{" "}
+                    <a href="https://analytics.google.com/analytics/web/#/a" target="_blank" rel="noopener noreferrer" style={{ color: "#60beff", textDecoration: "underline" }}>
+                      GA4 Admin → Data Streams
+                    </a>
+                    . Starts with G-, GT-, or GTM-.
+                  </span>
+                </label>
+              </div>
             </>
           )}
 
