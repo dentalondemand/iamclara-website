@@ -312,7 +312,7 @@ gtag('config', '${c.google_tag_id}');`;
 
   const statItems = [
     stats.implants_placed && { value: stats.implants_placed, label: focus === "cosmetic" ? "Smile Makeovers" : "Implants Placed" },
-    stats.years_practice && { value: `${stats.years_practice}yrs`, label: "In Practice" },
+    stats.years_practice && { value: String(stats.years_practice).includes("+") || isNaN(Number(stats.years_practice)) ? `${stats.years_practice} yrs` : `${stats.years_practice}yrs`, label: "In Practice" },
     { value: "★ 5.0", label: "Patient Rating" },
     stats.custom_stat_value && stats.custom_stat_label && { value: stats.custom_stat_value, label: stats.custom_stat_label },
   ].filter(Boolean) as { value: string; label: string }[];
