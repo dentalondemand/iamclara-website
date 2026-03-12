@@ -169,67 +169,38 @@ function HowItWorks() {
 }
 
 function Features() {
-  const features = [
+  const heroFeatures = [
     {
-      icon: '🧠',
-      title: 'LLM-Powered Conversation',
-      desc: 'Clara doesn\'t follow a rigid script. She understands natural speech, handles unexpected questions, and keeps the conversation flowing naturally.',
+      icon: '📞',
+      title: 'Answers every call. Instantly.',
+      desc: 'Clara picks up in under 2 seconds — 24/7, including after hours, weekends, and holidays. No voicemail. No missed patients. No exceptions.',
+      highlight: 'Never miss a new patient call again',
     },
     {
-      icon: '📋',
-      title: 'Instant AI Call Summaries',
-      desc: 'Every call ends with a structured AI summary — caller name, intent, phone number, preferred callback time. Your team sees everything they need at a glance.',
-    },
-    {
-      icon: '🚨',
-      title: 'High-Priority Alerts',
-      desc: 'Implant consults, cosmetic inquiries, and emergencies trigger immediate SMS and email alerts to your team — no checking the dashboard required.',
+      icon: '⚡',
+      title: 'Alerts your team in real time',
+      desc: 'Implant consults, full arch inquiries, and emergencies trigger instant SMS + email + push alerts. Your team knows about high-value cases before they even walk back to the front desk.',
+      highlight: 'High-value leads flagged immediately',
     },
     {
       icon: '📅',
-      title: 'Automatic Consultation Booking',
-      desc: 'Clara checks your Google Calendar in real time and books consultations directly — no back-and-forth, no double-booking.',
+      title: 'Books consultations automatically',
+      desc: 'Clara checks your Google Calendar live and books consult slots directly — no callback required, no double-booking, no back-and-forth.',
+      highlight: 'Google Calendar sync included',
     },
-    {
-      icon: '🎙️',
-      title: 'Call Recording + Playback',
-      desc: 'Every call is recorded and accessible from the web or mobile app. Filter by status, play recordings, and review full transcripts from anywhere.',
-    },
-    {
-      icon: '🔁',
-      title: 'Repeat Caller Recognition',
-      desc: 'Clara remembers returning patients and greets them by name — a small touch that makes a big impression.',
-    },
-    {
-      icon: '🆘',
-      title: 'Emergency Call Forwarding',
-      desc: 'Dental emergencies get routed directly to your phone — always, or only after hours. Clara handles triage so you only get pulled away when it truly matters.',
-    },
-    {
-      icon: '🌍',
-      title: '21-Language Support',
-      desc: 'Clara auto-detects the caller\'s language and responds in kind — Spanish, French, Arabic, Mandarin, Korean, and 16 more. No setup needed.',
-    },
-    {
-      icon: '🛡️',
-      title: 'Spam & Robocall Detection',
-      desc: 'Clara identifies and filters spam calls automatically, so your dashboard stays clean and your team only sees real patients.',
-    },
-    {
-      icon: '📊',
-      title: 'Lead Management Dashboard',
-      desc: 'Every caller becomes a lead. Tag by service interest, log staff notes, track call-back status, and never let a high-value case fall through the cracks.',
-    },
-    {
-      icon: '📱',
-      title: 'Web + Mobile App',
-      desc: 'Full-featured iOS and Android app. Review calls, manage leads, update settings, and monitor your practice from anywhere.',
-    },
-    {
-      icon: '🔒',
-      title: 'HIPAA-Conscious Design',
-      desc: 'Patient data stays secure. No PHI in email bodies, encrypted storage, configurable recording retention. Built specifically for dental practices.',
-    },
+  ]
+
+  const otherFeatures = [
+    { icon: '🧠', title: 'Natural AI conversation', desc: 'No rigid scripts. Clara understands natural speech, handles unexpected questions, and keeps the conversation flowing.' },
+    { icon: '📋', title: 'AI call summaries', desc: 'Caller name, intent, phone number, callback preference — structured and waiting for your team after every call.' },
+    { icon: '🎙️', title: 'Call recording + transcripts', desc: 'Every call recorded, searchable, and accessible from the web or mobile app.' },
+    { icon: '🔁', title: 'Repeat caller recognition', desc: 'Clara greets returning patients by name — a small touch that makes a big impression.' },
+    { icon: '🆘', title: 'Emergency call routing', desc: 'True emergencies get routed directly to your phone. Clara handles triage so you only get pulled away when it truly matters.' },
+    { icon: '🌍', title: '21-language support', desc: 'Auto-detects the caller\'s language and responds in kind — Spanish, French, Mandarin, Korean, Arabic, and 16 more.' },
+    { icon: '🛡️', title: 'Spam & robocall filtering', desc: 'Clara identifies and drops spam automatically so your dashboard only shows real patients.' },
+    { icon: '📊', title: 'Lead management dashboard', desc: 'Every caller becomes a lead. Tag, note, track call-back status, and monitor high-value cases from one place.' },
+    { icon: '📱', title: 'iOS + Android app', desc: 'Review calls, manage leads, and update settings from anywhere — full-featured mobile app included.' },
+    { icon: '🔒', title: 'HIPAA-conscious design', desc: 'No PHI in email bodies, encrypted storage, configurable recording retention. Built for dental.' },
   ]
 
   return (
@@ -246,23 +217,106 @@ function Features() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f) => (
-            <div key={f.title} className="bg-card-gradient border border-white/10 rounded-2xl p-6 hover:border-teal-500/30 transition-colors">
-              <div className="text-3xl mb-4">{f.icon}</div>
-              <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
-              <p className="text-white/50 text-sm leading-relaxed">{f.desc}</p>
+        {/* Hero features — big cards, prominent */}
+        <div className="grid md:grid-cols-3 gap-6 mb-6">
+          {heroFeatures.map((f) => (
+            <div key={f.title} className="bg-card-gradient border border-teal-500/30 rounded-2xl p-8 hover:border-teal-500/50 transition-colors">
+              <div className="text-4xl mb-5">{f.icon}</div>
+              <h3 className="text-xl font-bold mb-3 text-white">{f.title}</h3>
+              <p className="text-white/55 text-sm leading-relaxed mb-4">{f.desc}</p>
+              <div className="inline-flex items-center gap-1.5 bg-teal-500/10 border border-teal-500/20 rounded-full px-3 py-1">
+                <span className="text-teal-400 text-xs font-semibold">✓ {f.highlight}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Everything else — smaller grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
+          {otherFeatures.map((f) => (
+            <div key={f.title} className="bg-card-gradient border border-white/8 rounded-xl p-5 hover:border-white/20 transition-colors">
+              <div className="text-2xl mb-3">{f.icon}</div>
+              <h3 className="text-sm font-semibold mb-1.5 text-white">{f.title}</h3>
+              <p className="text-white/40 text-xs leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
 
         {/* Tier upgrade teaser */}
-        <div className="mt-10 bg-teal-500/10 border border-teal-500/20 rounded-2xl p-8 text-center">
+        <div className="bg-teal-500/10 border border-teal-500/20 rounded-2xl p-8 text-center">
           <div className="text-2xl mb-2">📈</div>
           <h3 className="text-xl font-semibold mb-2">Start with Core. Grow when you're ready.</h3>
           <p className="text-white/50 max-w-2xl mx-auto">
             Add social media automation at $399/mo with Growth (founding rate), or unlock the full lead machine — landing pages, outbound calling, and AI text follow-up — at $799/mo with Pro (founding rate). Both lock in for life. Upgrade anytime, no contracts.
           </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Differentiators() {
+  return (
+    <section className="py-24 px-6" id="differentiators">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-14">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Three things <span className="gradient-text">no one else does.</span>
+          </h2>
+          <p className="text-white/50 text-lg max-w-xl mx-auto">
+            Not a generic answering service. Not a social media scheduler. Not an ad agency. Clara is all three — and built specifically for dental.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Smile Simulator */}
+          <div className="relative bg-card-gradient border border-teal-500/30 rounded-2xl p-8 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
+            <div className="text-5xl mb-5">😁</div>
+            <div className="text-teal-400 text-xs font-bold tracking-widest uppercase mb-3">Smile Simulator</div>
+            <h3 className="text-xl font-bold text-white mb-3 leading-snug">
+              Patients see their new smile before they book
+            </h3>
+            <p className="text-white/50 text-sm leading-relaxed mb-5">
+              Upload a photo on your landing page — Clara's AI shows a realistic preview of their veneers or implants in seconds. When patients can visualize the result, they book. Simple as that.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-white/30">
+              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Growth plan</span>
+              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Pro plan</span>
+            </div>
+          </div>
+
+          {/* Video Ads */}
+          <div className="relative bg-card-gradient border border-purple-500/30 rounded-2xl p-8 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
+            <div className="text-5xl mb-5">🎬</div>
+            <div className="text-purple-400 text-xs font-bold tracking-widest uppercase mb-3">Video Ads on Autopilot</div>
+            <h3 className="text-xl font-bold text-white mb-3 leading-snug">
+              Upload a patient video. Clara launches the campaign.
+            </h3>
+            <p className="text-white/50 text-sm leading-relaxed mb-5">
+              Drop your best before/after or testimonial video into Clara's dashboard. She writes the caption, builds the Facebook and Instagram campaign, A/B tests price vs. outcome copy, and goes live — no agency, no creative brief, no waiting.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-white/30">
+              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Pro plan</span>
+            </div>
+          </div>
+
+          {/* Market-Type Targeting */}
+          <div className="relative bg-card-gradient border border-amber-500/30 rounded-2xl p-8 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
+            <div className="text-5xl mb-5">📍</div>
+            <div className="text-amber-400 text-xs font-bold tracking-widest uppercase mb-3">Smart Market Targeting</div>
+            <h3 className="text-xl font-bold text-white mb-3 leading-snug">
+              Ads built for your market. Not the national average.
+            </h3>
+            <p className="text-white/50 text-sm leading-relaxed mb-5">
+              Urban patients drive 10 miles. Rural patients drive 45. Generic agencies use one radius for everyone. Clara adjusts targeting radius, age range, and budget allocation based on your market type — and optimizes weekly based on who actually books.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-white/30">
+              <span className="bg-white/5 border border-white/10 rounded-full px-3 py-1">Pro plan</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -854,6 +908,7 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <Features />
+      <Differentiators />
       <TieredIntelligence />
       <ProOptimizer />
       <Pricing />
