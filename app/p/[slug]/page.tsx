@@ -304,8 +304,8 @@ gtag('config', '${c.google_tag_id}');`;
 
   const pricingItems = [
     focus !== "cosmetic" && pricing.implant_consult && { label: "Implant Consultation", price: pricing.implant_consult, note: "Includes 3D scan" },
+    focus !== "cosmetic" && pricing.full_arch && { label: "Full Arch (All-on-4)", price: `From ${pricing.full_arch}`, note: "Temp teeth same day + final teeth included" },
     focus !== "cosmetic" && pricing.single_implant && { label: "Single Implant", price: `From ${pricing.single_implant}`, note: "Implant + abutment + crown" },
-    focus !== "cosmetic" && pricing.full_arch && { label: "Full Arch (All-on-4)", price: `From ${pricing.full_arch}`, note: "Temporary teeth same day" },
     focus !== "implants" && pricing.veneer_per_tooth && { label: "Porcelain Veneer", price: `From ${pricing.veneer_per_tooth}`, note: "Per tooth" },
     focus !== "implants" && pricing.smile_makeover && { label: "Smile Makeover", price: `From ${pricing.smile_makeover}`, note: "Custom full-mouth design" },
   ].filter(Boolean) as { label: string; price: string; note: string }[];
