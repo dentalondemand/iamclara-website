@@ -243,7 +243,7 @@ export default function SetupPage() {
   }
   const [stats, setStats] = useState({ implants_placed: "", years_practice: "", custom_stat_label: "", custom_stat_value: "" });
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
-  const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "" });
+  const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "", meta_pixel_id: "", google_tag_id: "" });
 
   const TOTAL = isMarketingPlan ? 9 : 8;
   // Step numbers: 1-5 same, then 6=Consult Scheduling (all plans), then for pro/growth: 7=Marketing, 8=Review; else: 7=Review
@@ -272,6 +272,8 @@ export default function SetupPage() {
     const payload = {
       practice_name: practiceInfo.practice_name,
       headline: practiceInfo.headline,
+      meta_pixel_id: practiceInfo.meta_pixel_id || "",
+      google_tag_id: practiceInfo.google_tag_id || "",
       priority_cases: cta.priority_cases,
       pricing: {
         ...pricing,
@@ -464,6 +466,25 @@ export default function SetupPage() {
                 Any pricing notes to show patients? <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional)</span>
                 <input value={pricing.custom_pricing_note} onChange={e => setPricing(p => ({ ...p, custom_pricing_note: e.target.value }))}
                   placeholder="e.g. Price includes final zirconia. Save $4,000 vs. standard rates. Limited time." style={{ ...inp, marginTop: 4 }} />
+              </label>
+
+              <label style={{ ...label, marginTop: 20 }}>
+                Meta Pixel ID <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional — for conversion tracking on your ads)</span>
+                <input
+                  value={practiceInfo.meta_pixel_id || ""}
+                  onChange={e => setPracticeInfo(p => ({ ...p, meta_pixel_id: e.target.value }))}
+                  placeholder="e.g. 1234567890123456"
+                  style={{ ...inp, marginTop: 4 }}
+                />
+              </label>
+              <label style={{ ...label, marginTop: 14 }}>
+                Google Tag ID <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional — GA4 or GTM tag for your landing page)</span>
+                <input
+                  value={practiceInfo.google_tag_id || ""}
+                  onChange={e => setPracticeInfo(p => ({ ...p, google_tag_id: e.target.value }))}
+                  placeholder="e.g. G-XXXXXXXXXX or GTM-XXXXXXX"
+                  style={{ ...inp, marginTop: 4, marginBottom: 16 }}
+                />
               </label>
             </>
           )}

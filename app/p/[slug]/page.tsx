@@ -51,8 +51,25 @@ function LeadForm({ tenantId, offer, offerDetail, interestOptions, focus, primar
         body: JSON.stringify({ ...form, ...utmParams }),  // UTMs ride along with form data
       });
       const data = await res.json();
-      if (data.ok) setDone(true);
-      else setErr("Something went wrong — please call us directly.");
+      if (data.ok) {
+        setDone(true);
+        // Meta pixel Lead event
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+          (window as any).fbq('track', 'Lead', {
+            content_name: 'Dental Inquiry',
+            content_category: 'Full Arch Implants',
+          });
+        }
+        // Google conversion event
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'generate_lead', {
+            event_category: 'contact_form',
+            event_label: 'landing_page',
+          });
+        }
+      } else {
+        setErr("Something went wrong — please call us directly.");
+      }
     } catch { setErr("Network error — please try again."); }
     finally { setSubmitting(false); }
   }
@@ -177,6 +194,43 @@ export default function LandingPage() {
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  // Inject per-tenant tracking pixels once content loads
+  useEffect(() => {
+    if (!content) return;
+    const c = content as any;
+
+    // Meta Pixel
+    if (c.meta_pixel_id) {
+      const script = document.createElement('script');
+      script.innerHTML = `!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '${c.meta_pixel_id}');
+fbq('track', 'PageView');`;
+      document.head.appendChild(script);
+    }
+
+    // Google Tag (GA4 or GTM gtag)
+    if (c.google_tag_id) {
+      const gtagJs = document.createElement('script');
+      gtagJs.async = true;
+      gtagJs.src = `https://www.googletagmanager.com/gtag/js?id=${c.google_tag_id}`;
+      document.head.appendChild(gtagJs);
+
+      const gtagConfig = document.createElement('script');
+      gtagConfig.innerHTML = `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${c.google_tag_id}');`;
+      document.head.appendChild(gtagConfig);
+    }
+  }, [content]);
 
   // Fetch practice-level marketing config (BUILD 2 & 4)
   useEffect(() => {
