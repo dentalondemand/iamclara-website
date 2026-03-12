@@ -7,7 +7,7 @@ const DASHBOARD_URL = 'https://app.iamclara.ai'
 
 // ── Founders spot counters — update these as spots fill ──────────────────────
 const GROWTH_FOUNDERS_SPOTS_TOTAL = 10
-const GROWTH_FOUNDERS_SPOTS_TAKEN = 0   // increment as practices sign up
+const GROWTH_FOUNDERS_SPOTS_TAKEN = 1   // increment as practices sign up
 const PRO_FOUNDERS_SPOTS_TOTAL    = 10
 const PRO_FOUNDERS_SPOTS_TAKEN    = 0   // increment as practices sign up
 // ─────────────────────────────────────────────────────────────────────────────
