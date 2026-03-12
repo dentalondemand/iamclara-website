@@ -244,6 +244,8 @@ export default function SetupPage() {
   const [stats, setStats] = useState({ implants_placed: "", years_practice: "", custom_stat_label: "", custom_stat_value: "" });
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
   const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "", meta_pixel_id: "", google_tag_id: "" });
+  const [marketType, setMarketType] = useState<"urban" | "suburban" | "rural">("suburban");
+  const MARKET_RADIUS: Record<string, number> = { urban: 10, suburban: 25, rural: 45 };
 
   const TOTAL = isMarketingPlan ? 9 : 8;
   // Step numbers: 1-5 same, then 6=Consult Scheduling (all plans), then for pro/growth: 7=Marketing, 8=Review; else: 7=Review
@@ -311,6 +313,8 @@ export default function SetupPage() {
           financing_available: mktFinancing,
           financing_details: mktFinancingDetails,
           tech_highlights: mktTech,
+          market_type: marketType,
+          default_ad_radius: MARKET_RADIUS[marketType],
           procedures: procedures.map(p => ({
             name: p.name === "Other" ? p.customName : p.name,
             slug: p.slug,
@@ -389,6 +393,27 @@ export default function SetupPage() {
               <label style={label}>Practice name<input value={practiceInfo.practice_name} onChange={e => setPracticeInfo(p => ({ ...p, practice_name: e.target.value }))} placeholder="Radiant Dental Care" style={inp} /></label>
 
               <label style={{ ...label, marginTop: 16 }}>
+                Where is your practice located?
+                <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400, marginLeft: 6 }}>Sets your default ad radius</span>
+              </label>
+              <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+                {([
+                  { val: "urban", emoji: "🏙️", label: "Urban", sub: "Dense city — 10 mi", example: "NYC, DC, Chicago" },
+                  { val: "suburban", emoji: "🏘️", label: "Suburban", sub: "Metro area — 25 mi", example: "Chevy Chase, Bethesda" },
+                  { val: "rural", emoji: "🌾", label: "Rural", sub: "Spread out — 45 mi", example: "Smaller towns" },
+                ] as const).map(opt => (
+                  <div key={opt.val} onClick={() => setMarketType(opt.val)}
+                    style={{ flex: 1, padding: "12px 8px", borderRadius: 10, cursor: "pointer", textAlign: "center",
+                      border: marketType === opt.val ? "1px solid rgba(45,212,191,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                      background: marketType === opt.val ? "rgba(45,212,191,0.1)" : "rgba(255,255,255,0.03)" }}>
+                    <div style={{ fontSize: 20, marginBottom: 4 }}>{opt.emoji}</div>
+                    <div style={{ color: "#fff", fontSize: 13, fontWeight: 600 }}>{opt.label}</div>
+                    <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 2 }}>{opt.sub}</div>
+                  </div>
+                ))}
+              </div>
+
+              <label style={{ ...label, marginTop: 0 }}>
                 What are you primarily marketing? <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(shapes the whole page)</span>
               </label>
               <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
