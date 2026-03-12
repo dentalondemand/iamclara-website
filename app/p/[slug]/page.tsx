@@ -362,31 +362,31 @@ gtag('config', '${c.google_tag_id}');`;
               {subheadline}
             </p>
 
-            {/* Hero Before/After — show first pair prominently */}
+            {/* Hero Before/After — stacked layout so teeth show full width */}
             {beforeAfters.length > 0 && (
               <div style={{ marginBottom: 32, borderRadius: 16, overflow: "hidden",
                 boxShadow: "0 8px 40px rgba(0,0,0,0.5)", maxWidth: 500 }}>
-                <div style={{ display: "flex" }}>
-                  <div style={{ flex: 1, position: "relative" }}>
-                    <img src={beforeAfters[0].before} alt="Before"
-                      style={{ width: "100%", display: "block", height: 220, objectFit: "cover" }} />
-                    <div style={{ position: "absolute", bottom: 8, left: 8,
-                      background: "rgba(0,0,0,0.75)", color: "#fff", fontSize: 11,
-                      fontWeight: 800, padding: "3px 10px", borderRadius: 4,
-                      letterSpacing: 1, textTransform: "uppercase" }}>
-                      Before
-                    </div>
+                {/* AFTER on top — show the result first */}
+                <div style={{ position: "relative" }}>
+                  <img src={beforeAfters[0].after} alt="After"
+                    style={{ width: "100%", display: "block", objectFit: "cover", objectPosition: "center top" }} />
+                  <div style={{ position: "absolute", top: 10, left: 10,
+                    background: P, color: "#fff", fontSize: 12,
+                    fontWeight: 800, padding: "4px 12px", borderRadius: 4,
+                    letterSpacing: 1, textTransform: "uppercase" }}>
+                    After
                   </div>
-                  <div style={{ width: 3, background: "#fff", flexShrink: 0 }} />
-                  <div style={{ flex: 1, position: "relative" }}>
-                    <img src={beforeAfters[0].after} alt="After"
-                      style={{ width: "100%", display: "block", height: 220, objectFit: "cover" }} />
-                    <div style={{ position: "absolute", bottom: 8, left: 8,
-                      background: P, color: "#fff", fontSize: 11,
-                      fontWeight: 800, padding: "3px 10px", borderRadius: 4,
-                      letterSpacing: 1, textTransform: "uppercase" }}>
-                      After
-                    </div>
+                </div>
+                <div style={{ height: 3, background: "#fff" }} />
+                {/* BEFORE below */}
+                <div style={{ position: "relative" }}>
+                  <img src={beforeAfters[0].before} alt="Before"
+                    style={{ width: "100%", display: "block", objectFit: "cover", objectPosition: "center top" }} />
+                  <div style={{ position: "absolute", top: 10, left: 10,
+                    background: "rgba(0,0,0,0.75)", color: "#fff", fontSize: 12,
+                    fontWeight: 800, padding: "4px 12px", borderRadius: 4,
+                    letterSpacing: 1, textTransform: "uppercase" }}>
+                    Before
                   </div>
                 </div>
                 {beforeAfters[0].label && (
@@ -661,24 +661,24 @@ gtag('config', '${c.google_tag_id}');`;
                 <div key={i} style={{ borderRadius: 16, overflow: "hidden",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.08)", background: "#fff",
                   border: "1px solid #e5e7eb" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-                    <div style={{ position: "relative" }}>
-                      <img src={pair.before} alt={`Before ${i + 1}`}
-                        style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }}
-                        onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
-                      <div style={{ position: "absolute", bottom: 6, left: 6, background: "rgba(0,0,0,0.6)",
-                        color: "#fff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>
-                        BEFORE
-                      </div>
+                  {/* Stacked: After on top, Before below */}
+                  <div style={{ position: "relative" }}>
+                    <img src={pair.after} alt={`After ${i + 1}`}
+                      style={{ width: "100%", objectFit: "cover", display: "block" }}
+                      onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
+                    <div style={{ position: "absolute", top: 8, left: 8, background: P,
+                      color: "#fff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>
+                      AFTER
                     </div>
-                    <div style={{ position: "relative" }}>
-                      <img src={pair.after} alt={`After ${i + 1}`}
-                        style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }}
-                        onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
-                      <div style={{ position: "absolute", bottom: 6, right: 6, background: P,
-                        color: "#fff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>
-                        AFTER
-                      </div>
+                  </div>
+                  <div style={{ height: 2, background: "#e5e7eb" }} />
+                  <div style={{ position: "relative" }}>
+                    <img src={pair.before} alt={`Before ${i + 1}`}
+                      style={{ width: "100%", objectFit: "cover", display: "block" }}
+                      onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
+                    <div style={{ position: "absolute", top: 8, left: 8, background: "rgba(0,0,0,0.6)",
+                      color: "#fff", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>
+                      BEFORE
                     </div>
                   </div>
                   {pair.label && (
