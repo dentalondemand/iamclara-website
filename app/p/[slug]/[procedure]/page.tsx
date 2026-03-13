@@ -63,6 +63,7 @@ function LeadForm({
   const [form, setForm] = useState({
     name: "",
     phone: "",
+    email: "",
     interest: procedureName,
     credit_score: "",
     timeline: "",
@@ -172,6 +173,13 @@ function LeadForm({
         placeholder="Phone number *"
         type="tel"
         required
+        style={inputStyle}
+      />
+      <input
+        value={form.email}
+        onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+        placeholder="Email address"
+        type="email"
         style={inputStyle}
       />
       <select
