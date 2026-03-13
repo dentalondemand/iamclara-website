@@ -97,8 +97,27 @@ function LeadForm({
         body: JSON.stringify({ ...form, ...utmParams }),  // UTMs ride along with form data
       });
       const data = await res.json();
-      if (data.ok) setDone(true);
-      else setErr("Something went wrong — please call us directly.");
+      if (data.ok) {
+        setDone(true);
+        // Meta Pixel — Lead conversion event
+        if (typeof window !== "undefined" && (window as any).fbq) {
+          (window as any).fbq("track", "Lead", {
+            content_name: procedureName,
+            content_category: "dental_procedure",
+            value: 0,
+            currency: "USD",
+          });
+        }
+        // GA4 — generate_lead event
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "generate_lead", {
+            currency: "USD",
+            value: 0,
+            event_category: "lead_form",
+            event_label: procedureName,
+          });
+        }
+      } else setErr("Something went wrong — please call us directly.");
     } catch {
       setErr("Network error — please try again.");
     } finally {
