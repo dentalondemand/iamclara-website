@@ -251,7 +251,26 @@ export default function ProcedureLandingPage() {
         if (!r.ok) return null;
         return r.json();
       })
-      .then(d => { if (d) setConfig(d); })
+      .then(d => {
+        if (!d) return;
+        setConfig(d);
+        // Inject per-tenant Meta Pixel (fires in addition to Clara's global pixel)
+        if (d.meta_pixel_id) {
+          const s = document.createElement("script");
+          s.innerHTML = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${d.meta_pixel_id}');fbq('track','PageView');`;
+          document.head.appendChild(s);
+        }
+        // Inject per-tenant Google Tag / GA4
+        if (d.google_tag_id) {
+          const gs = document.createElement("script");
+          gs.async = true;
+          gs.src = `https://www.googletagmanager.com/gtag/js?id=${d.google_tag_id}`;
+          document.head.appendChild(gs);
+          const gc = document.createElement("script");
+          gc.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${d.google_tag_id}');`;
+          document.head.appendChild(gc);
+        }
+      })
       .catch(() => { /* silently fall back to defaults */ })
       .finally(() => setLoading(false));
   }, [slug, procedure]);
