@@ -245,6 +245,38 @@ export default function SetupPage() {
   const [cta, setCta] = useState({ offer: "", offer_detail: "", priority_cases: "both" });
   const [practiceInfo, setPracticeInfo] = useState({ practice_name: "", headline: "", meta_pixel_id: "", google_tag_id: "" });
   const [marketType, setMarketType] = useState<"urban" | "suburban" | "rural">("suburban");
+
+  // IVR / office settings
+  type DayKey = "mon"|"tue"|"wed"|"thu"|"fri"|"sat"|"sun";
+  const DAY_LABELS: { key: DayKey; label: string }[] = [
+    { key: "mon", label: "Mon" }, { key: "tue", label: "Tue" }, { key: "wed", label: "Wed" },
+    { key: "thu", label: "Thu" }, { key: "fri", label: "Fri" },
+    { key: "sat", label: "Sat" }, { key: "sun", label: "Sun" },
+  ];
+  const [hours, setHours] = useState<Record<DayKey, { open: string; close: string; closed: boolean }>>({
+    mon: { open: "09:00", close: "17:00", closed: false },
+    tue: { open: "09:00", close: "17:00", closed: false },
+    wed: { open: "09:00", close: "17:00", closed: false },
+    thu: { open: "09:00", close: "17:00", closed: false },
+    fri: { open: "09:00", close: "17:00", closed: false },
+    sat: { open: "09:00", close: "13:00", closed: true },
+    sun: { open: "", close: "", closed: true },
+  });
+  const [alertEmail, setAlertEmail] = useState("");
+  const [ivrGreeting, setIvrGreeting] = useState("");
+
+  function fmt12(t: string) {
+    if (!t) return "";
+    const [hh, mm] = t.split(":").map(Number);
+    const ampm = hh >= 12 ? "pm" : "am";
+    const h = hh % 12 || 12;
+    return mm ? `${h}:${mm.toString().padStart(2,"0")}${ampm}` : `${h}${ampm}`;
+  }
+  function hoursToString(day: DayKey): string {
+    const d = hours[day];
+    if (d.closed || !d.open) return "Closed";
+    return `${fmt12(d.open)}–${fmt12(d.close)}`;
+  }
   const MARKET_RADIUS: Record<string, number> = { urban: 10, suburban: 25, rural: 45 };
 
   const TOTAL = isMarketingPlan ? 9 : 8;
@@ -305,6 +337,11 @@ export default function SetupPage() {
         buffer_minutes: Number(consultBuffer),
         max_per_day: Number(consultMaxPerDay),
         procedure_types: consultProcedures,
+      },
+      ivr_settings: {
+        hours: Object.fromEntries(DAY_LABELS.map(({ key }) => [key, hoursToString(key)])),
+        alert_email: alertEmail.trim(),
+        greeting: ivrGreeting.trim(),
       },
       ...(isMarketingPlan && {
         marketing: {
@@ -536,6 +573,60 @@ export default function SetupPage() {
                     </a>
                     . Starts with G-, GT-, or GTM-.
                   </span>
+                </label>
+              </div>
+
+              {/* ── Office Hours & IVR ── */}
+              <div style={{ marginTop: 28, padding: "16px 18px", background: "rgba(45,212,191,0.07)", borderRadius: 12, border: "1px solid rgba(45,212,191,0.18)" }}>
+                <p style={{ margin: "0 0 4px", fontWeight: 600, fontSize: 14, color: "#2DD4BF" }}>🕐 Office Hours</p>
+                <p style={{ margin: "0 0 16px", fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
+                  Clara uses these to answer &quot;are you open?&quot; questions and route after-hours callers correctly.
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {DAY_LABELS.map(({ key, label: dayLabel }) => (
+                    <div key={key} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 36, fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>{dayLabel}</div>
+                      <div
+                        onClick={() => setHours(h => ({ ...h, [key]: { ...h[key], closed: !h[key].closed } }))}
+                        style={{
+                          width: 44, height: 24, borderRadius: 12, cursor: "pointer", position: "relative", flexShrink: 0,
+                          background: hours[key].closed ? "rgba(255,255,255,0.1)" : "rgba(45,212,191,0.5)",
+                          transition: "background 0.2s",
+                        }}>
+                        <div style={{
+                          position: "absolute", top: 3, left: hours[key].closed ? 3 : 23,
+                          width: 18, height: 18, borderRadius: "50%", background: "#fff", transition: "left 0.2s",
+                        }} />
+                      </div>
+                      {hours[key].closed ? (
+                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontStyle: "italic" }}>Closed</span>
+                      ) : (
+                        <>
+                          <input type="time" value={hours[key].open}
+                            onChange={e => setHours(h => ({ ...h, [key]: { ...h[key], open: e.target.value } }))}
+                            style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 6, color: "#fff", padding: "3px 8px", fontSize: 13 }} />
+                          <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 12 }}>–</span>
+                          <input type="time" value={hours[key].close}
+                            onChange={e => setHours(h => ({ ...h, [key]: { ...h[key], close: e.target.value } }))}
+                            style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 6, color: "#fff", padding: "3px 8px", fontSize: 13 }} />
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <label style={{ ...label, marginTop: 20 }}>
+                  Alert email <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(where Clara sends call & lead notifications)</span>
+                  <input value={alertEmail} onChange={e => setAlertEmail(e.target.value)}
+                    placeholder="doctor@yourpractice.com" type="email"
+                    style={{ ...inp, marginTop: 4 }} />
+                </label>
+
+                <label style={{ ...label, marginTop: 14 }}>
+                  Clara&apos;s greeting <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional — leave blank for default)</span>
+                  <input value={ivrGreeting} onChange={e => setIvrGreeting(e.target.value)}
+                    placeholder={`e.g. Thanks for calling ${practiceInfo.practice_name || "our office"}, this is Clara, an AI assistant. How can I help you?`}
+                    style={{ ...inp, marginTop: 4 }} />
                 </label>
               </div>
             </>
