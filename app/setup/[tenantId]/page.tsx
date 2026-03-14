@@ -467,7 +467,7 @@ export default function SetupPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 {[
-                  ["Implant consultation", "implant_consult", "Free"],
+                  ["Consultation", "implant_consult", "Free"],
                   ["Single implant (starting)", "single_implant", "e.g. $3,500"],
                   ["Full arch / All-on-4 (starting)", "full_arch", "e.g. $21,000"],
                   ["Veneer (per tooth)", "veneer_per_tooth", "e.g. $1,800"],
@@ -912,7 +912,7 @@ export default function SetupPage() {
               <label style={label}>
                 Offer headline <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(what they get for free)</span>
                 <input value={cta.offer} onChange={e => setCta(p => ({ ...p, offer: e.target.value }))}
-                  placeholder='e.g. "Free Implant Consultation + 3D Scan (Worth $350)"' style={{ ...inp, marginTop: 4 }} />
+                  placeholder='e.g. "Free Consultation + 3D Scan (Worth $350)"' style={{ ...inp, marginTop: 4 }} />
               </label>
               <label style={{ ...label, marginTop: 14 }}>
                 Offer details <span style={{ color: "rgba(255,255,255,0.35)", fontWeight: 400 }}>(optional fine print)</span>
@@ -1104,7 +1104,7 @@ export default function SetupPage() {
                 <div style={{ marginBottom: 24 }}>
                   <div style={label}>Procedure types to book</div>
                   {[
-                    ["implant_consult", "Full arch / implant consults"],
+                    ["implant_consult", "Full arch / consults"],
                     ["cosmetic_consult", "Cosmetic / veneers consults"],
                     ["new_patient", "General new patient exams"],
                     ["emergency", "Emergency appointments"],

@@ -128,7 +128,7 @@ function HowItWorks() {
     {
       num: '02',
       title: 'Clara understands and engages',
-      desc: 'Using AI, Clara identifies intent (new patient, implant consult, emergency, etc.), collects name and contact info, and holds a natural conversation.',
+      desc: 'Using AI, Clara identifies intent (new patient, consult, emergency, etc.), collects name and contact info, and holds a natural conversation.',
       icon: '🤖',
     },
     {

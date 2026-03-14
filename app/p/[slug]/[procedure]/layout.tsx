@@ -38,7 +38,7 @@ function toReadable(id: string): string {
     whitening: "Teeth Whitening",
     crowns: "Same-Day Crowns",
     bone_graft: "Bone Grafting",
-    implant_consult: "Implant Consultation",
+    implant_consult: "Consultation",
   };
   return map[id] || id.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 }
