@@ -1,6 +1,6 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
+// SERVER COMPONENT — data fetched at request time, no CORS issues
+import type { Metadata } from "next";
+import { LeadForm, ScrollToFormButton, StickyMobileCTA, PixelInjector } from "./LandingClient";
 
 const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
 
@@ -22,251 +22,43 @@ const THEMES: Record<string, { primary: string; accent: string; hero: string }> 
   slate:  { primary: "#475569", accent: "#94a3b8", hero: "135deg, #0f1117 0%, #1a1f2e 60%, #252b3b 100%" },
 };
 
-interface PracticeMarketingConfig {
-  practice_name?: string;
-  theme?: string;
-  cta_offer?: string;
-  cta_offer_detail?: string;
-  // Procedure fields (returned flat by the API)
-  name?: string;
-  headline?: string;
-  starting_price?: number;
-  selling_points?: string[];
-  free_consultation?: boolean;
-  financing_available?: boolean;
-  financing_details?: string;
-  practice_differentiators?: string;
-  tech_highlights?: string[];
-  media?: {
-    before_after?: { before: string; after: string; label?: string }[];
-    hero_images?: string[];
-    testimonial_videos?: string[];
-    doctor_videos?: string[];
-  };
-}
-
-// ── Lead Capture Form ──────────────────────────────────────────────────────────
-function LeadForm({
-  tenantId,
-  procedureName,
-  offer,
-  offerDetail,
-  primary = "#0d9488",
-  accent = "#2DD4BF",
-}: {
-  tenantId: string;
-  procedureName: string;
-  offer?: string;
-  offerDetail?: string;
-  primary?: string;
-  accent?: string;
-}) {
-  const P = primary;
-  const A = accent;
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    interest: procedureName,
-    credit_score: "",
-    timeline: "",
-    savings: "",
-    procedure_detail: procedureName,
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
-  const [err, setErr] = useState("");
-
-  // Capture UTM params from URL so Clara knows which Meta adset sent this lead
-  const [utmParams, setUtmParams] = useState<Record<string, string>>({});
-  useEffect(() => {
-    const sp = new URLSearchParams(window.location.search);
-    const utm: Record<string, string> = {};
-    for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
-      const v = sp.get(key);
-      if (v) utm[key] = v;
-    }
-    setUtmParams(utm);
-  }, []);
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!form.phone) { setErr("Please enter your phone number."); return; }
-    setSubmitting(true);
-    setErr("");
-    try {
-      const res = await fetch(`${BACKEND}/public/${tenantId}/lead`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, ...utmParams }),  // UTMs ride along with form data
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setDone(true);
-        // Meta Pixel — Lead conversion event
-        if (typeof window !== "undefined" && (window as any).fbq) {
-          (window as any).fbq("track", "Lead", {
-            content_name: procedureName,
-            content_category: "dental_procedure",
-            value: 0,
-            currency: "USD",
-          });
-        }
-        // GA4 — generate_lead event
-        if (typeof window !== "undefined" && (window as any).gtag) {
-          (window as any).gtag("event", "generate_lead", {
-            currency: "USD",
-            value: 0,
-            event_category: "lead_form",
-            event_label: procedureName,
-          });
-        }
-      } else setErr("Something went wrong — please call us directly.");
-    } catch {
-      setErr("Network error — please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+async function fetchConfig(slug: string, procedure: string) {
+  try {
+    const res = await fetch(
+      `${BACKEND}/marketing/config/public?tenant_id=${encodeURIComponent(slug)}&procedure_id=${encodeURIComponent(procedure)}`,
+      { next: { revalidate: 60 } } // cache for 60s, then refresh
+    );
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
   }
-
-  if (done) return (
-    <div style={{
-      background: "rgba(22,163,74,0.12)", border: "1px solid rgba(22,163,74,0.3)",
-      borderRadius: 14, padding: "24px 20px", textAlign: "center",
-    }}>
-      <div style={{ fontSize: 36, marginBottom: 8 }}>📞</div>
-      <div style={{ fontWeight: 700, fontSize: 17, color: "#16a34a", marginBottom: 6 }}>We&apos;ll call you shortly!</div>
-      <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 14 }}>
-        A team member will reach out within minutes during business hours.
-      </div>
-    </div>
-  );
-
-  const inputStyle: React.CSSProperties = {
-    padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
-    background: "rgba(255,255,255,0.08)", color: "#fff", fontSize: 15,
-    outline: "none", width: "100%", boxSizing: "border-box",
-  };
-  const selectStyle = (hasValue: boolean): React.CSSProperties => ({
-    padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
-    background: "rgba(20,30,45,0.95)", color: hasValue ? "#fff" : "rgba(255,255,255,0.45)",
-    fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box",
-  });
-
-  return (
-    <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      {offer && (
-        <div style={{
-          background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)",
-          borderRadius: 10, padding: "10px 14px", marginBottom: 4,
-        }}>
-          <div style={{ color: A, fontWeight: 700, fontSize: 13 }}>🎁 {offer}</div>
-          {offerDetail && <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 2 }}>{offerDetail}</div>}
-        </div>
-      )}
-      <input
-        value={form.name}
-        onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-        placeholder="Your name"
-        style={inputStyle}
-      />
-      <input
-        value={form.phone}
-        onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
-        placeholder="Phone number *"
-        type="tel"
-        required
-        style={inputStyle}
-      />
-      {/* Hidden field — procedure pre-filled from the ad */}
-      <input type="hidden" value={form.procedure_detail} readOnly />
-      {err && <div style={{ color: "#f87171", fontSize: 13 }}>{err}</div>}
-      <button
-        type="submit"
-        disabled={submitting}
-        style={{
-          padding: "15px", borderRadius: 12, border: "none", background: P,
-          color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer",
-          opacity: submitting ? 0.7 : 1, letterSpacing: 0.3,
-        }}
-      >
-        {submitting ? "Sending…" : "Get My Free Consultation →"}
-      </button>
-      <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 11, margin: 0, textAlign: "center" }}>
-        No spam. We&apos;ll call you — not the other way around.
-      </p>
-    </form>
-  );
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
-export default function ProcedureLandingPage() {
-  const params = useParams();
-  const slug = (params?.slug as string) || "";
-  const procedure = (params?.procedure as string) || "";
+export async function generateMetadata(
+  { params }: { params: { slug: string; procedure: string } }
+): Promise<Metadata> {
+  const cfg = await fetchConfig(params.slug, params.procedure);
+  const practiceName = cfg?.practice_name || params.slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+  const procName = cfg?.name || params.procedure.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+  return { title: `${procName} | ${practiceName}` };
+}
 
-  const [config, setConfig] = useState<PracticeMarketingConfig | null>(null);
-  const [loading, setLoading] = useState(true);
-  const formRef = useRef<HTMLDivElement>(null);
-
-  // Set browser tab title: "Full Arch Implants | Radiant Dental Care"
-  useEffect(() => {
-    const pName = config?.practice_name || slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    const procName = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    document.title = `${procName} | ${pName}`;
-  }, [config, slug, procedure]);
-
-  useEffect(() => {
-    fetch(`${BACKEND}/marketing/config/public?tenant_id=${encodeURIComponent(slug)}&procedure_id=${encodeURIComponent(procedure)}`)
-      .then(r => {
-        if (!r.ok) return null;
-        return r.json();
-      })
-      .then(d => {
-        if (!d) return;
-        setConfig(d);
-        // Inject per-tenant Meta Pixel (fires in addition to Clara's global pixel)
-        if (d.meta_pixel_id) {
-          const s = document.createElement("script");
-          s.innerHTML = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${d.meta_pixel_id}');fbq('track','PageView');`;
-          document.head.appendChild(s);
-        }
-        // Inject per-tenant Google Tag / GA4
-        if (d.google_tag_id) {
-          const gs = document.createElement("script");
-          gs.async = true;
-          gs.src = `https://www.googletagmanager.com/gtag/js?id=${d.google_tag_id}`;
-          document.head.appendChild(gs);
-          const gc = document.createElement("script");
-          gc.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${d.google_tag_id}');`;
-          document.head.appendChild(gc);
-        }
-      })
-      .catch(() => { /* silently fall back to defaults */ })
-      .finally(() => setLoading(false));
-  }, [slug, procedure]);
-
-  if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#0a1628", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 15 }}>Loading…</div>
-    </div>
-  );
+export default async function ProcedureLandingPage(
+  { params }: { params: { slug: string; procedure: string } }
+) {
+  const { slug, procedure } = params;
+  const config = await fetchConfig(slug, procedure);
 
   // ── Resolve values (with fallbacks) ──
-  const practiceName =
-    config?.practice_name ||
-    slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-
+  const practiceName = config?.practice_name || slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
   const theme = THEMES[config?.theme || "teal"];
   const P = theme.primary;
   const A = theme.accent;
 
   const beforeAfterPairs: { before: string; after: string; label?: string }[] =
     config?.media?.before_after || [];
-  const procedureDisplayName =
-    config?.name ||
-    procedure.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-
+  const procedureDisplayName = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
   const headline = config?.headline || `${procedureDisplayName} — Expert Care, Beautiful Results`;
   const sellingPoints: string[] = config?.selling_points || [];
   const techHighlights: string[] = config?.tech_highlights || [];
@@ -275,151 +67,76 @@ export default function ProcedureLandingPage() {
   const startingPrice = config?.starting_price;
   const financingDetails = config?.financing_details;
   const practiceDiffs = config?.practice_differentiators;
-
   const ctaOffer = config?.cta_offer ?? (freeConsult ? "Free Consultation — No Obligation" : undefined);
   const ctaOfferDetail = config?.cta_offer_detail;
 
   return (
     <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", background: "#fff" }}>
 
+      {/* Pixel injection — client only */}
+      <PixelInjector metaPixelId={config?.meta_pixel_id} googleTagId={config?.google_tag_id} />
+
       {/* ── HERO ── */}
-      <section style={{
-        background: `linear-gradient(${theme.hero})`,
-        padding: "0 20px", minHeight: "100vh", display: "flex", flexDirection: "column",
-      }}>
+      <section style={{ background: `linear-gradient(${theme.hero})`, padding: "0 20px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         {/* Nav */}
-        <div style={{
-          maxWidth: 1100, margin: "0 auto", width: "100%", padding: "20px 0",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ color: "#fff", fontWeight: 800, fontSize: 18 }}>{practiceName}</div>
             <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12 }}>Powered by Clara AI</div>
           </div>
-          <button
-            onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
-            style={{
-              padding: "10px 20px", borderRadius: 50, border: "none", background: P,
-              color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer",
-            }}
-          >
-            Free Consultation
-          </button>
+          <ScrollToFormButton primary={P}>Free Consultation</ScrollToFormButton>
         </div>
 
         {/* Hero content */}
-        <div style={{
-          maxWidth: 1100, margin: "0 auto", width: "100%", flex: 1,
-          display: "flex", alignItems: "center", gap: 60, padding: "40px 0 60px",
-          flexWrap: "wrap",
-        }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", flex: 1, display: "flex", alignItems: "center", gap: 60, padding: "40px 0 60px", flexWrap: "wrap" }}>
           {/* Left: copy */}
           <div style={{ flex: "1 1 420px" }}>
-            {/* Procedure badge */}
-            <div style={{
-              display: "inline-block", background: "rgba(13,148,136,0.2)",
-              border: "1px solid rgba(13,148,136,0.4)", borderRadius: 20,
-              padding: "4px 14px", fontSize: 12, color: A, fontWeight: 700,
-              marginBottom: 20, letterSpacing: 1,
-            }}>
+            <div style={{ display: "inline-block", background: "rgba(13,148,136,0.2)", border: "1px solid rgba(13,148,136,0.4)", borderRadius: 20, padding: "4px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 20, letterSpacing: 1 }}>
               {practiceName.toUpperCase()} · {procedureDisplayName.toUpperCase()}
             </div>
 
-            <h1 style={{
-              color: "#fff", fontSize: "clamp(32px, 5vw, 54px)", fontWeight: 900,
-              lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1,
-            }}>
+            <h1 style={{ color: "#fff", fontSize: "clamp(32px, 5vw, 54px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1 }}>
               {headline}
             </h1>
 
-            {/* Price callout */}
             {startingPrice && (
-              <div style={{
-                display: "inline-block", background: "rgba(45,212,191,0.15)",
-                border: "1px solid rgba(45,212,191,0.4)", borderRadius: 12,
-                padding: "8px 20px", marginBottom: 24,
-              }}>
+              <div style={{ display: "inline-block", background: "rgba(45,212,191,0.15)", border: "1px solid rgba(45,212,191,0.4)", borderRadius: 12, padding: "8px 20px", marginBottom: 24 }}>
                 <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, marginRight: 6 }}>Starting at</span>
-                <span style={{ color: A, fontWeight: 800, fontSize: 24 }}>
-                  ${startingPrice.toLocaleString()}
-                </span>
+                <span style={{ color: A, fontWeight: 800, fontSize: 24 }}>${startingPrice.toLocaleString()}</span>
               </div>
             )}
 
-            {/* Selling points */}
             {sellingPoints.length > 0 && (
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
-                {sellingPoints.map((pt, i) => (
+                {sellingPoints.map((pt: string, i: number) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                    <div style={{
-                      width: 22, height: 22, borderRadius: "50%",
-                      background: "rgba(45,212,191,0.2)", border: "1px solid rgba(45,212,191,0.4)",
-                      color: A, fontSize: 12, fontWeight: 700,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      flexShrink: 0, marginTop: 1,
-                    }}>
-                      ✓
-                    </div>
+                    <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(45,212,191,0.2)", border: "1px solid rgba(45,212,191,0.4)", color: A, fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>✓</div>
                     <span style={{ color: "rgba(255,255,255,0.85)", fontSize: 16, lineHeight: 1.5 }}>{pt}</span>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Badges */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 28 }}>
               {freeConsult && (
-                <div style={{
-                  background: "rgba(45,212,191,0.15)", border: "1px solid rgba(45,212,191,0.35)",
-                  borderRadius: 20, padding: "7px 16px", fontSize: 13, color: A, fontWeight: 700,
-                }}>
-                  🆓 Free Consultation
-                </div>
+                <div style={{ background: "rgba(45,212,191,0.15)", border: "1px solid rgba(45,212,191,0.35)", borderRadius: 20, padding: "7px 16px", fontSize: 13, color: A, fontWeight: 700 }}>🆓 Free Consultation</div>
               )}
               {financingAvailable && (
-                <div style={{
-                  background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.25)",
-                  borderRadius: 20, padding: "7px 16px", fontSize: 13, color: A, fontWeight: 600,
-                }}>
+                <div style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.25)", borderRadius: 20, padding: "7px 16px", fontSize: 13, color: A, fontWeight: 600 }}>
                   💳 Financing Available
-                  {financingDetails && (
-                    <span style={{ color: "rgba(255,255,255,0.5)", fontWeight: 400, marginLeft: 4 }}>
-                      · {financingDetails}
-                    </span>
-                  )}
+                  {financingDetails && <span style={{ color: "rgba(255,255,255,0.5)", fontWeight: 400, marginLeft: 4 }}>· {financingDetails}</span>}
                 </div>
               )}
-              <div style={{
-                background: "rgba(255,255,255,0.06)", borderRadius: 20,
-                padding: "7px 16px", fontSize: 13, color: "rgba(255,255,255,0.7)",
-              }}>
-                📞 Call back in minutes
-              </div>
-              <div style={{
-                background: "rgba(255,255,255,0.06)", borderRadius: 20,
-                padding: "7px 16px", fontSize: 13, color: "rgba(255,255,255,0.7)",
-              }}>
-                🔒 No obligation
-              </div>
+              <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 16px", fontSize: 13, color: "rgba(255,255,255,0.7)" }}>📞 Call back in minutes</div>
+              <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 16px", fontSize: 13, color: "rgba(255,255,255,0.7)" }}>🔒 No obligation</div>
             </div>
 
-            {/* Tech highlights */}
             {techHighlights.length > 0 && (
               <div>
-                <div style={{
-                  color: "rgba(255,255,255,0.4)", fontSize: 12, fontWeight: 700,
-                  letterSpacing: 1, marginBottom: 10, textTransform: "uppercase",
-                }}>
-                  Advanced Technology
-                </div>
+                <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, fontWeight: 700, letterSpacing: 1, marginBottom: 10, textTransform: "uppercase" }}>Advanced Technology</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {techHighlights.map(key => (
-                    <div key={key} style={{
-                      background: "rgba(255,255,255,0.07)",
-                      border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8,
-                      padding: "5px 12px", fontSize: 12,
-                      color: "rgba(255,255,255,0.7)", fontWeight: 600,
-                    }}>
+                  {techHighlights.map((key: string) => (
+                    <div key={key} style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "5px 12px", fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
                       ⚡ {TECH_LABELS[key] || key}
                     </div>
                   ))}
@@ -429,28 +146,10 @@ export default function ProcedureLandingPage() {
           </div>
 
           {/* Right: form */}
-          <div
-            ref={formRef}
-            style={{
-              flex: "0 1 380px", background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: 28,
-              backdropFilter: "blur(10px)",
-            }}
-          >
-            <h2 style={{ color: "#fff", fontSize: 20, fontWeight: 700, margin: "0 0 6px" }}>
-              Get Your Free Consultation
-            </h2>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "0 0 20px" }}>
-              Takes 10 seconds. We&apos;ll call you.
-            </p>
-            <LeadForm
-              tenantId={slug}
-              procedureName={procedureDisplayName}
-              offer={ctaOffer}
-              offerDetail={ctaOfferDetail}
-              primary={P}
-              accent={A}
-            />
+          <div id="lead-form" style={{ flex: "0 1 380px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: 28, backdropFilter: "blur(10px)" }}>
+            <h2 style={{ color: "#fff", fontSize: 20, fontWeight: 700, margin: "0 0 6px" }}>Get Your Free Consultation</h2>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "0 0 20px" }}>Takes 10 seconds. We&apos;ll call you.</p>
+            <LeadForm tenantId={slug} procedureName={procedureDisplayName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
           </div>
         </div>
       </section>
@@ -460,22 +159,20 @@ export default function ProcedureLandingPage() {
         <section style={{ padding: "70px 20px", background: "#0a1628" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ textAlign: "center", marginBottom: 40 }}>
-              <div style={{ color: A, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 10 }}>
-                REAL PATIENT RESULTS
-              </div>
-              <h2 style={{ color: "#fff", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: 0 }}>
-                Before &amp; After
-              </h2>
+              <div style={{ color: A, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 10 }}>REAL PATIENT RESULTS</div>
+              <h2 style={{ color: "#fff", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: 0 }}>Before &amp; After</h2>
             </div>
             <div style={{ display: "flex", gap: 24, flexWrap: "wrap", justifyContent: "center" }}>
-              {beforeAfterPairs.map((pair, i) => (
+              {beforeAfterPairs.map((pair: { before: string; after: string; label?: string }, i: number) => (
                 <div key={i} style={{ flex: "1 1 300px", maxWidth: 360 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, borderRadius: 16, overflow: "hidden" }}>
                     <div style={{ position: "relative" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={pair.before} alt="Before" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
                       <div style={{ position: "absolute", bottom: 8, left: 8, background: "rgba(0,0,0,0.7)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>BEFORE</div>
                     </div>
                     <div style={{ position: "relative" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={pair.after} alt="After" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
                       <div style={{ position: "absolute", bottom: 8, right: 8, background: P, color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>AFTER</div>
                     </div>
@@ -487,16 +184,12 @@ export default function ProcedureLandingPage() {
         </section>
       )}
 
-      {/* ── PRACTICE DIFFERENTIATORS (if available) ── */}
+      {/* ── PRACTICE DIFFERENTIATORS ── */}
       {practiceDiffs && (
         <section style={{ padding: "60px 20px", background: "#fff" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-            <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 20 }}>
-              WHY {practiceName.toUpperCase()}
-            </div>
-            <p style={{ color: "#374151", fontSize: 17, lineHeight: 1.8, margin: "0 auto", maxWidth: 680 }}>
-              {practiceDiffs}
-            </p>
+            <div style={{ color: P, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 20 }}>WHY {practiceName.toUpperCase()}</div>
+            <p style={{ color: "#374151", fontSize: 17, lineHeight: 1.8, margin: "0 auto", maxWidth: 680 }}>{practiceDiffs}</p>
           </div>
         </section>
       )}
@@ -504,42 +197,13 @@ export default function ProcedureLandingPage() {
       {/* ── FINAL CTA ── */}
       <section style={{ padding: "80px 20px", background: `linear-gradient(${theme.hero})` }}>
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
-          <h2 style={{ color: "#fff", fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, margin: "0 0 16px" }}>
-            Ready to get started?
-          </h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 17, margin: "0 0 40px", lineHeight: 1.6 }}>
-            Your free consultation takes about an hour. We&apos;ll give you a complete treatment plan and exact pricing — no pressure, no surprises.
-          </p>
-          <LeadForm
-            tenantId={slug}
-            procedureName={procedureDisplayName}
-            offer={ctaOffer}
-            offerDetail={ctaOfferDetail}
-            primary={P}
-            accent={A}
-          />
+          <h2 style={{ color: "#fff", fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, margin: "0 0 16px" }}>Ready to get started?</h2>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 17, margin: "0 0 40px", lineHeight: 1.6 }}>Your free consultation takes about an hour. We&apos;ll give you a complete treatment plan and exact pricing — no pressure, no surprises.</p>
+          <LeadForm tenantId={slug} procedureName={procedureDisplayName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
         </div>
       </section>
 
-      {/* ── Sticky Mobile CTA ── */}
-      <div style={{
-        position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 999,
-        padding: "12px 16px", background: "rgba(6,14,26,0.97)",
-        borderTop: `2px solid ${P}`,
-        display: "flex", gap: 10, alignItems: "center",
-        // Hide on desktop (wide screens)
-      }} className="mobile-sticky-cta">
-        <button
-          onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
-          style={{
-            flex: 1, padding: "14px", borderRadius: 12, border: "none",
-            background: P, color: "#fff", fontSize: 16, fontWeight: 700,
-            cursor: "pointer", letterSpacing: 0.3,
-          }}
-        >
-          Get My Free Consultation →
-        </button>
-      </div>
+      <StickyMobileCTA primary={P} />
 
       {/* ── Footer ── */}
       <footer style={{ background: "#060e1a", padding: "24px 20px 80px", textAlign: "center" }}>
