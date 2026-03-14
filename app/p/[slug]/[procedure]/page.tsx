@@ -259,6 +259,9 @@ export default function ProcedureLandingPage() {
   const A = theme.accent;
 
   const proc = config?.procedure;
+  const beforeAfterPairs: { before: string; after: string; label?: string }[] =
+    (config as any)?.procedure?.media?.before_after ||
+    (config as any)?.media?.before_after || [];
   const procedureDisplayName =
     proc?.name ||
     procedure.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
@@ -450,6 +453,38 @@ export default function ProcedureLandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── BEFORE / AFTER GALLERY ── */}
+      {beforeAfterPairs.length > 0 && (
+        <section style={{ padding: "70px 20px", background: "#0a1628" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 40 }}>
+              <div style={{ color: A, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 10 }}>
+                REAL PATIENT RESULTS
+              </div>
+              <h2 style={{ color: "#fff", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: 0 }}>
+                Before &amp; After
+              </h2>
+            </div>
+            <div style={{ display: "flex", gap: 24, flexWrap: "wrap", justifyContent: "center" }}>
+              {beforeAfterPairs.map((pair, i) => (
+                <div key={i} style={{ flex: "1 1 300px", maxWidth: 360 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, borderRadius: 16, overflow: "hidden" }}>
+                    <div style={{ position: "relative" }}>
+                      <img src={pair.before} alt="Before" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
+                      <div style={{ position: "absolute", bottom: 8, left: 8, background: "rgba(0,0,0,0.7)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>BEFORE</div>
+                    </div>
+                    <div style={{ position: "relative" }}>
+                      <img src={pair.after} alt="After" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
+                      <div style={{ position: "absolute", bottom: 8, right: 8, background: P, color: "#fff", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>AFTER</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── PRACTICE DIFFERENTIATORS (if available) ── */}
       {practiceDiffs && (
