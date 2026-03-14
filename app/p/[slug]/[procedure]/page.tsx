@@ -22,24 +22,27 @@ const THEMES: Record<string, { primary: string; accent: string; hero: string }> 
   slate:  { primary: "#475569", accent: "#94a3b8", hero: "135deg, #0f1117 0%, #1a1f2e 60%, #252b3b 100%" },
 };
 
-interface ProcedureConfig {
-  name: string;
-  headline: string;
-  starting_price?: number;
-  selling_points: string[];
-  free_consultation: boolean;
-  financing_available: boolean;
-  financing_details?: string;
-  practice_differentiators?: string;
-  tech_highlights?: string[];
-}
-
 interface PracticeMarketingConfig {
   practice_name?: string;
   theme?: string;
   cta_offer?: string;
   cta_offer_detail?: string;
-  procedure?: ProcedureConfig;
+  // Procedure fields (returned flat by the API)
+  name?: string;
+  headline?: string;
+  starting_price?: number;
+  selling_points?: string[];
+  free_consultation?: boolean;
+  financing_available?: boolean;
+  financing_details?: string;
+  practice_differentiators?: string;
+  tech_highlights?: string[];
+  media?: {
+    before_after?: { before: string; after: string; label?: string }[];
+    hero_images?: string[];
+    testimonial_videos?: string[];
+    doctor_videos?: string[];
+  };
 }
 
 // ── Lead Capture Form ──────────────────────────────────────────────────────────
@@ -209,7 +212,7 @@ export default function ProcedureLandingPage() {
   // Set browser tab title: "Full Arch Implants | Radiant Dental Care"
   useEffect(() => {
     const pName = config?.practice_name || slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    const procName = config?.procedure?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    const procName = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
     document.title = `${procName} | ${pName}`;
   }, [config, slug, procedure]);
 
@@ -258,22 +261,20 @@ export default function ProcedureLandingPage() {
   const P = theme.primary;
   const A = theme.accent;
 
-  const proc = config?.procedure;
   const beforeAfterPairs: { before: string; after: string; label?: string }[] =
-    (config as any)?.procedure?.media?.before_after ||
-    (config as any)?.media?.before_after || [];
+    config?.media?.before_after || [];
   const procedureDisplayName =
-    proc?.name ||
+    config?.name ||
     procedure.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 
-  const headline = proc?.headline || `${procedureDisplayName} — Expert Care, Beautiful Results`;
-  const sellingPoints: string[] = proc?.selling_points || [];
-  const techHighlights: string[] = proc?.tech_highlights || [];
-  const freeConsult = proc?.free_consultation !== false;
-  const financingAvailable = proc?.financing_available !== false;
-  const startingPrice = proc?.starting_price;
-  const financingDetails = proc?.financing_details;
-  const practiceDiffs = proc?.practice_differentiators;
+  const headline = config?.headline || `${procedureDisplayName} — Expert Care, Beautiful Results`;
+  const sellingPoints: string[] = config?.selling_points || [];
+  const techHighlights: string[] = config?.tech_highlights || [];
+  const freeConsult = config?.free_consultation !== false;
+  const financingAvailable = config?.financing_available !== false;
+  const startingPrice = config?.starting_price;
+  const financingDetails = config?.financing_details;
+  const practiceDiffs = config?.practice_differentiators;
 
   const ctaOffer = config?.cta_offer ?? (freeConsult ? "Free Consultation — No Obligation" : undefined);
   const ctaOfferDetail = config?.cta_offer_detail;
