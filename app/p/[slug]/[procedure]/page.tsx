@@ -175,46 +175,6 @@ function LeadForm({
         required
         style={inputStyle}
       />
-      <input
-        value={form.email}
-        onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-        placeholder="Email address"
-        type="email"
-        style={inputStyle}
-      />
-      <select
-        value={form.credit_score}
-        onChange={e => setForm(p => ({ ...p, credit_score: e.target.value }))}
-        style={selectStyle(!!form.credit_score)}
-      >
-        <option value="">What is your credit score range?</option>
-        <option value="Excellent (750+)">Excellent (750+)</option>
-        <option value="Good (650–749)">Good (650–749)</option>
-        <option value="Fair (550–649)">Fair (550–649)</option>
-        <option value="Below 550">Below 550</option>
-        <option value="Not sure">Not sure</option>
-      </select>
-      <select
-        value={form.timeline}
-        onChange={e => setForm(p => ({ ...p, timeline: e.target.value }))}
-        style={selectStyle(!!form.timeline)}
-      >
-        <option value="">When are you looking to get started?</option>
-        <option value="As soon as possible">As soon as possible</option>
-        <option value="Within 1–3 months">Within 1–3 months</option>
-        <option value="Within 3–6 months">Within 3–6 months</option>
-        <option value="6+ months from now">6+ months from now</option>
-      </select>
-      <select
-        value={form.savings}
-        onChange={e => setForm(p => ({ ...p, savings: e.target.value }))}
-        style={selectStyle(!!form.savings)}
-      >
-        <option value="">Do you have savings set aside?</option>
-        <option value="Yes, I have funds ready">Yes, I have funds ready</option>
-        <option value="I'll need financing">I&apos;ll need financing</option>
-        <option value="Not sure yet">Not sure yet</option>
-      </select>
       {/* Hidden field — procedure pre-filled from the ad */}
       <input type="hidden" value={form.procedure_detail} readOnly />
       {err && <div style={{ color: "#f87171", fontSize: 13 }}>{err}</div>}
@@ -525,8 +485,28 @@ export default function ProcedureLandingPage() {
         </div>
       </section>
 
+      {/* ── Sticky Mobile CTA ── */}
+      <div style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 999,
+        padding: "12px 16px", background: "rgba(6,14,26,0.97)",
+        borderTop: `2px solid ${P}`,
+        display: "flex", gap: 10, alignItems: "center",
+        // Hide on desktop (wide screens)
+      }} className="mobile-sticky-cta">
+        <button
+          onClick={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
+          style={{
+            flex: 1, padding: "14px", borderRadius: 12, border: "none",
+            background: P, color: "#fff", fontSize: 16, fontWeight: 700,
+            cursor: "pointer", letterSpacing: 0.3,
+          }}
+        >
+          Get My Free Consultation →
+        </button>
+      </div>
+
       {/* ── Footer ── */}
-      <footer style={{ background: "#060e1a", padding: "24px 20px", textAlign: "center" }}>
+      <footer style={{ background: "#060e1a", padding: "24px 20px 80px", textAlign: "center" }}>
         <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 12 }}>
           © {new Date().getFullYear()} {practiceName} · Powered by{" "}
           <a href="https://iamclara.ai" style={{ color: A, textDecoration: "none" }}>Clara AI</a>

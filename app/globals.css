@@ -27,3 +27,13 @@ body {
 .glow-sm {
   box-shadow: 0 0 20px rgba(45, 212, 191, 0.1);
 }
+
+/* Sticky mobile CTA — hidden on desktop */
+.mobile-sticky-cta {
+  display: flex;
+}
+@media (min-width: 768px) {
+  .mobile-sticky-cta {
+    display: none !important;
+  }
+}
