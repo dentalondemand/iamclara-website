@@ -45,21 +45,51 @@ export default async function ProcedureLandingPage(
   const A             = theme.accent;
   const heroImageUrl  = config?.hero_image_url || "";
   const beforeAfters: { before: string; after: string; label?: string }[] = config?.media?.before_after || [];
-  const testimonialVideoIds: string[] = (config as any)?.testimonial_video_ids || ["KSAhOeq8SXk", "Sb9pAeQTpW0", "HYc_j9aWhP0"];
-  const doctorVideoId: string         = (config as any)?.doctor_video_id || "Qt_0JGlu7T4";
+  // Only show videos if actually configured — no cross-tenant fallbacks
+  const testimonialVideoIds: string[] = config?.testimonial_video_ids || [];
+  const doctorVideoId: string         = config?.doctor_video_id || "";
   const procedureName = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
   const headline      = config?.headline || `${procedureName} — Expert Care, Beautiful Results`;
   const sellingPoints: string[] = config?.selling_points || [];
   const techHighlights: string[] = config?.tech_highlights || [];
   const freeConsult   = config?.free_consultation !== false;
   const startingPrice = config?.starting_price;
+  const regularPrice  = config?.regular_price;
+  const savingsLabel  = config?.savings_label || (startingPrice && regularPrice ? `Save $${(regularPrice - startingPrice).toLocaleString()}+` : "");
   const financingDetails = config?.financing_details;
   const practiceDiffs = config?.practice_differentiators;
-  const ctaOffer      = config?.cta_offer ?? (freeConsult ? "Free Consultation — No Obligation" : undefined);
-  const ctaOfferDetail = config?.cta_offer_detail;
+  const ctaOffer      = config?.cta_offer || (freeConsult ? "Free Consultation — No Obligation" : "");
+  const ctaOfferDetail = config?.cta_offer_detail || "";
   const smileSimUrl   = `https://app.iamclara.ai/smile/${slug}`;
   const practiceAddress = config?.practice_address || "";
   const practicePhone   = config?.practice_phone || "";
+  const specialtyBadge  = config?.specialty_badge || "";
+  const googleReviewCount = config?.google_review_count || "";
+  const googleReviewScore = config?.google_review_score || "";
+
+  // Config-driven sections with generic fallbacks
+  type ProcessStep = { icon: string; title: string; desc: string };
+  const processSteps: ProcessStep[] = config?.process_steps?.length
+    ? config.process_steps
+    : [
+        { icon: "📞", title: "Free Consultation", desc: `Meet our team, discuss your goals, and leave with a complete treatment plan and exact pricing — zero pressure.` },
+        { icon: "🔬", title: "Comprehensive Exam & Planning", desc: `Digital imaging, X-rays, and a full clinical assessment. Your treatment is planned precisely before we begin.` },
+        { icon: "🦷", title: `Your ${procedureName}`, desc: `Your procedure, performed by our experienced team using modern technology for the best possible outcome.` },
+        { icon: "✨", title: "Follow-Up & Results", desc: `We stay with you through your recovery and final results. Your long-term outcome is our success.` },
+      ];
+
+  type FaqItem = { q: string; a: string };
+  const faqItems: FaqItem[] = config?.faq_items?.length ? config.faq_items : [];
+
+  type WhyUsItem = { icon: string; label: string; sub: string };
+  const whyUsItems: WhyUsItem[] = config?.why_us_items?.length
+    ? config.why_us_items
+    : [
+        { icon: "🏆", label: "Experienced Team", sub: "Years of dedicated expertise" },
+        { icon: "💡", label: "Advanced Technology", sub: "Modern equipment & techniques" },
+        { icon: "🛡️", label: "Patient-First Care", sub: "Comfort & transparency always" },
+        { icon: "📍", label: "Convenient Location", sub: practiceAddress || "Easy to reach" },
+      ];
 
   // Split selling points: top 4 in hero, rest in "What's included" section
   const heroPoints     = sellingPoints.slice(0, 4);
@@ -101,9 +131,11 @@ export default async function ProcedureLandingPage(
 
           {/* Headline block — always full-width, always first */}
           <div style={{ marginBottom: 36 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 20, letterSpacing: 0.5 }}>
-              ⭐ Chevy Chase&apos;s Premier Full Arch Specialist
-            </div>
+            {specialtyBadge && (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 20, letterSpacing: 0.5 }}>
+                ⭐ {specialtyBadge}
+              </div>
+            )}
             <h1 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1 }}>
               {headline}
             </h1>
@@ -113,11 +145,13 @@ export default async function ProcedureLandingPage(
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Starting at</div>
                   <div style={{ color: A, fontWeight: 900, fontSize: 26 }}>${startingPrice.toLocaleString()}</div>
                 </div>
-                <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: "10px 20px" }}>
-                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Regular price</div>
-                  <div style={{ color: "#f87171", fontWeight: 700, fontSize: 20, textDecoration: "line-through" }}>$25,000</div>
-                </div>
-                <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 14 }}>💰 Save $4,000+</div>
+                {regularPrice && (
+                  <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: "10px 20px" }}>
+                    <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Regular price</div>
+                    <div style={{ color: "#f87171", fontWeight: 700, fontSize: 20, textDecoration: "line-through" }}>${regularPrice.toLocaleString()}</div>
+                  </div>
+                )}
+                {savingsLabel && <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 14 }}>💰 {savingsLabel}</div>}
               </div>
             )}
           </div>
@@ -193,15 +227,10 @@ export default async function ProcedureLandingPage(
             <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: 0 }}>From consultation to new smile — in one day</h2>
           </div>
           <div className="process-grid" style={{ display: "flex", gap: 0, position: "relative" }}>
-            {[
-              { step: "01", icon: "📞", title: "Free Consultation", desc: "We review your dental history, take photos, and discuss your goals. You leave with a complete treatment plan and exact pricing — zero pressure." },
-              { step: "02", icon: "🔬", title: "3D Scan & Design", desc: "CBCT cone beam imaging maps your jaw in 3D. xNav navigation software plans implant placement to the millimeter. Your new smile is digitally designed before we touch a drill." },
-              { step: "03", icon: "🦷", title: "Same-Day Surgery", desc: "Implants placed with xNav guided precision. Temporary teeth fabricated in our on-site lab. You walk out with a full smile the same day as surgery." },
-              { step: "04", icon: "✨", title: "Final Zirconia Smile", desc: "Premium zirconia bridge crafted and seated. Your permanent, lifetime-warranted smile is complete — typically within a few months of your surgery date." },
-            ].map((s, i) => (
+            {processSteps.map((s: ProcessStep, i: number) => (
               <div key={i} style={{ flex: 1, padding: "0 20px", position: "relative", textAlign: "center" }}>
                 <div style={{ width: 64, height: 64, borderRadius: "50%", background: `linear-gradient(135deg, ${P}, ${A})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 26 }}>{s.icon}</div>
-                <div style={{ color: A, fontWeight: 700, fontSize: 11, letterSpacing: 2, marginBottom: 8 }}>STEP {s.step}</div>
+                <div style={{ color: A, fontWeight: 700, fontSize: 11, letterSpacing: 2, marginBottom: 8 }}>STEP {String(i + 1).padStart(2, "0")}</div>
                 <h3 style={{ color: "#fff", fontWeight: 700, fontSize: 17, margin: "0 0 10px" }}>{s.title}</h3>
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
               </div>
@@ -267,7 +296,11 @@ export default async function ProcedureLandingPage(
             <div style={{ textAlign: "center", marginBottom: 40 }}>
               <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>REAL PATIENTS. REAL RESULTS.</div>
               <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: "0 0 10px" }}>Hear from our patients</h2>
-              <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 15 }}>⭐⭐⭐⭐⭐ Rated 5 stars on Google</div>
+              {(googleReviewScore || googleReviewCount) && (
+                <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 15 }}>
+                  {"⭐".repeat(Math.round(parseFloat(googleReviewScore) || 5))} {googleReviewScore && `${googleReviewScore} stars`}{googleReviewCount && ` · ${googleReviewCount} Google reviews`}
+                </div>
+              )}
             </div>
             <div className="testimonial-grid" style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
               {testimonialVideoIds.map((vidId: string, i: number) => (
@@ -320,12 +353,7 @@ export default async function ProcedureLandingPage(
             <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 16 }}>WHY {practiceName.toUpperCase()}</div>
             <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 17, lineHeight: 1.8, margin: "0 auto 40px", maxWidth: 700 }}>{practiceDiffs}</p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
-              {[
-                { icon: "🎯", label: "xNav Guided Navigation", sub: "Sub-mm precision" },
-                { icon: "🏥", label: "In-House Lab", sub: "Same-day results" },
-                { icon: "📸", label: "CBCT 3D Imaging", sub: "Full treatment planned" },
-                { icon: "🛡️", label: "Lifetime Warranty", sub: "On your zirconia bridge" },
-              ].map((item, i) => (
+              {whyUsItems.map((item: WhyUsItem, i: number) => (
                 <div key={i} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "20px 16px", textAlign: "center" }}>
                   <div style={{ fontSize: 28, marginBottom: 8 }}>{item.icon}</div>
                   <div style={{ color: "#fff", fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{item.label}</div>
@@ -337,30 +365,25 @@ export default async function ProcedureLandingPage(
         </section>
       )}
 
-      {/* ── FAQ ── */}
-      <section style={{ padding: "70px 20px", background: "#060e1a" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 44 }}>
-            <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>COMMON QUESTIONS</div>
-            <h2 style={{ fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 800, margin: 0 }}>We hear these every day</h2>
+      {/* ── FAQ — only shown if configured ── */}
+      {faqItems.length > 0 && (
+        <section style={{ padding: "70px 20px", background: "#060e1a" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 44 }}>
+              <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>COMMON QUESTIONS</div>
+              <h2 style={{ fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 800, margin: 0 }}>We hear these every day</h2>
+            </div>
+            <div className="faq-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {faqItems.map((item: FaqItem, i: number) => (
+                <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "22px 24px" }}>
+                  <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 10 }}>{item.q}</div>
+                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.65 }}>{item.a}</div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="faq-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            {[
-              { q: "Am I a candidate for full arch implants?", a: "Most adults with missing teeth or failing dentition are candidates. Bone loss is common — but our CBCT scan tells us exactly what we're working with. Many patients are surprised to learn they qualify even after being told elsewhere they don't." },
-              { q: "Does it hurt? What's the recovery like?", a: "We use sedation dentistry — most patients report the experience as far more comfortable than expected. The first 3–5 days include swelling and soreness, managed with prescribed medication. Most patients return to normal activity within a week." },
-              { q: "How is this different from dentures?", a: "Dentures rest on your gums, slip when you eat, and accelerate bone loss. Implants are anchored into your jaw like natural teeth — they're permanent, won't move, and preserve your bone. It's a completely different category of care." },
-              { q: "Why $20,999 when I see ads for $9,999?", a: "The $9,999 offers are typically for 'All-on-4' with acrylic (plastic) bridges — not zirconia. Our price includes premium zirconia, guided xNav placement, in-house fabrication, sedation, and a lifetime warranty. You get what you pay for." },
-              { q: "How long does the whole process take?", a: "The surgery itself is typically 3–5 hours. You leave the same day with temporary teeth. Final zirconia placement happens within a few months as your implants fully integrate. Most patients consider the whole journey complete in 3–6 months." },
-              { q: "What does the free consultation include?", a: "A full exam, X-rays, and a conversation about your specific situation. You'll leave with a complete treatment plan, exact pricing, and all your questions answered — with zero pressure to proceed." },
-            ].map((item, i) => (
-              <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "22px 24px" }}>
-                <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 10 }}>{item.q}</div>
-                <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.65 }}>{item.a}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── FINAL CTA ── */}
       <section style={{ padding: "80px 20px", background: `linear-gradient(${theme.hero})` }}>
@@ -373,9 +396,11 @@ export default async function ProcedureLandingPage(
             Free consultation. Complete treatment plan. Exact pricing.<br />No pressure, no commitment — just answers.
           </p>
           <LeadForm tenantId={slug} procedureName={procedureName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
-          <div style={{ color: "rgba(255,255,255,0.25)", fontSize: 12, marginTop: 16 }}>
-            📍 {practiceAddress || `${practiceName}, Chevy Chase, MD`}
-          </div>
+          {(practiceAddress || practiceName) && (
+            <div style={{ color: "rgba(255,255,255,0.25)", fontSize: 12, marginTop: 16 }}>
+              📍 {practiceAddress || practiceName}
+            </div>
+          )}
         </div>
       </section>
 
@@ -387,7 +412,7 @@ export default async function ProcedureLandingPage(
         practiceName={practiceName}
         primaryColor={P}
         accentColor={A}
-        openingMessage={`Hi! I'm Clara, the AI assistant for ${practiceName}. Have questions about full arch implants or want to book your free consultation? I'm here to help! 😊`}
+        openingMessage={`Hi! I'm Clara, the AI assistant for ${practiceName}. Have questions about ${procedureName} or want to book your free consultation? I'm here to help! 😊`}
       />
 
       {/* ── Footer ── */}
