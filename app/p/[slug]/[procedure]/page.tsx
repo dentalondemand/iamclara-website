@@ -58,6 +58,10 @@ export default async function ProcedureLandingPage(
 
   const beforeAfterPairs: { before: string; after: string; label?: string }[] =
     config?.media?.before_after || [];
+  const heroImageUrl: string = config?.hero_image_url || "";
+  // YouTube video IDs — from old landing page
+  const testimonialVideoIds: string[] = (config as any)?.testimonial_video_ids || ["KSAhOeq8SXk", "Sb9pAeQTpW0", "HYc_j9aWhP0"];
+  const doctorVideoId: string = (config as any)?.doctor_video_id || "Qt_0JGlu7T4";
   const procedureDisplayName = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
   const headline = config?.headline || `${procedureDisplayName} — Expert Care, Beautiful Results`;
   const sellingPoints: string[] = config?.selling_points || [];
@@ -77,7 +81,12 @@ export default async function ProcedureLandingPage(
       <PixelInjector metaPixelId={config?.meta_pixel_id} googleTagId={config?.google_tag_id} />
 
       {/* ── HERO ── */}
-      <section style={{ background: `linear-gradient(${theme.hero})`, padding: "0 20px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <section style={{
+        background: heroImageUrl
+          ? `linear-gradient(to right, rgba(6,14,26,0.92) 0%, rgba(6,14,26,0.75) 60%, rgba(6,14,26,0.5) 100%), url(${heroImageUrl}) center/cover no-repeat`
+          : `linear-gradient(${theme.hero})`,
+        padding: "0 20px", minHeight: "100vh", display: "flex", flexDirection: "column",
+      }}>
         {/* Nav */}
         <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
@@ -87,10 +96,17 @@ export default async function ProcedureLandingPage(
           <ScrollToFormButton primary={P}>Free Consultation</ScrollToFormButton>
         </div>
 
-        {/* Hero content */}
-        <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", flex: 1, display: "flex", alignItems: "center", gap: 60, padding: "40px 0 60px", flexWrap: "wrap" }}>
+        {/* Hero content — form first on mobile via flex-wrap-reverse trick */}
+        <style>{`
+          @media (max-width: 768px) {
+            .hero-content { flex-direction: column-reverse !important; }
+            .hero-copy { order: 2; }
+            .hero-form { order: 1; }
+          }
+        `}</style>
+        <div className="hero-content" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", flex: 1, display: "flex", alignItems: "center", gap: 60, padding: "40px 0 60px", flexWrap: "wrap" }}>
           {/* Left: copy */}
-          <div style={{ flex: "1 1 420px" }}>
+          <div className="hero-copy" style={{ flex: "1 1 420px" }}>
             <div style={{ display: "inline-block", background: "rgba(13,148,136,0.2)", border: "1px solid rgba(13,148,136,0.4)", borderRadius: 20, padding: "4px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 20, letterSpacing: 1 }}>
               {practiceName.toUpperCase()} · {procedureDisplayName.toUpperCase()}
             </div>
@@ -146,13 +162,63 @@ export default async function ProcedureLandingPage(
           </div>
 
           {/* Right: form */}
-          <div id="lead-form" style={{ flex: "0 1 380px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: 28, backdropFilter: "blur(10px)" }}>
+          <div className="hero-form" id="lead-form" style={{ flex: "0 1 380px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: 28, backdropFilter: "blur(10px)" }}>
             <h2 style={{ color: "#fff", fontSize: 20, fontWeight: 700, margin: "0 0 6px" }}>Get Your Free Consultation</h2>
             <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "0 0 20px" }}>Takes 10 seconds. We&apos;ll call you.</p>
             <LeadForm tenantId={slug} procedureName={procedureDisplayName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
           </div>
         </div>
       </section>
+
+      {/* ── DOCTOR VIDEO ── */}
+      {doctorVideoId && (
+        <section style={{ padding: "70px 20px", background: "#060e1a" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 32 }}>
+              <div style={{ color: A, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 10 }}>MEET YOUR DOCTOR</div>
+              <h2 style={{ color: "#fff", fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 800, margin: 0 }}>
+                A Message from Dr. Siddiqui
+              </h2>
+            </div>
+            <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 16, overflow: "hidden" }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${doctorVideoId}`}
+                title="Doctor Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── PATIENT TESTIMONIALS ── */}
+      {testimonialVideoIds.length > 0 && (
+        <section style={{ padding: "70px 20px", background: "#0a1628" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 40 }}>
+              <div style={{ color: A, fontWeight: 700, fontSize: 13, letterSpacing: 2, marginBottom: 10 }}>HEAR FROM OUR PATIENTS</div>
+              <h2 style={{ color: "#fff", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: 0 }}>Video Testimonials</h2>
+            </div>
+            <div style={{ display: "flex", gap: 24, flexWrap: "wrap", justifyContent: "center" }}>
+              {testimonialVideoIds.map((vidId: string, i: number) => (
+                <div key={i} style={{ flex: "1 1 280px", maxWidth: 380 }}>
+                  <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 12, overflow: "hidden" }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${vidId}`}
+                      title={`Patient Testimonial ${i + 1}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── BEFORE / AFTER GALLERY ── */}
       {beforeAfterPairs.length > 0 && (
