@@ -95,70 +95,71 @@ export default async function ProcedureLandingPage(
       </nav>
 
       {/* ── HERO ── */}
-      <section style={{ background: `linear-gradient(${theme.hero})`, padding: "60px 20px 80px" }}>
-        <div className="hero-grid" style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "flex-start", gap: 48 }}>
+      <section style={{ background: `linear-gradient(${theme.hero})`, padding: "50px 20px 70px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
-          {/* Left: copy */}
-          <div style={{ flex: "1 1 480px" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 24, letterSpacing: 0.5 }}>
+          {/* Headline block — always full-width, always first */}
+          <div style={{ marginBottom: 36 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 20, letterSpacing: 0.5 }}>
               ⭐ Chevy Chase&apos;s Premier Full Arch Specialist
             </div>
-
-            <h1 style={{ fontSize: "clamp(30px, 5vw, 52px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1 }}>
+            <h1 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1 }}>
               {headline}
             </h1>
-
-            {/* Price + savings */}
             {startingPrice && (
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
                 <div style={{ background: "rgba(45,212,191,0.15)", border: "1px solid rgba(45,212,191,0.4)", borderRadius: 12, padding: "10px 20px" }}>
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Starting at</div>
-                  <div style={{ color: A, fontWeight: 900, fontSize: 28 }}>${startingPrice.toLocaleString()}</div>
+                  <div style={{ color: A, fontWeight: 900, fontSize: 26 }}>${startingPrice.toLocaleString()}</div>
                 </div>
                 <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: "10px 20px" }}>
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Regular price</div>
-                  <div style={{ color: "#f87171", fontWeight: 700, fontSize: 22, textDecoration: "line-through" }}>$25,000</div>
+                  <div style={{ color: "#f87171", fontWeight: 700, fontSize: 20, textDecoration: "line-through" }}>$25,000</div>
                 </div>
-                <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 15 }}>💰 Save $4,000+</div>
+                <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 14 }}>💰 Save $4,000+</div>
               </div>
             )}
-
-            {/* Top selling points */}
-            {heroPoints.length > 0 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 28 }}>
-                {heroPoints.map((pt: string, i: number) => (
-                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                    <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(45,212,191,0.2)", border: "1px solid rgba(45,212,191,0.4)", color: A, fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>✓</div>
-                    <span style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, lineHeight: 1.5 }}>{pt}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Trust signals */}
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>📞 We call you back in minutes</div>
-              <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🔒 No obligation, ever</div>
-              <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🏆 Lifetime warranty</div>
-              {financingDetails && (
-                <div style={{ background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.2)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: A }}>💳 {financingDetails}</div>
-              )}
-            </div>
           </div>
 
-          {/* Right: photo + form */}
-          <div className="hero-right" style={{ flex: "0 1 400px", display: "flex", flexDirection: "column", gap: 16 }}>
-            {heroImageUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={heroImageUrl} alt="Full Arch Implant Result" style={{ width: "100%", borderRadius: 16, objectFit: "cover", maxHeight: 240, display: "block", border: "2px solid rgba(45,212,191,0.3)" }} />
-            )}
-            <div id="lead-form" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: "28px 24px", backdropFilter: "blur(10px)" }}>
-              <div style={{ textAlign: "center", marginBottom: 16 }}>
-                <div style={{ fontSize: 22, marginBottom: 4 }}>🦷</div>
-                <h2 style={{ color: "#fff", fontSize: 19, fontWeight: 800, margin: "0 0 4px" }}>Claim Your Free Consultation</h2>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, margin: 0 }}>Takes 30 seconds · We&apos;ll call you · No pressure</p>
+          {/* Two-column: bullets left, photo+form right */}
+          <div className="hero-grid" style={{ display: "flex", alignItems: "flex-start", gap: 40 }}>
+
+            {/* Left: selling points + trust */}
+            <div style={{ flex: "1 1 380px" }}>
+              {heroPoints.length > 0 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
+                  {heroPoints.map((pt: string, i: number) => (
+                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                      <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(45,212,191,0.2)", border: "1px solid rgba(45,212,191,0.4)", color: A, fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>✓</div>
+                      <span style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, lineHeight: 1.5 }}>{pt}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>📞 We call you back in minutes</div>
+                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🔒 No obligation, ever</div>
+                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🏆 Lifetime warranty</div>
+                {financingDetails && (
+                  <div style={{ background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.2)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: A }}>💳 {financingDetails}</div>
+                )}
               </div>
-              <LeadForm tenantId={slug} procedureName={procedureName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+            </div>
+
+            {/* Right: photo + form */}
+            <div style={{ flex: "0 1 400px", display: "flex", flexDirection: "column", gap: 16 }}>
+              {heroImageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={heroImageUrl} alt="Full Arch Implant Result" style={{ width: "100%", borderRadius: 16, objectFit: "cover", maxHeight: 240, display: "block", border: "2px solid rgba(45,212,191,0.3)" }} />
+              )}
+              <div id="lead-form" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: "28px 24px", backdropFilter: "blur(10px)" }}>
+                <div style={{ textAlign: "center", marginBottom: 16 }}>
+                  <div style={{ fontSize: 22, marginBottom: 4 }}>🦷</div>
+                  <h2 style={{ color: "#fff", fontSize: 19, fontWeight: 800, margin: "0 0 4px" }}>Claim Your Free Consultation</h2>
+                  <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, margin: 0 }}>Takes 30 seconds · We&apos;ll call you · No pressure</p>
+                </div>
+                <LeadForm tenantId={slug} procedureName={procedureName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+              </div>
             </div>
           </div>
         </div>
