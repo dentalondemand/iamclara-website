@@ -81,12 +81,7 @@ export default async function ProcedureLandingPage(
       <PixelInjector metaPixelId={config?.meta_pixel_id} googleTagId={config?.google_tag_id} />
 
       {/* ── HERO ── */}
-      <section style={{
-        background: heroImageUrl
-          ? `linear-gradient(to right, rgba(6,14,26,0.92) 0%, rgba(6,14,26,0.75) 60%, rgba(6,14,26,0.5) 100%), url(${heroImageUrl}) center/cover no-repeat`
-          : `linear-gradient(${theme.hero})`,
-        padding: "0 20px", minHeight: "100vh", display: "flex", flexDirection: "column",
-      }}>
+      <section style={{ background: `linear-gradient(${theme.hero})`, padding: "0 20px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         {/* Nav */}
         <div style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
@@ -161,11 +156,17 @@ export default async function ProcedureLandingPage(
             )}
           </div>
 
-          {/* Right: form */}
-          <div className="hero-form" id="lead-form" style={{ flex: "0 1 380px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: 28, backdropFilter: "blur(10px)" }}>
-            <h2 style={{ color: "#fff", fontSize: 20, fontWeight: 700, margin: "0 0 6px" }}>Get Your Free Consultation</h2>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "0 0 20px" }}>Takes 10 seconds. We&apos;ll call you.</p>
-            <LeadForm tenantId={slug} procedureName={procedureDisplayName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+          {/* Right: hero image + form */}
+          <div className="hero-form" style={{ flex: "0 1 400px", display: "flex", flexDirection: "column", gap: 16 }}>
+            {heroImageUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={heroImageUrl} alt="Full Arch Implants Result" style={{ width: "100%", borderRadius: 16, objectFit: "cover", maxHeight: 260, display: "block" }} />
+            )}
+            <div id="lead-form" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: 28, backdropFilter: "blur(10px)" }}>
+              <h2 style={{ color: "#fff", fontSize: 20, fontWeight: 700, margin: "0 0 6px" }}>Get Your Free Consultation</h2>
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "0 0 20px" }}>Takes 10 seconds. We&apos;ll call you.</p>
+              <LeadForm tenantId={slug} procedureName={procedureDisplayName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+            </div>
           </div>
         </div>
       </section>
