@@ -1,6 +1,7 @@
 // SERVER COMPONENT — data fetched at request time, no CORS issues
 import type { Metadata } from "next";
 import { LeadForm, ScrollToFormButton, StickyMobileCTA, PixelInjector } from "./LandingClient";
+import ClaraChat from "../../../../components/ClaraChat";
 
 const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
 
@@ -379,6 +380,15 @@ export default async function ProcedureLandingPage(
       </section>
 
       <StickyMobileCTA primary={P} />
+
+      {/* ── CLARA LIVE CHAT AGENT ── */}
+      <ClaraChat
+        tenantId={slug}
+        practiceName={practiceName}
+        primaryColor={P}
+        accentColor={A}
+        openingMessage={`Hi! I'm Clara, the AI assistant for ${practiceName}. Have questions about full arch implants or want to book your free consultation? I'm here to help! 😊`}
+      />
 
       {/* ── Footer ── */}
       <footer style={{ background: "#030810", padding: "24px 20px 90px", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
