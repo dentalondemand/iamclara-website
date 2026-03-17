@@ -98,6 +98,35 @@ export function LeadForm({
       )}
       <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Your name" style={inputStyle} />
       <input value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="Phone number *" type="tel" required style={inputStyle} />
+
+      {/* Qualifying: teeth missing */}
+      <select
+        value={(form as any).teeth_missing ?? ""}
+        onChange={e => setForm(p => ({ ...p, teeth_missing: e.target.value } as any))}
+        required
+        style={{ ...inputStyle, color: (form as any).teeth_missing ? "#fff" : "rgba(255,255,255,0.4)" }}
+      >
+        <option value="" disabled>How many teeth are you missing? *</option>
+        <option value="1-3">1–3 teeth</option>
+        <option value="4+">4 or more teeth</option>
+        <option value="full_arch">Full arch (most or all)</option>
+        <option value="not_sure">Not sure</option>
+      </select>
+
+      {/* Qualifying: timeline */}
+      <select
+        value={form.timeline}
+        onChange={e => setForm(p => ({ ...p, timeline: e.target.value }))}
+        required
+        style={{ ...inputStyle, color: form.timeline ? "#fff" : "rgba(255,255,255,0.4)" }}
+      >
+        <option value="" disabled>When are you looking to move forward? *</option>
+        <option value="asap">As soon as possible</option>
+        <option value="1-3_months">Within 1–3 months</option>
+        <option value="3-6_months">3–6 months</option>
+        <option value="just_looking">Just researching for now</option>
+      </select>
+
       <input type="hidden" value={form.procedure_detail} readOnly />
       {err && <div style={{ color: "#f87171", fontSize: 13 }}>{err}</div>}
       <button type="submit" disabled={submitting} style={{ padding: "15px", borderRadius: 12, border: "none", background: P, color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", opacity: submitting ? 0.7 : 1, letterSpacing: 0.3 }}>
