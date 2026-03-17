@@ -127,6 +127,21 @@ export function LeadForm({
         <option value="just_looking">Just researching for now</option>
       </select>
 
+      {/* Qualifying: credit score (financing eligibility) */}
+      <select
+        value={form.credit_score}
+        onChange={e => setForm(p => ({ ...p, credit_score: e.target.value }))}
+        required
+        style={{ ...inputStyle, color: form.credit_score ? "#fff" : "rgba(255,255,255,0.4)" }}
+      >
+        <option value="" disabled>Estimated credit score? *</option>
+        <option value="750+">750+ (Excellent)</option>
+        <option value="700-749">700–749 (Good)</option>
+        <option value="650-699">650–699 (Fair)</option>
+        <option value="below_650">Below 650</option>
+        <option value="not_sure">Not sure</option>
+      </select>
+
       <input type="hidden" value={form.procedure_detail} readOnly />
       {err && <div style={{ color: "#f87171", fontSize: 13 }}>{err}</div>}
       <button type="submit" disabled={submitting} style={{ padding: "15px", borderRadius: 12, border: "none", background: P, color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", opacity: submitting ? 0.7 : 1, letterSpacing: 0.3 }}>
