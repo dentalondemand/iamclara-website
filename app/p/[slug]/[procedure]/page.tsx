@@ -182,7 +182,7 @@ export default async function ProcedureLandingPage(
             </div>
 
             {/* Right: photo + form */}
-            <div style={{ flex: "0 1 400px", display: "flex", flexDirection: "column", gap: 16 }}>
+            <div className="hero-right" style={{ flex: "0 1 400px", display: "flex", flexDirection: "column", gap: 16 }}>
               {heroImageUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={heroImageUrl} alt="Full Arch Implant Result" style={{ width: "100%", borderRadius: 16, objectFit: "cover", maxHeight: 240, display: "block", border: "2px solid rgba(45,212,191,0.3)" }} />
