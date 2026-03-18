@@ -48,6 +48,7 @@ export function LeadForm({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.name.trim()) { setErr("Please enter your name."); return; }
     if (!form.phone) { setErr("Please enter your phone number."); return; }
     setSubmitting(true);
     setErr("");
@@ -96,7 +97,7 @@ export function LeadForm({
           {offerDetail && <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 2 }}>{offerDetail}</div>}
         </div>
       )}
-      <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Your name" style={inputStyle} />
+      <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Your name *" required style={inputStyle} />
       <input value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="Phone number *" type="tel" required style={inputStyle} />
 
       {/* Qualifying: teeth missing */}
