@@ -180,12 +180,31 @@ export function StickyMobileCTA({ primary }: { primary: string }) {
 }
 
 // ── Pixel injection (client-only) ─────────────────────────────────────────────
-export function PixelInjector({ metaPixelId, googleTagId }: { metaPixelId?: string; googleTagId?: string }) {
+export function PixelInjector({
+  metaPixelId,
+  googleTagId,
+  procedureKey,
+  procedureName,
+}: {
+  metaPixelId?: string;
+  googleTagId?: string;
+  procedureKey?: string;   // e.g. "fullarch", "veneers" — used as content_type for audience segmentation
+  procedureName?: string;  // e.g. "Full Arch Dental Implants"
+}) {
   useEffect(() => {
     if (metaPixelId) {
       const s = document.createElement("script");
       s.innerHTML = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${metaPixelId}');fbq('track','PageView');`;
       document.head.appendChild(s);
+
+      // ViewContent — fires after PageView, tagged to this specific procedure page.
+      // Lets Meta build separate retargeting audiences per procedure
+      // (e.g. "people who viewed full arch page" vs "people who viewed veneers page").
+      if (procedureKey) {
+        const vc = document.createElement("script");
+        vc.innerHTML = `fbq('track','ViewContent',{content_ids:['${procedureKey}'],content_name:'${procedureName || procedureKey}',content_category:'dental_procedure',content_type:'product'});`;
+        document.head.appendChild(vc);
+      }
     }
     if (googleTagId) {
       const gs = document.createElement("script");
@@ -195,7 +214,13 @@ export function PixelInjector({ metaPixelId, googleTagId }: { metaPixelId?: stri
       const gc = document.createElement("script");
       gc.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleTagId}');`;
       document.head.appendChild(gc);
+      // Google: fire page_view with procedure context for audience segmentation
+      if (procedureKey) {
+        const gvc = document.createElement("script");
+        gvc.innerHTML = `gtag('event','view_item',{item_id:'${procedureKey}',item_name:'${procedureName || procedureKey}',item_category:'dental_procedure'});`;
+        document.head.appendChild(gvc);
+      }
     }
-  }, [metaPixelId, googleTagId]);
+  }, [metaPixelId, googleTagId, procedureKey, procedureName]);
   return null;
 }

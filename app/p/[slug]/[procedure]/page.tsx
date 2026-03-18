@@ -97,7 +97,12 @@ export default async function ProcedureLandingPage(
 
   return (
     <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", background: "#060e1a", color: "#fff" }}>
-      <PixelInjector metaPixelId={config?.meta_pixel_id} googleTagId={config?.google_tag_id} />
+      <PixelInjector
+        metaPixelId={config?.meta_pixel_id}
+        googleTagId={config?.google_tag_id}
+        procedureKey={procedure}
+        procedureName={procedureName}
+      />
 
       <style>{`
         * { box-sizing: border-box; }
