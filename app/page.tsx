@@ -658,32 +658,17 @@ function TieredIntelligence() {
     },
     {
       plan: 'Growth',
-      price: '$399/mo',
+      price: '$599/mo',
       color: '#818cf8',
       border: 'rgba(129,140,248,0.2)',
       bg: 'rgba(129,140,248,0.05)',
       icon: '📈',
-      headline: 'Clara learns what content drives calls',
+      headline: 'Clara learns what content drives calls — and optimizes your ad spend automatically',
       bullets: [
         'Tracks which posts generate the most inbound inquiries',
-        'Optimizes posting schedule to your highest-engagement windows',
-        'Connects social engagement directly to lead pipeline',
-        'Weekly content performance report — what worked, what didn\'t',
-      ],
-    },
-    {
-      plan: 'Pro',
-      price: '$799/mo',
-      color: '#f59e0b',
-      border: 'rgba(245,158,11,0.2)',
-      bg: 'rgba(245,158,11,0.05)',
-      icon: '⚙️',
-      headline: 'Clara optimizes your ad spend automatically',
-      bullets: [
         'Pauses underperforming adsets, scales winning ones weekly',
         'A/B tests price-shown vs. outcome copy — picks the winner',
-        'Raises age floor when leads are too young, shifts budget when one variant tanks',
-        'Optimizes for Cost Per Booked Patient — not just cost per click',
+        'Weekly content + campaign performance report — what worked, what didn\'t',
       ],
     },
   ]
@@ -693,10 +678,10 @@ function TieredIntelligence() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Unrivaled optimization — <span className="gradient-text">at every level</span>
+            Unrivaled optimization — <span className="gradient-text">at every plan</span>
           </h2>
           <p className="text-white/50 text-lg max-w-2xl mx-auto">
-            Clara isn't just an answering service. Every plan includes AI that learns your practice, improves week over week, and tells you exactly what's working.
+            Clara isn't just an answering service. Both plans include AI that learns your practice, improves week over week, and tells you exactly what's working.
           </p>
         </div>
 
@@ -773,8 +758,8 @@ function ProOptimizer() {
 
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-amber-400 text-xs font-semibold uppercase tracking-widest">Pro Plan Only</span>
+          <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-4 py-1.5 mb-6">
+            <span className="text-indigo-400 text-xs font-semibold uppercase tracking-widest">Growth Plan</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Clara's ads get smarter every week
@@ -823,7 +808,7 @@ function ProOptimizer() {
           <div className="grid md:grid-cols-2 gap-3">
             {adjustments.map((adj, i) => (
               <div key={i} className="flex items-start gap-4 bg-white/[0.03] border border-white/[0.07] rounded-xl px-5 py-4">
-                <div className="flex-shrink-0 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5 text-xs font-mono text-amber-400 whitespace-nowrap">
+                <div className="flex-shrink-0 bg-indigo-500/10 border border-indigo-500/20 rounded-lg px-3 py-1.5 text-xs font-mono text-indigo-400 whitespace-nowrap">
                   {adj.signal}
                 </div>
                 <div className="text-white/60 text-sm leading-relaxed">→ {adj.action}</div>
