@@ -685,7 +685,7 @@ function TieredIntelligence() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {tiers.map((tier) => (
             <div key={tier.plan} style={{ background: tier.bg, border: `1px solid ${tier.border}` }}
               className="rounded-2xl p-6 flex flex-col">
