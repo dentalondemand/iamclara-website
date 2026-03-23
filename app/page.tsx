@@ -198,7 +198,7 @@ function Features() {
     { icon: '🛡️', title: 'Spam & robocall filtering', desc: 'Clara identifies and drops spam automatically so your dashboard only shows real patients.' },
     { icon: '📊', title: 'Lead management dashboard', desc: 'Every caller becomes a lead. Tag, note, track call-back status, and monitor high-value cases from one place.' },
     { icon: '📱', title: 'iOS + Android app', desc: 'Review calls, manage leads, and update settings from anywhere — full-featured mobile app included.' },
-    { icon: '🔒', title: 'HIPAA-conscious design', desc: 'No PHI in email bodies, encrypted storage, configurable recording retention. Built for dental.' },
+    { icon: '🔒', title: 'HIPAA compliant + BAA included', desc: 'Every practice gets a signed BAA. AES-256 encryption at rest, TLS in transit, row-level security, TOTP MFA, automatic PHI purge, and full audit logging.' },
   ]
 
   return (
@@ -611,6 +611,55 @@ function CTA() {
   )
 }
 
+function SecurityTrust() {
+  const badges = [
+    { icon: '🔒', label: 'HIPAA Compliant', sub: 'BAA included with every plan' },
+    { icon: '🛡️', label: 'AES-256 Encryption', sub: 'At rest and in transit (TLS 1.2+)' },
+    { icon: '🗂️', label: 'AWS Infrastructure', sub: 'BAA-backed RDS + S3 storage' },
+    { icon: '🔑', label: 'MFA Required', sub: 'TOTP app-based for all staff logins' },
+    { icon: '🗑️', label: 'Auto PHI Purge', sub: 'Recordings deleted after 90 days' },
+    { icon: '📋', label: 'Full Audit Log', sub: 'Every data access is logged' },
+  ]
+  return (
+    <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, rgba(15,24,35,0) 0%, rgba(20,184,166,0.04) 100%)' }}>
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/20 rounded-full px-4 py-1.5 mb-6">
+            <span className="w-2 h-2 bg-teal-400 rounded-full" />
+            <span className="text-teal-400 text-sm font-medium">Built for Healthcare</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            HIPAA compliant from day one.
+          </h2>
+          <p className="text-white/50 text-lg max-w-xl mx-auto">
+            Every Clara subscription includes a signed Business Associate Agreement. Your patients' data is protected by the same infrastructure that powers enterprise healthcare.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+          {badges.map(b => (
+            <div key={b.label} className="flex items-start gap-3 p-5 rounded-2xl"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <span className="text-2xl mt-0.5">{b.icon}</span>
+              <div>
+                <div className="font-semibold text-white text-sm">{b.label}</div>
+                <div className="text-white/40 text-xs mt-0.5">{b.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <a href="/baa"
+            className="inline-flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors text-sm font-medium">
+            Read our Business Associate Agreement →
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Footer() {
   return (
     <footer className="border-t border-white/10 py-10 px-6">
@@ -633,6 +682,7 @@ function Footer() {
           <span>© 2026 Clara AI. All rights reserved.</span>
           <a href="/privacy" className="hover:text-white/70 transition-colors">Privacy</a>
           <a href="/terms" className="hover:text-white/70 transition-colors">Terms</a>
+          <a href="/baa" className="hover:text-white/70 transition-colors">BAA</a>
         </div>
       </div>
     </footer>
@@ -838,6 +888,7 @@ export default function Home() {
       <Pricing />
       <FAQ />
       <CTA />
+      <SecurityTrust />
       <Footer />
     </>
   )

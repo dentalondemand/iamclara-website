@@ -43,6 +43,7 @@ export default function GetStarted() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
+  const [baaAccepted, setBaaAccepted] = useState(false)
 
   const [info, setInfo] = useState({
     practice_name: "", phone: "", address: "", timezone: "America/New_York",
@@ -106,6 +107,8 @@ export default function GetStarted() {
         admin_email: info.admin_email,
         phone: info.phone,
         plan: info.plan,
+        baa_accepted: baaAccepted,
+        baa_accepted_at: new Date().toISOString(),
         // Full practice data for rich provisioning
         full_data: { info, hours, services, alertEmails: alertEmails.filter(Boolean), alertPhones: alertPhones.filter(Boolean), notes },
       }
@@ -633,6 +636,23 @@ export default function GetStarted() {
               </div>
             ))}
 
+            {/* BAA Acceptance */}
+            <div style={{ marginTop:20, padding:"16px 18px", background:"rgba(45,212,191,0.05)",
+                           border:"1px solid rgba(45,212,191,0.15)", borderRadius:12 }}>
+              <label style={{ display:"flex", alignItems:"flex-start", gap:12, cursor:"pointer" }}>
+                <input type="checkbox" checked={baaAccepted} onChange={e => setBaaAccepted(e.target.checked)}
+                  style={{ marginTop:2, width:16, height:16, accentColor:"#14B8A6", flexShrink:0 }} />
+                <span style={{ color:"rgba(255,255,255,0.7)", fontSize:13, lineHeight:1.6 }}>
+                  I agree to the{' '}
+                  <a href="/baa" target="_blank" rel="noopener noreferrer"
+                     style={{ color:"#2DD4BF", textDecoration:"underline" }}>
+                    Business Associate Agreement
+                  </a>
+                  {' '}on behalf of {info.practice_name || "my practice"}. I understand that Clara AI will handle PHI in accordance with HIPAA requirements as described in that agreement.
+                </span>
+              </label>
+            </div>
+
             {error && (
               <div style={{ marginTop:16, padding:"10px 14px", background:"rgba(239,68,68,0.1)",
                              border:"1px solid rgba(239,68,68,0.3)", borderRadius:8,
@@ -662,12 +682,13 @@ export default function GetStarted() {
               Next →
             </button>
           ) : (
-            <button onClick={submit} disabled={submitting}
-              style={{ flex:2, background: submitting ? "rgba(255,255,255,0.1)" : "#14B8A6",
-                        border:"none", color:"#fff", padding:14, borderRadius:50,
-                        cursor: submitting ? "not-allowed" : "pointer",
+            <button onClick={submit} disabled={submitting || !baaAccepted}
+              style={{ flex:2, background: (submitting || !baaAccepted) ? "rgba(255,255,255,0.1)" : "#14B8A6",
+                        border:"none", color: (submitting || !baaAccepted) ? "rgba(255,255,255,0.3)" : "#fff",
+                        padding:14, borderRadius:50,
+                        cursor: (submitting || !baaAccepted) ? "not-allowed" : "pointer",
                         fontWeight:700, fontSize:15 }}>
-              {submitting ? "Setting up your account…" : "Continue to Payment →"}
+              {submitting ? "Setting up your account…" : !baaAccepted ? "Accept BAA to continue" : "Continue to Payment →"}
             </button>
           )}
         </div>
