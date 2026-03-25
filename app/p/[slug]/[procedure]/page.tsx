@@ -198,7 +198,7 @@ export default async function ProcedureLandingPage(
                   <h2 style={{ color: "#fff", fontSize: 19, fontWeight: 800, margin: "0 0 4px" }}>Claim Your Free Consultation</h2>
                   <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, margin: 0 }}>Takes 30 seconds · We&apos;ll call you · No pressure</p>
                 </div>
-                <LeadForm tenantId={slug} procedureName={procedureName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+                <LeadForm tenantId={slug} procedureName={procedureName} procedureId={procedure} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
               </div>
             </div>
           </div>
@@ -400,7 +400,7 @@ export default async function ProcedureLandingPage(
           <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 16, margin: "0 0 36px", lineHeight: 1.7 }}>
             Free consultation. Complete treatment plan. Exact pricing.<br />No pressure, no commitment — just answers.
           </p>
-          <LeadForm tenantId={slug} procedureName={procedureName} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+          <LeadForm tenantId={slug} procedureName={procedureName} procedureId={procedure} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
           {(practiceAddress || practiceName) && (
             <div style={{ color: "rgba(255,255,255,0.25)", fontSize: 12, marginTop: 16 }}>
               📍 {practiceAddress || practiceName}

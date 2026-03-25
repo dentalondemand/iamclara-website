@@ -7,6 +7,7 @@ const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
 export function LeadForm({
   tenantId,
   procedureName,
+  procedureId,
   offer,
   offerDetail,
   primary = "#0d9488",
@@ -14,6 +15,7 @@ export function LeadForm({
 }: {
   tenantId: string;
   procedureName: string;
+  procedureId?: string;
   offer?: string;
   offerDetail?: string;
   primary?: string;
@@ -30,6 +32,7 @@ export function LeadForm({
     timeline: "",
     savings: "",
     procedure_detail: procedureName,
+    procedure_id: procedureId || "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
