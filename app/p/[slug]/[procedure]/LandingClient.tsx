@@ -50,6 +50,11 @@ export function LeadForm({
     e.preventDefault();
     if (!form.name.trim()) { setErr("Please enter your name."); return; }
     if (!form.phone) { setErr("Please enter your phone number."); return; }
+    // Credit score gate — Cherry financing requires 580+
+    if (form.credit_score === "below_650" || form.credit_score === "not_sure") {
+      setErr("Cherry financing typically requires a 580+ credit score. We recommend checking your score first — you can apply at cherrytechnologies.com. Questions? Call us at (301) 652-2222.");
+      return;
+    }
     setSubmitting(true);
     setErr("");
     try {
