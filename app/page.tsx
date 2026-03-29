@@ -516,7 +516,7 @@ function Pricing() {
               </tbody>
             </table>
           </div>
-          <p className="text-center text-white/25 text-xs mt-4">✦ Founding rate — locked for life while spots remain</p>
+          <p className="text-center text-white/25 text-xs mt-4">✦ Founding rate — subject to change</p>
         </div>
       </div>
     </section>

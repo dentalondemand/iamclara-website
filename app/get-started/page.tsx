@@ -142,8 +142,8 @@ export default function GetStarted() {
         {!isPartner && (
           <>
             <p style={{ color:"rgba(255,255,255,0.35)", fontSize:13, marginBottom:24 }}>
-              {info.plan === "pro" ? "Pro plan · $799/mo founding rate (locked for life)"
-                : info.plan === "growth" ? "Growth plan · $399/mo founding rate (locked for life)"
+              {info.plan === "pro" ? "Pro plan · $799/mo founding rate "
+                : info.plan === "growth" ? "Growth plan · $399/mo founding rate "
                 : "Core plan · $199/month"}
             </p>
             <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, marginBottom:16 }}>
@@ -256,7 +256,7 @@ export default function GetStarted() {
               </div>
               {info.plan==="growth" && (
                 <p style={{ marginTop:8, color:"rgba(45,212,191,0.8)", fontSize:12 }}>
-                  Pro founding rate is $799/mo, locked for life. Increases to $999 after founding spots fill.
+                  
                 </p>
               )}
             </label>
