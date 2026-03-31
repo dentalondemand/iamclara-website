@@ -99,8 +99,13 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
         setCardUrl(data.card_url);
         setStep("card");
       } else {
-        setNoDepositRequired(true);
-        setStep("confirmed");
+        // Redirect to thank you page
+        const params = new URLSearchParams({
+          slot: selectedSlot!.label,
+          name: name.trim(),
+          practice: practiceName,
+        });
+        window.location.href = `/book/confirmed?${params.toString()}`;
       }
     } catch (e: any) {
       setError(e.message || "Something went wrong. Please try again.");
@@ -304,7 +309,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
               <strong style={{ color: "#fff" }}>No charge today.</strong> A $50 fee only applies if
               you no-show without 24-hour notice.
             </div>
-            <a href={cardUrl} target="_blank" rel="noreferrer"
+            <a href={cardUrl}
               style={{
                 display: "block", width: "100%", padding: "14px", borderRadius: 14,
                 background: P, color: "#fff", fontWeight: 800, fontSize: 15,
@@ -312,7 +317,10 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
               }}>
               Add Card to Confirm Booking →
             </a>
-            <button onClick={() => setStep("confirmed")}
+            <button onClick={() => {
+              const params = new URLSearchParams({ slot: selectedSlot?.label || "", name, practice: practiceName });
+              window.location.href = `/book/confirmed?${params.toString()}`;
+            }}
               style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", fontSize: 12, cursor: "pointer" }}>
               Skip for now (booking not guaranteed)
             </button>
