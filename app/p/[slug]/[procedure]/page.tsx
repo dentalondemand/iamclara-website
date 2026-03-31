@@ -17,7 +17,7 @@ async function fetchConfig(slug: string, procedure: string) {
   try {
     const res = await fetch(
       `${BACKEND}/marketing/config/public?tenant_id=${encodeURIComponent(slug)}&procedure_id=${encodeURIComponent(procedure)}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 0 } }
     );
     if (!res.ok) return null;
     return res.json();
