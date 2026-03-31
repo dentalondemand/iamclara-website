@@ -409,7 +409,7 @@ export default async function ProcedureLandingPage(
         </div>
       </section>
 
-      <StickyMobileCTA primary={P} />
+      <StickyMobileCTA primary={P} tenantId={slug} />
 
       {/* ── CLARA LIVE CHAT AGENT ── */}
       <ClaraChat

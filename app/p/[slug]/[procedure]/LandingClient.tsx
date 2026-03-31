@@ -84,10 +84,33 @@ export function LeadForm({
   }
 
   if (done) return (
-    <div style={{ background: "rgba(22,163,74,0.12)", border: "1px solid rgba(22,163,74,0.3)", borderRadius: 14, padding: "24px 20px", textAlign: "center" }}>
-      <div style={{ fontSize: 36, marginBottom: 8 }}>📞</div>
-      <div style={{ fontWeight: 700, fontSize: 17, color: "#16a34a", marginBottom: 6 }}>We&apos;ll call you shortly!</div>
-      <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 14 }}>A team member will reach out within minutes during business hours.</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {/* Confirmation */}
+      <div style={{ background: "rgba(22,163,74,0.12)", border: "1px solid rgba(22,163,74,0.3)", borderRadius: 14, padding: "18px 20px", textAlign: "center" }}>
+        <div style={{ fontSize: 30, marginBottom: 6 }}>✅</div>
+        <div style={{ fontWeight: 700, fontSize: 16, color: "#4ade80", marginBottom: 4 }}>Got it — Clara will call you shortly!</div>
+        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>A team member will reach out within minutes during business hours.</div>
+      </div>
+      {/* Schedule CTA */}
+      <div style={{ background: `rgba(${hexToRgb(P)},0.12)`, border: `1px solid rgba(${hexToRgb(P)},0.3)`, borderRadius: 14, padding: "20px", textAlign: "center" }}>
+        <div style={{ fontSize: 22, marginBottom: 6 }}>📅</div>
+        <div style={{ fontWeight: 800, fontSize: 16, color: "#fff", marginBottom: 6 }}>
+          Don&apos;t want to wait? Pick your time now.
+        </div>
+        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
+          Skip the callback — choose a slot that works for you and lock it in instantly.
+        </div>
+        <a
+          href={`/book/${tenantId}`}
+          style={{
+            display: "block", padding: "13px 20px", borderRadius: 12,
+            background: P, color: "#fff", fontWeight: 800, fontSize: 15,
+            textDecoration: "none", textAlign: "center",
+          }}
+        >
+          📅 Book Your Consultation Now →
+        </a>
+      </div>
     </div>
   );
 
@@ -174,15 +197,25 @@ export function ScrollToFormButton({ primary, children }: { primary: string; chi
 }
 
 // ── Sticky mobile CTA ─────────────────────────────────────────────────────────
-export function StickyMobileCTA({ primary }: { primary: string }) {
+export function StickyMobileCTA({ primary, tenantId }: { primary: string; tenantId?: string }) {
   function scrollToForm() {
     document.getElementById("lead-form")?.scrollIntoView({ behavior: "smooth" });
   }
   return (
-    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 999, padding: "12px 16px", background: "rgba(6,14,26,0.97)", borderTop: `2px solid ${primary}`, display: "flex", gap: 10, alignItems: "center" }} className="mobile-sticky-cta">
-      <button onClick={scrollToForm} style={{ flex: 1, padding: "14px", borderRadius: 12, border: "none", background: primary, color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", letterSpacing: 0.3 }}>
-        Get My Free Consultation →
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 999, padding: "12px 16px", background: "rgba(6,14,26,0.97)", borderTop: `2px solid ${primary}`, display: "flex", gap: 8, alignItems: "center" }} className="mobile-sticky-cta">
+      <button onClick={scrollToForm} style={{ flex: 1, padding: "14px", borderRadius: 12, border: "none", background: primary, color: "#fff", fontSize: 15, fontWeight: 700, cursor: "pointer", letterSpacing: 0.3 }}>
+        Get Free Consult →
       </button>
+      {tenantId && (
+        <a href={`/book/${tenantId}`} style={{
+          flex: 1, padding: "14px", borderRadius: 12,
+          border: `2px solid ${primary}`, background: "transparent",
+          color: primary, fontSize: 15, fontWeight: 700, cursor: "pointer",
+          textDecoration: "none", textAlign: "center", display: "block",
+        }}>
+          📅 Book Now
+        </a>
+      )}
     </div>
   );
 }
@@ -231,4 +264,9 @@ export function PixelInjector({
     }
   }, [metaPixelId, googleTagId, procedureKey, procedureName]);
   return null;
+}
+
+function hexToRgb(hex: string): string {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : "13,148,136";
 }
