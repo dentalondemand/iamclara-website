@@ -134,18 +134,18 @@ export default async function ProcedureLandingPage(
       <section style={{ background: `linear-gradient(${theme.hero})`, padding: "50px 20px 70px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
-          {/* Headline block — always full-width, always first */}
-          <div style={{ marginBottom: 36 }}>
+          {/* Headline block — always full-width, always first, center-justified */}
+          <div style={{ marginBottom: 36, textAlign: "center" }}>
             {specialtyBadge && (
               <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 20, letterSpacing: 0.5 }}>
                 ⭐ {specialtyBadge}
               </div>
             )}
-            <h1 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1 }}>
+            <h1 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1, maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
               {headline}
             </h1>
             {startingPrice && (
-              <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, flexWrap: "wrap" }}>
                 <div style={{ background: "rgba(45,212,191,0.15)", border: "1px solid rgba(45,212,191,0.4)", borderRadius: 12, padding: "10px 20px" }}>
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Starting at</div>
                   <div style={{ color: A, fontWeight: 900, fontSize: 26 }}>${startingPrice.toLocaleString()}</div>
@@ -161,11 +161,11 @@ export default async function ProcedureLandingPage(
             )}
           </div>
 
-          {/* Two-column: bullets left, photo+form right */}
-          <div className="hero-grid" style={{ display: "flex", alignItems: "flex-start", gap: 40 }}>
+          {/* Two-column: bullets left, photo+form right — centered layout */}
+          <div className="hero-grid" style={{ display: "flex", alignItems: "flex-start", gap: 40, justifyContent: "center" }}>
 
             {/* Left: selling points + trust */}
-            <div style={{ flex: "1 1 380px" }}>
+            <div style={{ flex: "1 1 380px", maxWidth: 480 }}>
               {heroPoints.length > 0 && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
                   {heroPoints.map((pt: string, i: number) => (
@@ -176,7 +176,7 @@ export default async function ProcedureLandingPage(
                   ))}
                 </div>
               )}
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
                 <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>📞 We call you back in minutes</div>
                 <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🔒 No obligation, ever</div>
                 <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🏆 Lifetime warranty</div>
