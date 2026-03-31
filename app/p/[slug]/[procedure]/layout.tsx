@@ -7,7 +7,7 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 
-const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
+const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com";
 
 interface LayoutProps {
   children: ReactNode;

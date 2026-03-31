@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
+const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com";
 
 // ── Lead Capture Form ──────────────────────────────────────────────────────────
 export function LeadForm({

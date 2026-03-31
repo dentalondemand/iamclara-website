@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { LeadForm, ScrollToFormButton, StickyMobileCTA, PixelInjector } from "./LandingClient";
 import ClaraChat from "../../../../components/ClaraChat";
 
-const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
+const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com";
 
 const THEMES: Record<string, { primary: string; accent: string; hero: string }> = {
   teal:   { primary: "#0d9488", accent: "#2DD4BF", hero: "135deg, #0a1628 0%, #0d2240 60%, #0f3460 100%" },
