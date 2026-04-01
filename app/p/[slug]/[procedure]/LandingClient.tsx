@@ -84,32 +84,45 @@ export function LeadForm({
   }
 
   if (done) return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {/* Confirmation */}
-      <div style={{ background: "rgba(22,163,74,0.12)", border: "1px solid rgba(22,163,74,0.3)", borderRadius: 14, padding: "18px 20px", textAlign: "center" }}>
-        <div style={{ fontSize: 30, marginBottom: 6 }}>✅</div>
-        <div style={{ fontWeight: 700, fontSize: 16, color: "#4ade80", marginBottom: 4 }}>Got it — Clara will call you shortly!</div>
-        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>A team member will reach out within minutes during business hours.</div>
+      <div style={{ background: "rgba(22,163,74,0.08)", border: "1px solid rgba(22,163,74,0.25)", borderRadius: 14, padding: "16px 20px", textAlign: "center" }}>
+        <div style={{ fontWeight: 700, fontSize: 15, color: "#4ade80", marginBottom: 3 }}>✅ We got your info!</div>
+        <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 13 }}>How would you like to connect?</div>
       </div>
-      {/* Schedule CTA */}
-      <div style={{ background: `rgba(${hexToRgb(P)},0.12)`, border: `1px solid rgba(${hexToRgb(P)},0.3)`, borderRadius: 14, padding: "20px", textAlign: "center" }}>
-        <div style={{ fontSize: 22, marginBottom: 6 }}>📅</div>
-        <div style={{ fontWeight: 800, fontSize: 16, color: "#fff", marginBottom: 6 }}>
-          Don&apos;t want to wait? Pick your time now.
+
+      {/* Option A: Schedule now */}
+      <a
+        href={`/book/${tenantId}`}
+        style={{
+          display: "flex", alignItems: "center", gap: 14,
+          padding: "16px 20px", borderRadius: 14,
+          background: P, color: "#fff",
+          fontWeight: 700, fontSize: 15, textDecoration: "none",
+          boxShadow: `0 4px 20px rgba(${hexToRgb(P)},0.35)`,
+        }}
+      >
+        <span style={{ fontSize: 24 }}>📅</span>
+        <div>
+          <div style={{ fontWeight: 800 }}>Pick my own time</div>
+          <div style={{ fontSize: 12, opacity: 0.8, marginTop: 2 }}>Choose a slot & book instantly</div>
         </div>
-        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
-          Skip the callback — choose a slot that works for you and lock it in instantly.
+        <span style={{ marginLeft: "auto", fontSize: 20 }}>›</span>
+      </a>
+
+      {/* Option B: Have Clara call */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: 14,
+        padding: "16px 20px", borderRadius: 14,
+        background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)",
+        color: "#fff",
+      }}>
+        <span style={{ fontSize: 24 }}>📞</span>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 15 }}>Have Clara call me</div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>We'll reach out within minutes during business hours</div>
         </div>
-        <a
-          href={`/book/${tenantId}`}
-          style={{
-            display: "block", padding: "13px 20px", borderRadius: 12,
-            background: P, color: "#fff", fontWeight: 800, fontSize: 15,
-            textDecoration: "none", textAlign: "center",
-          }}
-        >
-          📅 Book Your Consultation Now →
-        </a>
+        <span style={{ marginLeft: "auto", fontSize: 12, color: "#4ade80", fontWeight: 700, whiteSpace: "nowrap" }}>✓ Queued</span>
       </div>
     </div>
   );
