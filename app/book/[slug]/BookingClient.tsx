@@ -90,17 +90,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
         return;
       }
     }
-    // Missing teeth gate for full arch only
-    if (procedure?.id === "full_arch") {
-      if (!missingTeeth) {
-        setError("Please answer the missing teeth question.");
-        return;
-      }
-      if (missingTeeth === "1-3") {
-        setStep("disqualified");
-        return;
-      }
-    }
+    // Missing teeth — collected for full arch but does not disqualify
     setError("");
     setSubmitting(true);
     try {
@@ -324,11 +314,11 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
                   </select>
                 </div>
               )}
-              {/* Missing teeth — full arch only */}
+              {/* Missing teeth — full arch only, informational */}
               {procedure?.id === "full_arch" && (
                 <div>
                   <label style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", fontWeight: 600, display: "block", marginBottom: 4 }}>
-                    How many teeth are you missing? *
+                    How many teeth are you missing? <span style={{ color: "rgba(255,255,255,0.3)", fontWeight: 400 }}>(optional)</span>
                   </label>
                   <select value={missingTeeth} onChange={e => setMissingTeeth(e.target.value)}
                     style={{ ...inputStyle, color: missingTeeth ? "#fff" : "rgba(255,255,255,0.4)" }}>
