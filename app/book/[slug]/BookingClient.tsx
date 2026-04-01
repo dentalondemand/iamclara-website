@@ -266,8 +266,15 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
             <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 2 }}>
               Almost there!
             </div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 4 }}>
               📅 {selectedSlot?.label} · {procedure?.name}
+            </div>
+            <div style={{
+              padding: "10px 14px", borderRadius: 10, marginBottom: 20,
+              background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.25)",
+              fontSize: 12, color: "rgba(251,191,36,0.9)", lineHeight: 1.6,
+            }}>
+              💳 A card on file is required to hold your appointment. <strong style={{ color: "#fbbf24" }}>No charge today</strong> — a $50 fee only applies if you no-show without 24-hour notice.
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div>
