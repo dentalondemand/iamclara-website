@@ -46,6 +46,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [creditScore, setCreditScore] = useState("");
+  const [missingTeeth, setMissingTeeth] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [bookingId, setBookingId] = useState<number | null>(null);
@@ -89,6 +90,17 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
         return;
       }
     }
+    // Missing teeth gate for full arch only
+    if (procedure?.id === "full_arch") {
+      if (!missingTeeth) {
+        setError("Please answer the missing teeth question.");
+        return;
+      }
+      if (missingTeeth === "1-3") {
+        setStep("disqualified");
+        return;
+      }
+    }
     setError("");
     setSubmitting(true);
     try {
@@ -104,6 +116,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
           slot_label: selectedSlot!.label,
           source: "online_scheduler",
           credit_score: creditScore || undefined,
+          teeth_missing: missingTeeth || undefined,
         }),
       });
       const data = await res.json();
@@ -311,6 +324,22 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
                   </select>
                 </div>
               )}
+              {/* Missing teeth — full arch only */}
+              {procedure?.id === "full_arch" && (
+                <div>
+                  <label style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", fontWeight: 600, display: "block", marginBottom: 4 }}>
+                    How many teeth are you missing? *
+                  </label>
+                  <select value={missingTeeth} onChange={e => setMissingTeeth(e.target.value)}
+                    style={{ ...inputStyle, color: missingTeeth ? "#fff" : "rgba(255,255,255,0.4)" }}>
+                    <option value="" disabled>Select an option</option>
+                    <option value="most_all">Most or all of my teeth</option>
+                    <option value="half">About half</option>
+                    <option value="several">Several (4+)</option>
+                    <option value="1-3">Only 1–3 teeth</option>
+                  </select>
+                </div>
+              )}
             </div>
             {error && (
               <div style={{ marginTop: 12, padding: "10px 12px", borderRadius: 10, background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", fontSize: 13 }}>
@@ -334,23 +363,35 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>💙</div>
             <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 10 }}>
-              Let's find the right path for you
+              {missingTeeth === "1-3"
+                ? "Full arch may not be the right fit"
+                : "Let's find the right path for you"}
             </div>
             <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 24, lineHeight: 1.7 }}>
-              Cherry financing typically requires a 580+ credit score.
-              We don't want to waste your time — but we'd still love to talk through your options.
+              {missingTeeth === "1-3"
+                ? "Full arch implants are designed for patients missing most or all of their teeth. If you're only missing 1–3 teeth, a single implant or bridge may be a better — and more affordable — option."
+                : "Cherry financing typically requires a 580+ credit score. We don't want to waste your time — but we'd still love to talk through your options including cash pricing and payment plans."}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {missingTeeth === "1-3" && (
+                <a href={`/book/${slug}`} onClick={() => { setProcedure(PROCEDURES.find(p => p.id === "single_implant")!); setMissingTeeth(""); setStep("slots"); }}
+                  style={{
+                    display: "block", padding: "14px", borderRadius: 14,
+                    background: primaryColor, color: "#fff", fontWeight: 800, fontSize: 15,
+                    textDecoration: "none", textAlign: "center", cursor: "pointer",
+                  }}>
+                  Book a Single Implant Consult Instead →
+                </a>
+              )}
               <a href="tel:3016522222" style={{
                 display: "block", padding: "14px", borderRadius: 14,
-                background: primaryColor, color: "#fff", fontWeight: 800, fontSize: 15,
+                background: missingTeeth === "1-3" ? "rgba(255,255,255,0.08)" : primaryColor,
+                border: missingTeeth === "1-3" ? "1px solid rgba(255,255,255,0.15)" : "none",
+                color: "#fff", fontWeight: 800, fontSize: 15,
                 textDecoration: "none", textAlign: "center",
               }}>
                 📞 Call Us — (301) 652-2222
               </a>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", textAlign: "center" }}>
-                We can discuss cash pricing, payment plans, and other options
-              </div>
             </div>
           </div>
         )}
