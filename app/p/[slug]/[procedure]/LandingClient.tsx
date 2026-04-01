@@ -190,9 +190,31 @@ export function LeadForm({
       <input type="hidden" value={form.procedure_detail} readOnly />
       {err && <div style={{ color: "#f87171", fontSize: 13 }}>{err}</div>}
       <button type="submit" disabled={submitting} style={{ padding: "15px", borderRadius: 12, border: "none", background: P, color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", opacity: submitting ? 0.7 : 1, letterSpacing: 0.3 }}>
-        {submitting ? "Sending…" : "Get My Free Consultation →"}
+        {submitting ? "Sending…" : "📞 Have Clara Call Me →"}
       </button>
       <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 11, margin: 0, textAlign: "center" }}>No spam. We&apos;ll call you — not the other way around.</p>
+
+      {/* Divider */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "4px 0" }}>
+        <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
+        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>OR</span>
+        <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
+      </div>
+
+      {/* Book online alternative */}
+      <a
+        href={`/book/${tenantId}`}
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          padding: "13px", borderRadius: 12,
+          border: `1px solid rgba(${hexToRgb(P)},0.4)`,
+          background: `rgba(${hexToRgb(P)},0.08)`,
+          color: A, fontWeight: 700, fontSize: 14,
+          textDecoration: "none", textAlign: "center",
+        }}
+      >
+        📅 Book My Own Time Online
+      </a>
     </form>
   );
 }
