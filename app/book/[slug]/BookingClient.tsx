@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com";
 
 type Slot = { label: string; iso: string };
-type Step = "procedure" | "slots" | "info" | "card" | "confirmed";
+type Step = "procedure" | "slots" | "info" | "card" | "confirmed" | "disqualified";
 
 interface Procedure {
   id: string;
@@ -20,6 +20,9 @@ const PROCEDURES: Procedure[] = [
   { id: "veneers", name: "Veneers / Smile Makeover", duration: "45 min consult", icon: "✨" },
   { id: "general", name: "General / Other", duration: "30 min consult", icon: "📋" },
 ];
+
+// Procedures that require financing qualification
+const FINANCING_REQUIRED = ["full_arch", "single_implant"];
 
 function formatPhone(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 10);
@@ -42,6 +45,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [creditScore, setCreditScore] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [bookingId, setBookingId] = useState<number | null>(null);
@@ -74,6 +78,17 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
       setError("Please enter your name and a valid 10-digit phone number.");
       return;
     }
+    // Credit score gate for financing-required procedures
+    if (FINANCING_REQUIRED.includes(procedure?.id || "")) {
+      if (!creditScore) {
+        setError("Please select your estimated credit score.");
+        return;
+      }
+      if (creditScore === "below_580") {
+        setStep("disqualified");
+        return;
+      }
+    }
     setError("");
     setSubmitting(true);
     try {
@@ -88,6 +103,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
           slot_iso: selectedSlot!.iso,
           slot_label: selectedSlot!.label,
           source: "online_scheduler",
+          credit_score: creditScore || undefined,
         }),
       });
       const data = await res.json();
@@ -278,6 +294,23 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
                   style={inputStyle}
                 />
               </div>
+              {/* Credit score — only for financing-required procedures */}
+              {FINANCING_REQUIRED.includes(procedure?.id || "") && (
+                <div>
+                  <label style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", fontWeight: 600, display: "block", marginBottom: 4 }}>
+                    Estimated Credit Score * <span style={{ color: "rgba(255,255,255,0.3)", fontWeight: 400 }}>(for financing eligibility)</span>
+                  </label>
+                  <select value={creditScore} onChange={e => setCreditScore(e.target.value)}
+                    style={{ ...inputStyle, color: creditScore ? "#fff" : "rgba(255,255,255,0.4)" }}>
+                    <option value="" disabled>Select credit score range</option>
+                    <option value="750+">750+ (Excellent)</option>
+                    <option value="700-749">700–749 (Good)</option>
+                    <option value="650-699">650–699 (Fair)</option>
+                    <option value="580-649">580–649 (Below Average)</option>
+                    <option value="below_580">Below 580</option>
+                  </select>
+                </div>
+              )}
             </div>
             {error && (
               <div style={{ marginTop: 12, padding: "10px 12px", borderRadius: 10, background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", fontSize: 13 }}>
@@ -293,6 +326,32 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
               }}>
               {submitting ? "Booking…" : "Continue →"}
             </button>
+          </div>
+        )}
+
+        {/* STEP: Disqualified */}
+        {step === "disqualified" && (
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>💙</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 10 }}>
+              Let's find the right path for you
+            </div>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 24, lineHeight: 1.7 }}>
+              Cherry financing typically requires a 580+ credit score.
+              We don't want to waste your time — but we'd still love to talk through your options.
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <a href="tel:3016522222" style={{
+                display: "block", padding: "14px", borderRadius: 14,
+                background: primaryColor, color: "#fff", fontWeight: 800, fontSize: 15,
+                textDecoration: "none", textAlign: "center",
+              }}>
+                📞 Call Us — (301) 652-2222
+              </a>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", textAlign: "center" }}>
+                We can discuss cash pricing, payment plans, and other options
+              </div>
+            </div>
           </div>
         )}
 
