@@ -22,7 +22,7 @@ const PROCEDURES: Procedure[] = [
 ];
 
 // Procedures that require financing qualification
-const FINANCING_REQUIRED = ["full_arch", "single_implant"];
+const FINANCING_REQUIRED = ["full_arch", "single_implant", "veneers"];
 
 function formatPhone(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 10);
