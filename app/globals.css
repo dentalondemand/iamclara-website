@@ -31,9 +31,17 @@ body {
 /* Sticky mobile CTA — hidden on desktop */
 .mobile-sticky-cta {
   display: flex;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 @media (min-width: 768px) {
   .mobile-sticky-cta {
     display: none !important;
+  }
+}
+
+/* Prevent sticky bar from covering page content */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 80px;
   }
 }

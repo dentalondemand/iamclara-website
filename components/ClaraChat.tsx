@@ -118,7 +118,7 @@ export default function ClaraChat({
       <button
         onClick={() => setOpen(o => !o)}
         style={{
-          position: "fixed", bottom: 24, right: 24, zIndex: 9999,
+          position: "fixed", bottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)", right: 24, zIndex: 9999,
           width: 60, height: 60, borderRadius: "50%", border: "none",
           background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
           color: "#fff", fontSize: exitIntent && !open ? 28 : 26, cursor: "pointer",
@@ -151,7 +151,7 @@ export default function ClaraChat({
       {/* Chat window */}
       {open && (
         <div style={{
-          position: "fixed", bottom: 96, right: 24, zIndex: 9998,
+          position: "fixed", bottom: "calc(env(safe-area-inset-bottom, 0px) + 152px)", right: 24, zIndex: 9998,
           width: Math.min(380, window.innerWidth - 32),
           maxHeight: "70vh",
           background: "#0a1628",
