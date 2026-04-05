@@ -114,20 +114,14 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
 
       setBookingId(data.lead_id);
 
-      // Skip card step if no-show deposit is disabled
-      // (data.skip_card_step is set by backend when no_show_deposit.enabled = false)
-      if (data.card_url && !data.skip_card_step) {
-        setCardUrl(data.card_url);
-        setStep("card");
-      } else {
-        // Redirect to thank you page (skip card step entirely)
-        const params = new URLSearchParams({
-          slot: selectedSlot!.label,
-          name: name.trim(),
-          practice: practiceName,
-        });
-        window.location.href = `/book/confirmed?${params.toString()}`;
-      }
+      // ALWAYS skip card step — no-show deposit is disabled for Radiant
+      // Go straight to confirmation page
+      const params = new URLSearchParams({
+        slot: selectedSlot!.label,
+        name: name.trim(),
+        practice: practiceName,
+      });
+      window.location.href = `/book/confirmed?${params.toString()}`;
     } catch (e: any) {
       setError(e.message || "Something went wrong. Please try again.");
     } finally {
@@ -145,12 +139,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
       display: "flex", flexDirection: "column", alignItems: "center",
       padding: "24px 16px", fontFamily: "'Inter', sans-serif",
     }}>
-      {/* Safety: if card step somehow triggers, redirect to confirmation */}
-      {step === "card" && (
-        <script dangerouslySetInnerHTML={{
-          __html: `window.location.href = '/book/confirmed?slot=${selectedSlot?.label || ""}&name=${name}&practice=${practiceName}';`
-        }} />
-      )}
+
 
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: 32, maxWidth: 480, width: "100%" }}>
