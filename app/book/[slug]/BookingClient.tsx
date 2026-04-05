@@ -135,7 +135,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
     }
   }
 
-  const progressSteps = ["procedure", "slots", "info", "card", "confirmed"];
+  const progressSteps = ["procedure", "slots", "info", "confirmed"];  // "card" removed — no-show deposit disabled
   const progressIdx = progressSteps.indexOf(step);
 
   return (
@@ -155,10 +155,10 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
         </div>
       </div>
 
-      {/* Progress bar */}
+      {/* Progress bar (no "Secure Spot" step — card deposit disabled) */}
       {step !== "confirmed" && (
         <div style={{ display: "flex", gap: 6, marginBottom: 28, maxWidth: 480, width: "100%" }}>
-          {["Choose Service", "Pick a Time", "Your Info", "Secure Spot"].map((label, i) => (
+          {["Choose Service", "Pick a Time", "Your Info"].map((label, i) => (
             <div key={i} style={{ flex: 1, textAlign: "center" }}>
               <div style={{
                 height: 4, borderRadius: 2, marginBottom: 4,
