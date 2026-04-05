@@ -43,7 +43,7 @@ function ConfirmedContent() {
           {[
             ["📱", "You'll get a confirmation text shortly"],
             ["⏰", "We'll send a reminder 24 hours before"],
-            ["📍", "11714 Old Georgetown Rd, Rockville, MD 20852"],
+            ["📍", "5454 Wisconsin Avenue, Suite 1415, Chevy Chase, MD 20815"],
             ["❓", "Questions? Call (301) 652-2222"],
           ].map(([icon, text]) => (
             <div key={text as string} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 10 }}>
