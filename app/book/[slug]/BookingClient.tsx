@@ -145,6 +145,13 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
       display: "flex", flexDirection: "column", alignItems: "center",
       padding: "24px 16px", fontFamily: "'Inter', sans-serif",
     }}>
+      {/* Safety: if card step somehow triggers, redirect to confirmation */}
+      {step === "card" && (
+        <script dangerouslySetInnerHTML={{
+          __html: `window.location.href = '/book/confirmed?slot=${selectedSlot?.label || ""}&name=${name}&practice=${practiceName}';`
+        }} />
+      )}
+
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: 32, maxWidth: 480, width: "100%" }}>
         <div style={{ fontSize: 28, fontWeight: 800, color: "#fff", marginBottom: 4 }}>
@@ -389,36 +396,8 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
           </div>
         )}
 
-        {/* STEP 4: Card on file */}
-        {step === "card" && (
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>💳</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 8 }}>
-              One last step — secure your spot
-            </div>
-            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 24, lineHeight: 1.6 }}>
-              We require a card on file to hold your appointment.
-              <br />
-              <strong style={{ color: "#fff" }}>No charge today.</strong> A $50 fee only applies if
-              you no-show without 24-hour notice.
-            </div>
-            <a href={cardUrl}
-              style={{
-                display: "block", width: "100%", padding: "14px", borderRadius: 14,
-                background: P, color: "#fff", fontWeight: 800, fontSize: 15,
-                textDecoration: "none", textAlign: "center", marginBottom: 12,
-              }}>
-              Add Card to Confirm Booking →
-            </a>
-            <button onClick={() => {
-              const params = new URLSearchParams({ slot: selectedSlot?.label || "", name, practice: practiceName });
-              window.location.href = `/book/confirmed?${params.toString()}`;
-            }}
-              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", fontSize: 12, cursor: "pointer" }}>
-              Skip for now (booking not guaranteed)
-            </button>
-          </div>
-        )}
+        {/* STEP 4: Card on file — DISABLED (no-show deposit disabled, card step never shown) */}
+        {/* If this step appears, it means backend is incorrectly returning card_url when deposit is disabled */}
 
         {/* STEP 5: Confirmed */}
         {step === "confirmed" && (
