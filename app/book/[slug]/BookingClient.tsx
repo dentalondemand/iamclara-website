@@ -113,15 +113,11 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
       if (!res.ok) throw new Error(data.detail || "Booking failed");
 
       setBookingId(data.lead_id);
+      setCardUrl(data.card_url || "");
+      setNoDepositRequired(!data.card_url);
 
-      // ALWAYS skip card step — no-show deposit is disabled for Radiant
-      // Go straight to confirmation page
-      const params = new URLSearchParams({
-        slot: selectedSlot!.label,
-        name: name.trim(),
-        practice: practiceName,
-      });
-      window.location.href = `/book/confirmed?${params.toString()}`;
+      // Proceed to card step for deposit
+      setStep("card");
     } catch (e: any) {
       setError(e.message || "Something went wrong. Please try again.");
     } finally {
@@ -129,7 +125,7 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
     }
   }
 
-  const progressSteps = ["procedure", "slots", "info", "confirmed"];  // "card" removed — no-show deposit disabled
+  const progressSteps = ["procedure", "slots", "info", "card", "confirmed"];
   const progressIdx = progressSteps.indexOf(step);
 
   return (
@@ -151,10 +147,10 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
         </div>
       </div>
 
-      {/* Progress bar (no "Secure Spot" step — card deposit disabled) */}
+      {/* Progress bar */}
       {step !== "confirmed" && (
         <div style={{ display: "flex", gap: 6, marginBottom: 28, maxWidth: 480, width: "100%" }}>
-          {["Choose Service", "Pick a Time", "Your Info"].map((label, i) => (
+          {["Choose Service", "Pick a Time", "Your Info", "Secure Spot"].map((label, i) => (
             <div key={i} style={{ flex: 1, textAlign: "center" }}>
               <div style={{
                 height: 4, borderRadius: 2, marginBottom: 4,
@@ -385,23 +381,84 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
           </div>
         )}
 
-        {/* STEP 4: Card on file — DISABLED (no-show deposit disabled, card step never shown) */}
-        {/* If this step appears, it means backend is incorrectly returning card_url when deposit is disabled */}
+        {/* STEP 4: Card (Deposit) */}
+        {step === "card" && (
+          <div>
+            <button onClick={() => setStep("info")}
+              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", marginBottom: 12, padding: 0 }}>
+              ← Back
+            </button>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 4 }}>
+              Reserve your spot
+            </div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>
+              Complete your deposit to guarantee your time
+            </div>
+            
+            {/* Deposit message card */}
+            <div style={{
+              padding: "16px 14px", borderRadius: 14, marginBottom: 20,
+              background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)",
+            }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#86efac", marginBottom: 8 }}>
+                $50 Deposit
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}>
+                Your card won't be charged unless you miss your appointment. You can cancel anytime up to 24 hours before at no cost.
+              </div>
+            </div>
+
+            {/* Why we ask for deposit */}
+            <div style={{
+              padding: "12px 14px", borderRadius: 12, marginBottom: 20,
+              background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
+            }}>
+              <div style={{ fontSize: 12, color: "#93c5fd", fontWeight: 600 }}>
+                ℹ️ This $50 holds your spot. Show up or cancel 24h+ in advance — no charge.
+              </div>
+            </div>
+
+            {error && (
+              <div style={{ marginBottom: 16, padding: "10px 12px", borderRadius: 10, background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", fontSize: 13 }}>
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={() => {
+                if (cardUrl) {
+                  window.location.href = cardUrl;
+                } else {
+                  setError("Unable to load card form. Please try again.");
+                }
+              }}
+              disabled={submitting}
+              style={{
+                width: "100%", padding: "14px", borderRadius: 14,
+                background: submitting ? "rgba(255,255,255,0.1)" : P,
+                border: "none", color: "#fff", fontWeight: 800, fontSize: 15,
+                cursor: submitting ? "default" : "pointer", transition: "all 0.2s",
+              }}>
+              {submitting ? "Processing…" : "Secure Spot →"}
+            </button>
+          </div>
+        )}
 
         {/* STEP 5: Confirmed */}
         {step === "confirmed" && (
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", marginBottom: 8 }}>
-              {noDepositRequired ? "You're all set!" : "Booking request received!"}
+              You're all set!
             </div>
             <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 20, lineHeight: 1.7 }}>
               <strong style={{ color: "#fff" }}>{selectedSlot?.label}</strong>
               <br />
               {procedure?.name} at {practiceName}
               <br /><br />
-              We'll send a confirmation to your phone shortly.
-              {!noDepositRequired && " Complete the card step to lock in your spot."}
+              {noDepositRequired
+                ? "We'll send a confirmation to your phone shortly."
+                : "Your spot is reserved! We hold $50 to confirm. No charge if you show up or cancel 24h+ before."}
             </div>
             <div style={{
               padding: "14px 16px", borderRadius: 14,
