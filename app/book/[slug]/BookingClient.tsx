@@ -116,8 +116,8 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
       setCardUrl(data.card_url || "");
       setNoDepositRequired(!data.card_url);
 
-      // Proceed to card step for deposit
-      setStep("card");
+      // Skip card step if deposit is not required by this tenant
+      setStep(data.skip_card_step || !data.card_url ? "confirmed" : "card");
     } catch (e: any) {
       setError(e.message || "Something went wrong. Please try again.");
     } finally {
@@ -492,3 +492,4 @@ function hexToRgb(hex: string): string {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : "13,148,136";
 }
+
