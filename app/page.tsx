@@ -7,7 +7,7 @@ const DASHBOARD_URL = 'https://app.iamclara.ai'
 
 // ── Founders spot counters — update these as spots fill ──────────────────────
 const GROWTH_FOUNDERS_SPOTS_TOTAL = 10
-const GROWTH_FOUNDERS_SPOTS_TAKEN = 0   // increment as practices sign up
+const GROWTH_FOUNDERS_SPOTS_TAKEN = 2   // increment as practices sign up
 // ─────────────────────────────────────────────────────────────────────────────
 
 function Nav() {
@@ -16,7 +16,7 @@ function Nav() {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-md bg-navy-800/80">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src="/clara-logo.png" alt="Clara AI" className="w-9 h-9 rounded-xl object-cover" />
+          <img src="/clara-logo.webp" alt="Clara AI" className="w-9 h-9 rounded-xl object-cover" />
           <span className="text-2xl font-bold tracking-tight text-white">Clara <span className="text-teal-400">AI</span></span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
@@ -666,7 +666,7 @@ function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <img src="/clara-logo.png" alt="Clara AI" className="w-7 h-7 rounded-lg object-cover" />
+            <img src="/clara-logo.webp" alt="Clara AI" className="w-7 h-7 rounded-lg object-cover" />
             <span className="text-xl font-bold text-white">Clara <span className="text-teal-400">AI</span></span>
             <span className="text-white/30 text-sm ml-2">AI Practice Growth Platform</span>
           </div>
@@ -676,7 +676,7 @@ function Footer() {
           <a href="#how-it-works" className="hover:text-white/70 transition-colors">How it works</a>
           <a href="#features" className="hover:text-white/70 transition-colors">Features</a>
           <a href="#pricing" className="hover:text-white/70 transition-colors">Pricing</a>
-          <a href="mailto:jay@dental-on-demand.com" className="hover:text-white/70 transition-colors">Contact</a>
+          <a href="mailto:hello@iamclara.ai" className="hover:text-white/70 transition-colors">Contact</a>
         </div>
         <div className="flex items-center gap-4 text-white/30 text-sm">
           <span>© 2026 Clara AI. All rights reserved.</span>
@@ -876,8 +876,51 @@ function ProOptimizer() {
 }
 
 export default function Home() {
+  const schemaOrg = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "Clara AI",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "Clara is an AI dental receptionist that answers calls 24/7, captures leads, books consultations, and automates follow-up for dental practices.",
+        "url": "https://iamclara.ai",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Core Plan",
+            "price": "199",
+            "priceCurrency": "USD",
+            "priceSpecification": { "@type": "UnitPriceSpecification", "billingDuration": "P1M" }
+          },
+          {
+            "@type": "Offer",
+            "name": "Growth Plan",
+            "price": "599",
+            "priceCurrency": "USD",
+            "priceSpecification": { "@type": "UnitPriceSpecification", "billingDuration": "P1M" }
+          }
+        ],
+        "provider": { "@type": "Organization", "name": "Clara AI", "url": "https://iamclara.ai" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "How does call forwarding work?", "acceptedAnswer": { "@type": "Answer", "text": "You configure your practice phone to forward to your Clara number after 2–3 rings. Clara answers immediately after that. Setup takes about 5 minutes through your phone carrier or VoIP portal." } },
+          { "@type": "Question", "name": "What happens if Clara doesn't understand a caller?", "acceptedAnswer": { "@type": "Answer", "text": "Clara is graceful about it — she asks clarifying questions naturally. If a caller has an urgent emergency, she routes them appropriately and fires an alert to your team immediately." } },
+          { "@type": "Question", "name": "Can Clara book appointments directly?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — for consultation appointments (implants, cosmetics, etc.), Clara checks your Google Calendar in real time and books directly. For general appointments, she collects info and your front desk calls back." } },
+          { "@type": "Question", "name": "Does it work with my existing phone number?", "acceptedAnswer": { "@type": "Answer", "text": "Absolutely. You keep your practice number. Clara is assigned a dedicated Twilio number that your main number forwards to. Patients never know the difference." } },
+          { "@type": "Question", "name": "Is there a setup fee or contract?", "acceptedAnswer": { "@type": "Answer", "text": "No setup fees, no contracts, no hidden costs. Pay month-to-month and cancel anytime." } },
+          { "@type": "Question", "name": "What practice management systems does it work with?", "acceptedAnswer": { "@type": "Answer", "text": "Clara is PMS-agnostic — it works alongside Dentrix, Eaglesoft, Open Dental, Curve, and any other PMS." } }
+        ]
+      }
+    ]
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrg) }} />
       <Nav />
       <Hero />
       <HowItWorks />
