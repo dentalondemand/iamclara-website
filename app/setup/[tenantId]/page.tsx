@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 
-const BACKEND = "https://ai-dental-receptionist-backend.onrender.com";
+const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com";
 
 const DIFFERENTIATORS = [
   "Same-day teeth (guided surgery)", "CBCT / 3D imaging on-site",

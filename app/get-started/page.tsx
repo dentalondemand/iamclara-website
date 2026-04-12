@@ -113,7 +113,7 @@ export default function GetStarted() {
         full_data: { info, hours, services, alertEmails: alertEmails.filter(Boolean), alertPhones: alertPhones.filter(Boolean), notes },
       }
       const resp = await fetch(
-        "https://ai-dental-receptionist-backend.onrender.com/public/start-onboarding",
+        "https://mqxnyexmrk.us-east-1.awsapprunner.com/public/start-onboarding",
         { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }
       )
       const data = await resp.json()

@@ -80,7 +80,7 @@ export default function InvestorsPage() {
     e.preventDefault()
     setSending(true)
     try {
-      await fetch("https://ai-dental-receptionist-backend.onrender.com/public/investor-inquiry", {
+      await fetch("https://mqxnyexmrk.us-east-1.awsapprunner.com/public/investor-inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

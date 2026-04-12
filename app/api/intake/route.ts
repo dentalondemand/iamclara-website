@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const BACKEND = "https://ai-dental-receptionist-backend.onrender.com"
+const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com"
 
 export async function POST(req: NextRequest) {
   try {

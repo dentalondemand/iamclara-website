@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-const BACKEND = "https://ai-dental-receptionist-backend.onrender.com"
+const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com"
 const DASHBOARD = "https://app.iamclara.ai"
 
 const DAYS = ["mon","tue","wed","thu","fri","sat","sun"] as const
