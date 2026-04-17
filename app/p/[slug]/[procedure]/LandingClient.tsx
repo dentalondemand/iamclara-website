@@ -12,6 +12,8 @@ export function LeadForm({
   offerDetail,
   primary = "#0d9488",
   accent = "#2DD4BF",
+  googleAdsConversionId = "G-MKZSC4BVY2",
+  googleAdsConversionLabel = "CONVERSION_LABEL_PLACEHOLDER",
 }: {
   tenantId: string;
   procedureName: string;
@@ -20,6 +22,8 @@ export function LeadForm({
   offerDetail?: string;
   primary?: string;
   accent?: string;
+  googleAdsConversionId?: string;
+  googleAdsConversionLabel?: string;
 }) {
   const P = primary;
   const A = accent;
@@ -74,6 +78,12 @@ export function LeadForm({
         }
         if (typeof window !== "undefined" && (window as any).gtag) {
           (window as any).gtag("event", "generate_lead", { currency: "USD", value: 0, event_category: "lead_form", event_label: procedureName });
+          // Google Ads conversion tracking
+          (window as any).gtag("event", "conversion", {
+            send_to: `${googleAdsConversionId}/${googleAdsConversionLabel}`,
+            value: 1,
+            currency: "USD",
+          });
         }
       } else setErr("Something went wrong — please call us directly.");
     } catch {
