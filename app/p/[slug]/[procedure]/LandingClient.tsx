@@ -12,8 +12,8 @@ export function LeadForm({
   offerDetail,
   primary = "#0d9488",
   accent = "#2DD4BF",
-  googleAdsConversionId = "G-MKZSC4BVY2",
-  googleAdsConversionLabel = "CONVERSION_LABEL_PLACEHOLDER",
+  googleAdsConversionId = "AW-18005008933",
+  googleAdsConversionLabel = "YOUR_CONVERSION_LABEL_HERE",
 }: {
   tenantId: string;
   procedureName: string;
@@ -298,7 +298,7 @@ export function PixelInjector({
       gs.src = `https://www.googletagmanager.com/gtag/js?id=${googleTagId}`;
       document.head.appendChild(gs);
       const gc = document.createElement("script");
-      gc.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleTagId}');`;
+      gc.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleTagId}',{allow_cross_domain:true});`;
       document.head.appendChild(gc);
       // Google: fire page_view with procedure context for audience segmentation
       if (procedureKey) {
