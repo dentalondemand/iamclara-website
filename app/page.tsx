@@ -5,11 +5,6 @@ import Image from 'next/image'
 
 const DASHBOARD_URL = 'https://app.iamclara.ai'
 
-// ── Founders spot counters — update these as spots fill ──────────────────────
-const GROWTH_FOUNDERS_SPOTS_TOTAL = 10
-const GROWTH_FOUNDERS_SPOTS_TAKEN = 2   // increment as practices sign up
-// ─────────────────────────────────────────────────────────────────────────────
-
 function Nav() {
   const [open, setOpen] = useState(false)
   return (
@@ -245,7 +240,7 @@ function Features() {
           <div className="text-2xl mb-2">📈</div>
           <h3 className="text-xl font-semibold mb-2">Two plans. No complexity.</h3>
           <p className="text-white/50 max-w-2xl mx-auto">
-            Start with Core at $199/mo for the AI receptionist, or go all-in with Growth at $599/mo (founding rate) — ads, social media, lead nurturing, and more. All-inclusive, no per-minute fees, no agency markups.
+            Start with Core at $299/mo for the AI receptionist, or go all-in with Growth at $449/mo — ads, social media, lead nurturing, and more. All-inclusive, no per-minute fees, no agency markups.
           </p>
         </div>
       </div>
@@ -334,11 +329,11 @@ function Pricing() {
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Core Plan */}
-          <div className="bg-card-gradient border border-white/10 rounded-3xl p-8 flex flex-col">
+          <div className="bg-card-gradient border border-white/10 rounded-3xl p-8 flex flex-col opacity-80">
             <div className="mb-6">
               <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">CORE</div>
               <div className="flex items-end gap-2 mb-3">
-                <span className="text-5xl font-bold">$199</span>
+                <span className="text-5xl font-bold">$299</span>
                 <span className="text-white/40 mb-2">/month</span>
               </div>
               <p className="text-white/50 text-sm">
@@ -377,7 +372,7 @@ function Pricing() {
               </div>
               <a href="/get-started?plan=core"
                 className="block text-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 rounded-full transition-colors">
-                Get Started — $199/mo
+                Get Started — $299/mo
               </a>
             </div>
           </div>
@@ -385,19 +380,16 @@ function Pricing() {
           {/* Growth Plan */}
           <div className="relative bg-card-gradient border border-teal-500/40 rounded-3xl p-8 flex flex-col glow">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR — FOUNDING RATE</span>
+              <span className="bg-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</span>
             </div>
 
             <div className="mb-6">
               <div className="text-teal-400 text-sm font-bold tracking-widest mb-2">GROWTH</div>
-              <div className="flex items-end gap-2 mb-1">
-                <span className="text-5xl font-bold">$599</span>
-                <span className="text-white/40 mb-2">/month</span>
+              <div className="flex items-end gap-2 mb-3">
+                <span className="text-5xl font-bold">$449</span>
+                <span className="text-white/40 mb-2">/mo</span>
               </div>
-              <p className="text-white/30 text-xs mb-1 line-through">$699/month after founding spots fill</p>
-              <p className="text-amber-400 text-xs font-semibold mb-3">
-                🔥 {GROWTH_FOUNDERS_SPOTS_TOTAL - GROWTH_FOUNDERS_SPOTS_TAKEN} of {GROWTH_FOUNDERS_SPOTS_TOTAL} founding spots remaining
-              </p>
+              <p className="text-amber-400 text-xs font-semibold mb-2">→ $549/mo after month 1</p>
               <p className="text-white/50 text-sm">
                 Everything in Core — plus AI-managed ads, social media automation, and a full lead machine. All-inclusive, no per-minute fees.
               </p>
@@ -434,11 +426,11 @@ function Pricing() {
                 <p className="text-teal-400 font-bold text-sm">Save $6,000–$11,000/mo</p>
                 <p className="text-white/40 text-xs mt-0.5">vs. agency + social media manager + answering service</p>
               </div>
-              <a href="https://buy.stripe.com/eVq00lgkp4Bu9k50neaEE07"
+              <a href="/get-started?plan=growth"
                 className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
-                Claim Founding Rate — $599/mo
+                Get Started — $449/mo
               </a>
-              <p className="text-center text-white/30 text-xs mt-3">🔒 Locked for life · No contracts · Cancel anytime</p>
+              <p className="text-center text-white/30 text-xs mt-3">🔒 No contracts · Cancel anytime · $549/mo after month 1</p>
             </div>
           </div>
         </div>
@@ -464,21 +456,21 @@ function Pricing() {
                     what: "After-hours answering service",
                     note: "Misses 40–60% of calls. No intake. No follow-up.",
                     cost: "$500–$700/mo",
-                    with: "Core — $199/mo",
+                    with: "Core — $299/mo",
                     save: "~$400/mo",
                   },
                   {
                     what: "Social media manager",
                     note: "1–2 posts/week. Slow turnaround. No clinical voice.",
                     cost: "$800–$1,500/mo",
-                    with: "Growth — $599/mo ✦",
+                    with: "Growth — $449/mo",
                     save: "~$800/mo",
                   },
                   {
                     what: "Lead gen / marketing agency",
                     note: "Charges 10–20% of your ad budget on top. Slow follow-up. No guarantees.",
                     cost: "$2,000–$5,000/mo",
-                    with: "Growth — $599/mo ✦",
+                    with: "Growth — $449/mo",
                     save: "~$2,000+/mo",
                   },
                   {
@@ -506,7 +498,7 @@ function Pricing() {
                 <tr className="bg-teal-500/[0.06] border-t-2 border-teal-500/30">
                   <td className="px-5 py-4 font-bold text-white">All 4 combined</td>
                   <td className="px-4 py-4 text-center font-bold text-white">$7,050–$12,200/mo</td>
-                  <td className="px-4 py-4 text-center font-bold text-teal-400">Growth — $599/mo ✦</td>
+                  <td className="px-4 py-4 text-center font-bold text-teal-400">Growth — $449/mo</td>
                   <td className="px-4 py-4 text-center">
                     <span className="bg-teal-500/20 text-teal-300 font-bold text-sm px-3 py-1.5 rounded-full whitespace-nowrap">
                       Save $6K–$11K/mo
@@ -516,7 +508,7 @@ function Pricing() {
               </tbody>
             </table>
           </div>
-          <p className="text-center text-white/25 text-xs mt-4">✦ Founding rate — subject to change</p>
+
         </div>
       </div>
     </section>
@@ -693,7 +685,7 @@ function TieredIntelligence() {
   const tiers = [
     {
       plan: 'Core',
-      price: '$199/mo',
+      price: '$299/mo',
       color: '#2DD4BF',
       border: 'rgba(45,212,191,0.2)',
       bg: 'rgba(45,212,191,0.05)',
@@ -708,7 +700,7 @@ function TieredIntelligence() {
     },
     {
       plan: 'Growth',
-      price: '$599/mo',
+      price: '$449/mo',
       color: '#818cf8',
       border: 'rgba(129,140,248,0.2)',
       bg: 'rgba(129,140,248,0.05)',
@@ -890,14 +882,14 @@ export default function Home() {
           {
             "@type": "Offer",
             "name": "Core Plan",
-            "price": "199",
+            "price": "299",
             "priceCurrency": "USD",
             "priceSpecification": { "@type": "UnitPriceSpecification", "billingDuration": "P1M" }
           },
           {
             "@type": "Offer",
             "name": "Growth Plan",
-            "price": "599",
+            "price": "449",
             "priceCurrency": "USD",
             "priceSpecification": { "@type": "UnitPriceSpecification", "billingDuration": "P1M" }
           }

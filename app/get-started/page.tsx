@@ -38,6 +38,10 @@ export default function GetStarted() {
       if (planParam && ["core", "growth", "pro", "founders"].includes(planParam)) {
         setInfo(prev => ({ ...prev, plan: planParam }))
       }
+      const refParam = params.get("ref")
+      if (refParam) {
+        setInfo(prev => ({ ...prev, referral_code: refParam.toUpperCase() }))
+      }
     }
   }, [])
   const [submitting, setSubmitting] = useState(false)
@@ -48,6 +52,7 @@ export default function GetStarted() {
   const [info, setInfo] = useState({
     practice_name: "", phone: "", address: "", timezone: "America/New_York",
     website: "", admin_name: "", admin_email: "", plan: "core",
+    referral_code: "",
     voip_provider: "", rings_before_forward: "3",
     wants_calendar: "yes", wants_outbound: "no",
     priority_cases: "both",
@@ -107,6 +112,7 @@ export default function GetStarted() {
         admin_email: info.admin_email,
         phone: info.phone,
         plan: info.plan,
+        referral_code: info.referral_code,
         baa_accepted: baaAccepted,
         baa_accepted_at: new Date().toISOString(),
         // Full practice data for rich provisioning
@@ -233,9 +239,9 @@ export default function GetStarted() {
               Plan
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:4 }}>
                 {[
-                  { val:"core",   name:"Core",   price:"$199/mo",              badge:"",          desc:"AI receptionist + dashboard" },
-                  { val:"growth", name:"Growth", price:"$399/mo founding rate", badge:"Founding",  desc:"Core + social media automation — $499 after founding spots fill" },
-                  { val:"pro",    name:"Pro",    price:"$799/mo founding rate", badge:"Founding",  desc:"Growth + landing page, outbound calls & AI texting — $999 after founding spots fill" },
+                  { val:"core",   name:"Core",   price:"$299/mo",             badge:"",          desc:"AI receptionist + dashboard" },
+                  { val:"growth", name:"Growth", price:"$449/mo → $549/mo",    badge:"",          desc:"Core + ads, social media, lead automation" },
+                  { val:"pro",    name:"Pro",    price:"$449/mo → $549/mo",    badge:"Legacy",    desc:"Pro tier retired — Growth is our full platform" },
                 ].map(p => (
                   <div key={p.val} onClick={() => setInfo({...info, plan:p.val})}
                     style={{ cursor:"pointer", borderRadius:12, padding:"14px",
@@ -245,7 +251,7 @@ export default function GetStarted() {
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4 }}>
                       <span style={{ color:"#fff", fontWeight:700, fontSize:14 }}>{p.name}</span>
                       {p.badge && (
-                        <span style={{ background:"#0d9488", color:"#fff", fontSize:10, fontWeight:700,
+                        <span style={{ background:"rgba(255,255,255,0.15)", color:"rgba(255,255,255,0.6)", fontSize:10, fontWeight:700,
                                         padding:"1px 7px", borderRadius:20 }}>{p.badge}</span>
                       )}
                     </div>
@@ -256,7 +262,24 @@ export default function GetStarted() {
               </div>
               {info.plan==="growth" && (
                 <p style={{ marginTop:8, color:"rgba(45,212,191,0.8)", fontSize:12 }}>
-                  
+                  Growth plan includes everything in Core plus ads, social media automation, and full lead management.
+                </p>
+              )}
+            </label>
+
+            {/* Referral code */}
+            <label style={labelStyle}>
+              Referral code <span style={{ color:"rgba(255,255,255,0.3)", fontWeight:400 }}>(optional)</span>
+              <input
+                value={info.referral_code}
+                onChange={e => setInfo({ ...info, referral_code: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10) })}
+                placeholder="e.g. A3B7XY12"
+                maxLength={10}
+                style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: "0.1em" }}
+              />
+              {info.referral_code && (
+                <p style={{ marginTop:4, color:"rgba(45,212,191,0.7)", fontSize:12 }}>
+                  🎁 Referrer detected — you'll both get $50 off your subscription!
                 </p>
               )}
             </label>
