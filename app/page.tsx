@@ -90,6 +90,10 @@ function Hero() {
             className="w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white font-semibold px-8 py-4 rounded-full text-lg transition-all hover:scale-105 glow">
             Get Started
           </a>
+          <a href="/try-clara"
+            className="w-full sm:w-auto border border-teal-500/40 hover:border-teal-400 text-teal-400 font-medium px-8 py-4 rounded-full text-lg transition-colors">
+            Try free →
+          </a>
           <a href="#pricing"
             className="w-full sm:w-auto border border-white/20 hover:border-white/40 text-white font-medium px-8 py-4 rounded-full text-lg transition-colors">
             See pricing ↓
