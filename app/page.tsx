@@ -17,7 +17,7 @@ function Nav() {
         <div className="hidden md:flex items-center gap-8 text-sm text-white/70">
           <a href="#how-it-works" className="hover:text-white transition-colors">How it works</a>
           <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="/try-clara" className="hover:text-teal-400 transition-colors text-teal-400 font-medium">Try Clara</a>
+          <a href="/try-clara" className="hover:text-teal-400 transition-colors text-teal-400 font-medium">Smile Generator</a>
           <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
         </div>
         <div className="flex items-center gap-3">
@@ -42,7 +42,7 @@ function Nav() {
         <div className="md:hidden border-t border-white/10 bg-navy-800 px-6 py-4 space-y-3">
           <a href="#how-it-works" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>How it works</a>
           <a href="#features" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Features</a>
-          <a href="/try-clara" className="block text-teal-400 font-medium py-2" onClick={() => setOpen(false)}>Try Clara</a>
+          <a href="/try-clara" className="block text-teal-400 font-medium py-2" onClick={() => setOpen(false)}>Smile Generator</a>
           <a href="#pricing" className="block text-white/70 hover:text-white py-2" onClick={() => setOpen(false)}>Pricing</a>
           <a href={DASHBOARD_URL} target="_blank" rel="noopener noreferrer" className="block text-white/70 hover:text-white py-2">Log in</a>
         </div>
@@ -92,7 +92,7 @@ function Hero() {
           </a>
           <a href="/try-clara"
             className="w-full sm:w-auto border border-teal-500/40 hover:border-teal-400 text-teal-400 font-medium px-8 py-4 rounded-full text-lg transition-colors">
-            Try free →
+            Try the Smile Generator →
           </a>
           <a href="#pricing"
             className="w-full sm:w-auto border border-white/20 hover:border-white/40 text-white font-medium px-8 py-4 rounded-full text-lg transition-colors">
