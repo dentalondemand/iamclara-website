@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
 function ConfirmedContent() {
   const params = useSearchParams();
@@ -8,6 +8,16 @@ function ConfirmedContent() {
   const name    = params.get("name") || "";
   const practice = params.get("practice") || "Radiant Dental Care";
   const first   = name.split(" ")[0] || "there";
+
+  // Notify parent window (e.g. fullarch.radiant-dental.com iframe embed)
+  // so it can redirect to /thank-you.html and fire Google Ads conversion
+  useEffect(() => {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "booking_complete" }, "*");
+      }
+    } catch (_) {}
+  }, []);
 
   return (
     <div style={{
