@@ -53,6 +53,17 @@ export default function BookingClient({ slug, practiceName, primaryColor }: {
   const [cardUrl, setCardUrl] = useState("");
   const [noDepositRequired, setNoDepositRequired] = useState(false);
 
+  // Notify parent iframe when booking is confirmed
+  useEffect(() => {
+    if (step === "confirmed") {
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "booking_complete" }, "*");
+        }
+      } catch (_) {}
+    }
+  }, [step]);
+
   // Fetch slots when procedure selected
   useEffect(() => {
     if (!procedure) return;
