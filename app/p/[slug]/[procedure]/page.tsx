@@ -402,7 +402,7 @@ export default async function ProcedureLandingPage(
       )}
 
       {/* ── FINAL CTA ── */}
-      <section style={{ padding: "80px 20px", background: `linear-gradient(${theme.hero})` }}>
+      <section style={{ padding: "80px 20px", background: `linear-gradient(${heroGrad})` }}>
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
           <div style={{ fontSize: 40, marginBottom: 16 }}>🦷</div>
           <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 900, margin: "0 0 14px" }}>
