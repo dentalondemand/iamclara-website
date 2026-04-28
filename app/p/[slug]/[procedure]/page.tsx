@@ -40,16 +40,22 @@ export default async function ProcedureLandingPage(
   const config = await fetchConfig(slug, procedure);
 
   const practiceName  = config?.practice_name || slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
-  const theme         = THEMES[config?.theme || "teal"];
-  const P             = theme.primary;
-  const A             = theme.accent;
+  const themeKey      = config?.theme || "teal";
+  const themeBase     = THEMES[themeKey] || THEMES.teal;
+  // Tenant custom colors override theme defaults
+  const P = config?.primary_color || themeBase.primary;
+  const A = config?.secondary_color || themeBase.accent;
+  const heroGrad = config?.primary_color
+    ? `135deg, ${config.primary_color}22 0%, #0a1628 60%, #0f3460 100%`
+    : themeBase.hero;
   const heroImageUrl  = config?.hero_image_url || "";
   const beforeAfters: { before: string; after: string; label?: string }[] = config?.media?.before_after || [];
   // Only show videos if actually configured — no cross-tenant fallbacks
   const testimonialVideoIds: string[] = config?.testimonial_video_ids || [];
-  const doctorVideoId: string         = config?.doctor_video_id || "";
+  const doctorVideoId: string = config?.doctor_video_youtube_id || config?.doctor_video_id || "";
   const procedureName = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
-  const headline      = config?.headline || `${procedureName} — Expert Care, Beautiful Results`;
+  const headline      = config?.headline_override || config?.headline || `${procedureName} — Expert Care, Beautiful Results`;
+  const subheadlineOverride = config?.subheadline_override || "";
   const sellingPoints: string[] = config?.selling_points || [];
   const techHighlights: string[] = config?.tech_highlights || [];
   const freeConsult   = config?.free_consultation !== false;
@@ -131,7 +137,7 @@ export default async function ProcedureLandingPage(
       </nav>
 
       {/* ── HERO ── */}
-      <section style={{ background: `linear-gradient(${theme.hero})`, padding: "50px 20px 70px" }}>
+      <section style={{ background: `linear-gradient(${heroGrad})`, padding: "50px 20px 70px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
           {/* Headline block — always full-width, always first, center-justified */}
@@ -144,6 +150,11 @@ export default async function ProcedureLandingPage(
             <h1 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1, maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
               {headline}
             </h1>
+            {subheadlineOverride && (
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 17, lineHeight: 1.6, margin: "-8px auto 20px", maxWidth: 680, textAlign: "center" }}>
+                {subheadlineOverride}
+              </p>
+            )}
             {startingPrice && (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, flexWrap: "wrap" }}>
                 <div style={{ background: "rgba(45,212,191,0.15)", border: "1px solid rgba(45,212,191,0.4)", borderRadius: 12, padding: "10px 20px" }}>
