@@ -1,16 +1,30 @@
 // SERVER COMPONENT — data fetched at request time, no CORS issues
 import type { Metadata } from "next";
-import { LeadForm, ScrollToFormButton, StickyMobileCTA, PixelInjector } from "./LandingClient";
+import { Barlow, DM_Sans } from "next/font/google";
+import { LeadForm, ScrollToFormButton, StickyMobileCTA, PixelInjector, BeforeAfterSlider } from "./LandingClient";
 import ClaraChat from "../../../../components/ClaraChat";
+
+const barlow = Barlow({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-barlow",
+  display: "swap",
+});
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
 
 const BACKEND = "https://mqxnyexmrk.us-east-1.awsapprunner.com";
 
-const THEMES: Record<string, { primary: string; accent: string; hero: string }> = {
-  teal:   { primary: "#0d9488", accent: "#2DD4BF", hero: "135deg, #0a1628 0%, #0d2240 60%, #0f3460 100%" },
-  navy:   { primary: "#1d4ed8", accent: "#60a5fa", hero: "135deg, #0a0f1e 0%, #0f1f4a 60%, #1a3070 100%" },
-  purple: { primary: "#7c3aed", accent: "#a78bfa", hero: "135deg, #0f0a1e 0%, #1e0f3a 60%, #2d1060 100%" },
-  green:  { primary: "#15803d", accent: "#4ade80", hero: "135deg, #0a1a0f 0%, #0f2d1a 60%, #16402a 100%" },
-  slate:  { primary: "#475569", accent: "#94a3b8", hero: "135deg, #0f1117 0%, #1a1f2e 60%, #252b3b 100%" },
+const THEMES: Record<string, { primary: string; accent: string }> = {
+  teal:   { primary: "#0d9488", accent: "#2DD4BF" },
+  navy:   { primary: "#1d4ed8", accent: "#60a5fa" },
+  purple: { primary: "#7c3aed", accent: "#a78bfa" },
+  green:  { primary: "#15803d", accent: "#4ade80" },
+  slate:  { primary: "#475569", accent: "#94a3b8" },
 };
 
 async function fetchConfig(slug: string, procedure: string) {
@@ -39,70 +53,96 @@ export default async function ProcedureLandingPage(
   const { slug, procedure } = params;
   const config = await fetchConfig(slug, procedure);
 
-  const practiceName  = config?.practice_name || slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
-  const themeKey      = config?.theme || "teal";
-  const themeBase     = THEMES[themeKey] || THEMES.teal;
-  // Tenant custom colors override theme defaults
+  // Tenant colors
+  const themeKey = config?.theme || "teal";
+  const themeBase = THEMES[themeKey] || THEMES.teal;
   const P = config?.primary_color || themeBase.primary;
   const A = config?.secondary_color || themeBase.accent;
-  const heroGrad = config?.primary_color
-    ? `135deg, ${config.primary_color}22 0%, #0a1628 60%, #0f3460 100%`
-    : themeBase.hero;
-  const heroImageUrl  = config?.hero_image_url || "";
-  const beforeAfters: { before: string; after: string; label?: string }[] = config?.media?.before_after || [];
-  // Only show videos if actually configured — no cross-tenant fallbacks
-  const testimonialVideoIds: string[] = config?.testimonial_video_ids || [];
-  const doctorVideoId: string = config?.doctor_video_youtube_id || config?.doctor_video_id || "";
-  const procedureName = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
-  const headline      = config?.headline_override || config?.headline || `${procedureName} — Expert Care, Beautiful Results`;
-  const subheadlineOverride = config?.subheadline_override || "";
-  const sellingPoints: string[] = config?.selling_points || [];
-  const techHighlights: string[] = config?.tech_highlights || [];
-  const freeConsult   = config?.free_consultation !== false;
-  const startingPrice = config?.starting_price;
-  const regularPrice  = config?.regular_price;
-  const savingsLabel  = config?.savings_label || (startingPrice && regularPrice ? `Save $${(regularPrice - startingPrice).toLocaleString()}+` : "");
-  const financingDetails = config?.financing_details;
-  const practiceDiffs = config?.practice_differentiators;
-  const ctaOffer      = config?.cta_offer || (freeConsult ? "Free Consultation — No Obligation" : "");
-  const ctaOfferDetail = config?.cta_offer_detail || "";
-  const smileSimUrl   = `https://app.iamclara.ai/smile/${slug}`;
+
+  // Practice info
+  const practiceName   = config?.practice_name || slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
   const practiceAddress = config?.practice_address || "";
   const practicePhone   = config?.practice_phone || "";
+  const heroImageUrl    = config?.hero_image_url || "";
+  const procedureName    = config?.name || procedure.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+  const headline        = config?.headline_override || config?.headline || `${procedureName} — Expert Care, Beautiful Results`;
+  const subheadline     = config?.subheadline_override || "";
   const specialtyBadge  = config?.specialty_badge || "";
-  const googleReviewCount = config?.google_review_count || "";
+
+  // Pricing
+  const startingPrice    = config?.starting_price;
+  const regularPrice     = config?.regular_price;
+  const savingsLabel     = config?.savings_label || (startingPrice && regularPrice && regularPrice > startingPrice
+    ? `Save $${(regularPrice - startingPrice).toLocaleString()}+` : "");
+  const financingDetails = config?.financing_details;
+  const ctaOffer         = config?.cta_offer || "Free Consultation — No Obligation";
+  const ctaOfferDetail   = config?.cta_offer_detail || "";
+  const pricingHeadline  = config?.pricing_headline || "";
+  const pricingFootnote  = config?.pricing_footnote || "";
+
+  // Doctor / empathy
+  const drName      = config?.dr_name || "";
+  const drTitle     = config?.dr_title || "";
+  const drPhotoUrl  = config?.dr_photo_url || "";
+  const drQuote     = config?.dr_quote || "I believe every patient deserves to understand exactly what's happening with their care — and exactly what it will cost. No surprises, no pressure.";
+  const patientQuote    = config?.patient_testimonial_quote || "";
+  const patientName     = config?.patient_name || "";
+  const patientCaseLabel = config?.patient_case_label || "";
+
+  // Media
+  const testimonialVideoIds: string[] = config?.testimonial_video_ids || [];
+  const doctorVideoId: string = config?.doctor_video_youtube_id || config?.doctor_video_id || "";
   const googleReviewScore = config?.google_review_score || "";
+  const googleReviewCount = config?.google_review_count || "";
 
-  // Config-driven sections with generic fallbacks
-  type ProcessStep = { icon: string; title: string; desc: string };
-  const processSteps: ProcessStep[] = config?.process_steps?.length
-    ? config.process_steps
-    : [
-        { icon: "📞", title: "Free Consultation", desc: `Meet our team, discuss your goals, and leave with a complete treatment plan and exact pricing — zero pressure.` },
-        { icon: "🔬", title: "Comprehensive Exam & Planning", desc: `Digital imaging, X-rays, and a full clinical assessment. Your treatment is planned precisely before we begin.` },
-        { icon: "🦷", title: `Your ${procedureName}`, desc: `Your procedure, performed by our experienced team using modern technology for the best possible outcome.` },
-        { icon: "✨", title: "Follow-Up & Results", desc: `We stay with you through your recovery and final results. Your long-term outcome is our success.` },
-      ];
+  // Before/after slider
+  const baSlider = config?.before_after_slider || { before_url: "", after_url: "", caption: "" };
 
+  // Tech features
+  type TechFeature = { icon: string; title: string; desc: string };
+  const techFeatures: TechFeature[] = config?.tech_features?.length
+    ? config.tech_features
+    : (config?.tech_highlights || []).map((h: string) => ({ icon: "⚡", title: h, desc: "" }));
+
+  // Selling points
+  const sellingPoints: string[] = config?.selling_points || [];
+
+  // Process steps with optional time/location labels
+  type ProcessStep = { icon: string; title: string; desc: string; time_label?: string; location_label?: string };
+  const defaultSteps: ProcessStep[] = [
+    { icon: "📞", title: "Free Consultation", desc: `Meet our team, discuss your goals, and leave with a complete treatment plan and exact pricing — zero pressure.`, time_label: "45-60 min", location_label: "Complimentary" },
+    { icon: "🔬", title: "Comprehensive Exam & Planning", desc: `Digital imaging, X-rays, and a full clinical assessment. Your treatment is planned precisely before we begin.`, time_label: "Same visit", location_label: "In-office" },
+    { icon: "🦷", title: procedureName, desc: `Your procedure, performed by our experienced team using modern technology for the best possible outcome.`, time_label: "Varies", location_label: "In-office" },
+    { icon: "✨", title: "Follow-Up & Results", desc: `We stay with you through your recovery and final results. Your long-term outcome is our success.`, time_label: "Ongoing", location_label: "Included" },
+  ];
+  const processSteps: ProcessStep[] = config?.process_steps?.length ? config.process_steps : defaultSteps;
+
+  // FAQ
   type FaqItem = { q: string; a: string };
   const faqItems: FaqItem[] = config?.faq_items?.length ? config.faq_items : [];
 
+  // Why Us
   type WhyUsItem = { icon: string; label: string; sub: string };
-  const whyUsItems: WhyUsItem[] = config?.why_us_items?.length
-    ? config.why_us_items
-    : [
-        { icon: "🏆", label: "Experienced Team", sub: "Years of dedicated expertise" },
-        { icon: "💡", label: "Advanced Technology", sub: "Modern equipment & techniques" },
-        { icon: "🛡️", label: "Patient-First Care", sub: "Comfort & transparency always" },
-        { icon: "📍", label: "Convenient Location", sub: practiceAddress || "Easy to reach" },
-      ];
+  const defaultWhyUs: WhyUsItem[] = [
+    { icon: "🏆", label: "Experienced Team", sub: "Years of dedicated expertise" },
+    { icon: "💡", label: "Advanced Technology", sub: "Modern equipment & techniques" },
+    { icon: "🛡️", label: "Patient-First Care", sub: "Comfort & transparency always" },
+    { icon: "📍", label: "Convenient Location", sub: practiceAddress || "Easy to reach" },
+  ];
+  const whyUsItems: WhyUsItem[] = config?.why_us_items?.length ? config.why_us_items : defaultWhyUs;
 
-  // Split selling points: top 4 in hero, rest in "What's included" section
-  const heroPoints     = sellingPoints.slice(0, 4);
-  const includesPoints = sellingPoints.slice(4);
+  // Stars for review
+  const stars = googleReviewScore ? "★".repeat(Math.round(parseFloat(googleReviewScore))) : "";
 
   return (
-    <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", background: "#060e1a", color: "#fff" }}>
+    <div
+      style={{
+        fontFamily: `var(--font-dm-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`,
+        background: "#FAFCFD",
+        color: "#1c2f47",
+        minHeight: "100vh",
+      }}
+    >
       <PixelInjector
         metaPixelId={config?.meta_pixel_id}
         googleTagId={config?.google_tag_id}
@@ -110,104 +150,264 @@ export default async function ProcedureLandingPage(
         procedureName={procedureName}
       />
 
+      {/* ═══════════════════════════════════════════
+          GLOBAL STYLES
+      ═══════════════════════════════════════════ */}
       <style>{`
-        * { box-sizing: border-box; }
+        :root {
+          --navy: #0B2240;
+          --navy-deep: #081828;
+          --teal: var(--accent, ${A});
+          --teal-mid: color-mix(in oklab, ${A} 85%, white);
+          --teal-lt: color-mix(in oklab, ${A} 12%, white);
+          --white: #FAFCFD;
+          --offwhite: #F2F7F7;
+          --muted: #6B8090;
+          --ink: #1c2f47;
+          --subink: #3a5068;
+          --border: rgba(11,34,64,.10);
+          --accent: var(--primary, ${P});
+          --ease-out: cubic-bezier(0.22,1,0.36,1);
+          --radius-sm: 10px;
+          --radius: 14px;
+          --radius-lg: 20px;
+          --section-py: 100px;
+          --container-w: 1180px;
+          --font-barlow: 'Barlow', sans-serif;
+          --font-dm-sans: 'DM Sans', sans-serif;
+        }
+
+        h1, h2, h3, h4 {
+          font-family: var(--font-barlow), sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+
+        .section-eyebrow {
+          font-family: var(--font-barlow), sans-serif;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--accent);
+          margin-bottom: 12px;
+        }
+
+        .section-heading {
+          font-family: var(--font-barlow), sans-serif;
+          font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+          font-weight: 800;
+          color: var(--navy);
+          line-height: 1.15;
+          margin: 0 0 16px;
+        }
+
+        .section-subheading {
+          font-size: 1.05rem;
+          color: var(--muted);
+          line-height: 1.7;
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .container {
+          max-width: var(--container-w);
+          margin: 0 auto;
+          padding: 0 24px;
+        }
+
+        .card-glow:hover {
+          border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px color-mix(in oklab, var(--accent) 18%, transparent);
+        }
+
         @media (max-width: 768px) {
           .hero-grid { flex-direction: column !important; }
-          .hero-right { order: -1; }
-          .process-grid { flex-direction: column !important; }
+          .hero-right { order: -1 !important; }
+          .process-steps { flex-direction: column !important; }
+          .process-connector { display: none !important; }
           .tech-grid { grid-template-columns: 1fr 1fr !important; }
-          .testimonial-grid { flex-direction: column !important; }
           .faq-grid { grid-template-columns: 1fr !important; }
+          .why-grid { grid-template-columns: 1fr 1fr !important; }
         }
       `}</style>
 
-      {/* ── NAV ── */}
-      <nav style={{ background: "rgba(6,14,26,0.95)", backdropFilter: "blur(10px)", borderBottom: "1px solid rgba(255,255,255,0.08)", position: "sticky", top: 0, zIndex: 100, padding: "0 20px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+      {/* ═══════════════════════════════════════════
+          STICKY NAV
+      ═══════════════════════════════════════════ */}
+      <nav style={{
+        background: "rgba(250,252,253,0.88)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        borderBottom: "1px solid var(--border)",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+        padding: "0 24px",
+      }}>
+        <div style={{
+          maxWidth: "var(--container-w)",
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          height: 64,
+        }}>
           <div>
-            <div style={{ color: "#fff", fontWeight: 800, fontSize: 17 }}>{practiceName}</div>
-            {practiceAddress && <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 11 }}>{practiceAddress}</div>}
+            <div style={{ fontFamily: "var(--font-barlow)", fontWeight: 800, fontSize: 17, color: "var(--navy)" }}>
+              {practiceName}
+            </div>
+            {practiceAddress && (
+              <div style={{ color: "var(--muted)", fontSize: 11 }}>{practiceAddress}</div>
+            )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            {practicePhone && <a href={`tel:${practicePhone}`} style={{ color: A, fontWeight: 600, fontSize: 14, textDecoration: "none" }}>{practicePhone}</a>}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            {practicePhone && (
+              <a href={`tel:${practicePhone}`} style={{ color: "var(--accent)", fontWeight: 600, fontSize: 14, textDecoration: "none" }}>
+                {practicePhone}
+              </a>
+            )}
             <ScrollToFormButton primary={P}>Free Consult</ScrollToFormButton>
           </div>
         </div>
       </nav>
 
-      {/* ── HERO ── */}
-      <section style={{ background: `linear-gradient(${heroGrad})`, padding: "50px 20px 70px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      {/* ═══════════════════════════════════════════
+          HERO
+      ═══════════════════════════════════════════ */}
+      <section style={{
+        background: `linear-gradient(135deg, ${P}15 0%, var(--navy-deep) 55%, var(--navy) 100%)`,
+        padding: "80px 24px 100px",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        {/* Radial glow blobs */}
+        <div style={{
+          position: "absolute", top: "20%", left: "10%",
+          width: 500, height: 500,
+          background: `radial-gradient(circle, color-mix(in oklab, ${P} 14%, transparent) 0%, transparent 70%)`,
+          pointerEvents: "none",
+        }} />
+        <div style={{
+          position: "absolute", bottom: "10%", right: "5%",
+          width: 400, height: 400,
+          background: `radial-gradient(circle, color-mix(in oklab, ${A} 10%, transparent) 0%, transparent 70%)`,
+          pointerEvents: "none",
+        }} />
 
-          {/* Headline block — always full-width, always first, center-justified */}
-          <div style={{ marginBottom: 36, textAlign: "center" }}>
-            {specialtyBadge && (
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.3)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: A, fontWeight: 700, marginBottom: 20, letterSpacing: 0.5 }}>
-                ⭐ {specialtyBadge}
-              </div>
-            )}
-            <h1 style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1, maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
-              {headline}
-            </h1>
-            {subheadlineOverride && (
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 17, lineHeight: 1.6, margin: "-8px auto 20px", maxWidth: 680, textAlign: "center" }}>
-                {subheadlineOverride}
-              </p>
-            )}
-            {startingPrice && (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, flexWrap: "wrap" }}>
-                <div style={{ background: "rgba(45,212,191,0.15)", border: "1px solid rgba(45,212,191,0.4)", borderRadius: 12, padding: "10px 20px" }}>
-                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Starting at</div>
-                  <div style={{ color: A, fontWeight: 900, fontSize: 26 }}>${startingPrice.toLocaleString()}</div>
+        <div className="container">
+          <div className="hero-grid" style={{ display: "flex", alignItems: "center", gap: 60, justifyContent: "center" }}>
+
+            {/* LEFT: headline + trust */}
+            <div style={{ flex: "1 1 460px", maxWidth: 560 }}>
+              {/* Eyebrow */}
+              {specialtyBadge && (
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: `color-mix(in oklab, ${A} 12%, transparent)`,
+                  border: `1px solid color-mix(in oklab, ${A} 30%, transparent)`,
+                  borderRadius: 20,
+                  padding: "6px 16px",
+                  fontSize: 12,
+                  color: A,
+                  fontWeight: 700,
+                  marginBottom: 24,
+                  letterSpacing: 0.4,
+                }}>
+                  <span style={{
+                    width: 8, height: 8, borderRadius: "50%",
+                    background: A,
+                    animation: "pulse 2s ease-in-out infinite",
+                    display: "inline-block",
+                  }} />
+                  {specialtyBadge}
                 </div>
-                {regularPrice && (
-                  <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: "10px 20px" }}>
-                    <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Regular price</div>
-                    <div style={{ color: "#f87171", fontWeight: 700, fontSize: 20, textDecoration: "line-through" }}>${regularPrice.toLocaleString()}</div>
+              )}
+
+              <h1 style={{
+                fontFamily: "var(--font-barlow)",
+                fontSize: "clamp(2.4rem, 5vw, 4.4rem)",
+                fontWeight: 800,
+                lineHeight: 1.08,
+                letterSpacing: "-0.02em",
+                color: "#fff",
+                margin: "0 0 20px",
+              }}>
+                {headline}
+              </h1>
+
+              {subheadline && (
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(1rem, 2vw, 1.2rem)", lineHeight: 1.65, margin: "0 0 28px", maxWidth: 500 }}>
+                  {subheadline}
+                </p>
+              )}
+
+              {/* Trust row */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 32 }}>
+                {googleReviewScore && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "7px 14px" }}>
+                    <span style={{ color: "#facc15", fontSize: 14 }}>{stars}</span>
+                    <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, fontWeight: 600 }}>{googleReviewScore}</span>
+                    {googleReviewCount && <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 12 }}>({googleReviewCount})</span>}
                   </div>
                 )}
-                {savingsLabel && <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 14 }}>💰 {savingsLabel}</div>}
-              </div>
-            )}
-          </div>
-
-          {/* Two-column: bullets left, photo+form right — centered layout */}
-          <div className="hero-grid" style={{ display: "flex", alignItems: "flex-start", gap: 40, justifyContent: "center" }}>
-
-            {/* Left: selling points + trust */}
-            <div style={{ flex: "1 1 380px", maxWidth: 480 }}>
-              {heroPoints.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
-                  {heroPoints.map((pt: string, i: number) => (
-                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                      <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(45,212,191,0.2)", border: "1px solid rgba(45,212,191,0.4)", color: A, fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>✓</div>
-                      <span style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, lineHeight: 1.5 }}>{pt}</span>
-                    </div>
-                  ))}
+                <div style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "7px 14px", fontSize: 13, color: "rgba(255,255,255,0.6)" }}>
+                  One doctor, one dedicated team
                 </div>
-              )}
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>📞 We call you back in minutes</div>
-                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🔒 No obligation, ever</div>
-                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: "rgba(255,255,255,0.7)" }}>🏆 Lifetime warranty</div>
-                {financingDetails && (
-                  <div style={{ background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.2)", borderRadius: 20, padding: "7px 14px", fontSize: 12, color: A }}>💳 {financingDetails}</div>
-                )}
               </div>
+
+              {/* Selling points */}
+              {sellingPoints.slice(0, 4).map((pt: string, i: number) => (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+                  <div style={{ width: 22, height: 22, borderRadius: "50%", background: `color-mix(in oklab, ${A} 18%, transparent)`, border: `1px solid color-mix(in oklab, ${A} 40%, transparent)`, color: A, fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+                    ✓
+                  </div>
+                  <span style={{ color: "rgba(255,255,255,0.82)", fontSize: 15, lineHeight: 1.5 }}>{pt}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Right: photo + form */}
-            <div className="hero-right" style={{ flex: "0 1 400px", display: "flex", flexDirection: "column", gap: 16 }}>
-              {heroImageUrl && (
+            {/* RIGHT: before/after slider or form */}
+            <div className="hero-right" style={{ flex: "0 1 420px", display: "flex", flexDirection: "column", gap: 16 }}>
+              {baSlider.before_url && baSlider.after_url ? (
+                <BeforeAfterSlider
+                  beforeUrl={baSlider.before_url}
+                  afterUrl={baSlider.after_url}
+                  caption={baSlider.caption || undefined}
+                  accent={A}
+                />
+              ) : heroImageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={heroImageUrl} alt="Full Arch Implant Result" style={{ width: "100%", borderRadius: 16, objectFit: "cover", maxHeight: 240, display: "block", border: "2px solid rgba(45,212,191,0.3)" }} />
-              )}
-              <div id="lead-form" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 20, padding: "28px 24px", backdropFilter: "blur(10px)" }}>
+                <img
+                  src={heroImageUrl}
+                  alt={`${procedureName} result`}
+                  style={{ width: "100%", borderRadius: "var(--radius-lg)", objectFit: "cover", maxHeight: 340, display: "block", border: `2px solid color-mix(in oklab, ${A} 35%, transparent)` }}
+                />
+              ) : null}
+
+              {/* Lead form card */}
+              <div id="lead-form" style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.13)",
+                borderRadius: "var(--radius-lg)",
+                padding: "28px 24px",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+              }}>
                 <div style={{ textAlign: "center", marginBottom: 16 }}>
-                  <div style={{ fontSize: 22, marginBottom: 4 }}>🦷</div>
-                  <h2 style={{ color: "#fff", fontSize: 19, fontWeight: 800, margin: "0 0 4px" }}>Claim Your Free Consultation</h2>
-                  <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, margin: 0 }}>Takes 30 seconds · We&apos;ll call you · No pressure</p>
+                  <div style={{ fontSize: 26, marginBottom: 6 }}>🦷</div>
+                  <h2 style={{ color: "#fff", fontFamily: "var(--font-barlow)", fontSize: 20, fontWeight: 800, margin: "0 0 4px" }}>
+                    Claim Your Free Consultation
+                  </h2>
+                  <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: 0 }}>
+                    Takes 30 seconds · We&apos;ll call you · No pressure
+                  </p>
                 </div>
                 <LeadForm tenantId={slug} procedureName={procedureName} procedureId={procedure} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
               </div>
@@ -216,113 +416,351 @@ export default async function ProcedureLandingPage(
         </div>
       </section>
 
-      {/* ── SMILE SIMULATOR CTA ── */}
-      <section style={{ padding: "0 20px", background: "#060e1a" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <a href={smileSimUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
-            <div style={{ background: `linear-gradient(135deg, rgba(13,148,136,0.25) 0%, rgba(45,212,191,0.15) 100%)`, border: "1px solid rgba(45,212,191,0.4)", borderRadius: 20, padding: "32px 36px", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap", cursor: "pointer", transition: "border-color 0.2s", marginTop: -20 }}>
-              <div style={{ fontSize: 48, flexShrink: 0 }}>😁</div>
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 6 }}>AI SMILE SIMULATOR</div>
-                <div style={{ color: "#fff", fontWeight: 800, fontSize: "clamp(18px, 3vw, 26px)", margin: "0 0 6px" }}>See your new smile before you commit</div>
-                <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 14 }}>Upload a photo — our AI shows you a realistic preview of your full arch result in under 30 seconds. Free, no signup required.</div>
-              </div>
-              <div style={{ background: P, color: "#fff", fontWeight: 700, fontSize: 15, padding: "14px 28px", borderRadius: 50, flexShrink: 0, whiteSpace: "nowrap" }}>
-                Try It Free →
-              </div>
-            </div>
-          </a>
+      {/* ═══════════════════════════════════════════
+          EMPATHY SECTION
+      ═══════════════════════════════════════════ */}
+      <section style={{
+        background: "var(--navy-deep)",
+        padding: "100px 24px",
+        textAlign: "center",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%,-50%)",
+          width: 700, height: 400,
+          background: `radial-gradient(ellipse, color-mix(in oklab, ${P} 10%, transparent) 0%, transparent 70%)`,
+          pointerEvents: "none",
+        }} />
+        <div className="container" style={{ maxWidth: 800 }}>
+          <div style={{ fontSize: 32, marginBottom: 24 }}>❝</div>
+          <blockquote style={{
+            fontFamily: "var(--font-barlow)",
+            fontSize: "clamp(1.3rem, 3vw, 2rem)",
+            fontWeight: 500,
+            color: "rgba(255,255,255,0.92)",
+            lineHeight: 1.5,
+            margin: "0 0 32px",
+            fontStyle: "italic",
+          }}>
+            {drQuote}
+          </blockquote>
+          <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 13, marginBottom: 8 }}>—</div>
+          <div style={{ fontFamily: "var(--font-barlow)", fontWeight: 700, fontSize: 16, color: "#fff" }}>{drName || "Dr. Jay Siddiqui"}</div>
+          <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 13 }}>{drTitle || "Your Doctor"}</div>
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section style={{ padding: "80px 20px", background: "#060e1a" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>YOUR JOURNEY</div>
-            <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: 0 }}>From consultation to new smile — in one day</h2>
+      {/* ═══════════════════════════════════════════
+          WHY US (4 cards)
+      ═══════════════════════════════════════════ */}
+      <section style={{
+        background: "var(--navy)",
+        padding: "100px 24px",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", top: "30%", left: "50%",
+          transform: "translate(-50%,-50%)",
+          width: 800, height: 500,
+          background: `radial-gradient(ellipse, color-mix(in oklab, ${P} 8%, transparent) 0%, transparent 70%)`,
+          pointerEvents: "none",
+        }} />
+
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <div className="section-eyebrow" style={{ color: A }}>WHY US</div>
+            <h2 className="section-heading" style={{ color: "#fff" }}>
+              The difference is in the details
+            </h2>
           </div>
-          <div className="process-grid" style={{ display: "flex", gap: 0, position: "relative" }}>
-            {processSteps.map((s: ProcessStep, i: number) => (
-              <div key={i} style={{ flex: 1, padding: "0 20px", position: "relative", textAlign: "center" }}>
-                <div style={{ width: 64, height: 64, borderRadius: "50%", background: `linear-gradient(135deg, ${P}, ${A})`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 26 }}>{s.icon}</div>
-                <div style={{ color: A, fontWeight: 700, fontSize: 11, letterSpacing: 2, marginBottom: 8 }}>STEP {String(i + 1).padStart(2, "0")}</div>
-                <h3 style={{ color: "#fff", fontWeight: 700, fontSize: 17, margin: "0 0 10px" }}>{s.title}</h3>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
+
+          <div className="why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
+            {whyUsItems.map((item: WhyUsItem, i: number) => (
+              <div
+                key={i}
+                className="card-glow"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.09)",
+                  borderRadius: "var(--radius)",
+                  padding: "28px 20px",
+                  textAlign: "center",
+                  transition: "all 0.3s var(--ease-out)",
+                  cursor: "default",
+                }}
+              >
+                <div style={{ fontSize: 32, marginBottom: 14 }}>{item.icon}</div>
+                <div style={{ fontFamily: "var(--font-barlow)", fontWeight: 700, fontSize: 15, color: "#fff", marginBottom: 6 }}>
+                  {item.label}
+                </div>
+                <div style={{ color: "rgba(255,255,255,0.38)", fontSize: 13, lineHeight: 1.5 }}>{item.sub}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── WHAT'S INCLUDED ── */}
-      {(includesPoints.length > 0 || techHighlights.length > 0) && (
-        <section style={{ padding: "70px 20px", background: "#0a1628" }}>
-          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 40 }}>
-              <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>EVERYTHING INCLUDED</div>
-              <h2 style={{ fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 800, margin: "0 0 10px" }}>No hidden fees. No surprises.</h2>
-              <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 15, margin: 0 }}>Your quoted price covers everything from start to finish.</p>
+      {/* ═══════════════════════════════════════════
+          DOCTOR BIO
+      ═══════════════════════════════════════════ */}
+      {(drPhotoUrl || drName) && (
+        <section style={{ background: "var(--offwhite)", padding: "100px 24px" }}>
+          <div className="container">
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 60,
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}>
+              {drPhotoUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={drPhotoUrl}
+                  alt={drName || "Dr."}
+                  style={{
+                    width: 200,
+                    height: 200,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: `4px solid color-mix(in oklab, ${P} 30%, transparent)`,
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+              <div style={{ flex: "1 1 400px", maxWidth: 560 }}>
+                <div className="section-eyebrow">MEET YOUR DOCTOR</div>
+                <h2 className="section-heading" style={{ marginBottom: 8 }}>{drName || "Dr. Jay Siddiqui"}</h2>
+                <div style={{ color: "var(--accent)", fontWeight: 600, fontSize: 14, marginBottom: 20 }}>
+                  {drTitle || "Owner, Radiant Dental Care"}
+                </div>
+                <div style={{ color: "var(--subink)", fontSize: 15, lineHeight: 1.8 }}>
+                  {patientQuote && (
+                    <blockquote style={{
+                      borderLeft: `3px solid ${P}`,
+                      margin: "0 0 20px",
+                      paddingLeft: 16,
+                      fontStyle: "italic",
+                      color: "var(--subink)",
+                    }}>
+                      &ldquo;{patientQuote}&rdquo;
+                      {patientName && <span style={{ display: "block", fontStyle: "normal", fontWeight: 600, fontSize: 13, color: "var(--muted)", marginTop: 6 }}>
+                        — {patientName}{patientCaseLabel ? `, ${patientCaseLabel}` : ""}
+                      </span>}
+                    </blockquote>
+                  )}
+                  <p style={{ margin: 0 }}>
+                    With years of specialized experience in implant dentistry and cosmetic procedures, Dr. {drName.split(" ").pop() || "Siddiqui"} has helped thousands of patients restore their smiles using the latest technology. Each treatment plan is customized — no cookie-cutter approaches.
+                  </p>
+                </div>
+                <div style={{ marginTop: 20, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  {["DDS / DMD Licensed", "xNav Guided Surgery Certified", "In-House Lab Director"].map((tag) => (
+                    <span key={tag} style={{
+                      background: `color-mix(in oklab, ${P} 10%, transparent)`,
+                      border: `1px solid color-mix(in oklab, ${P} 25%, transparent)`,
+                      borderRadius: 6,
+                      padding: "4px 12px",
+                      fontSize: 12,
+                      color: P,
+                      fontWeight: 600,
+                    }}>{tag}</span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, marginBottom: techHighlights.length > 0 ? 40 : 0 }}>
-              {includesPoints.map((pt: string, i: number) => (
-                <div key={i} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: 12 }}>
-                  <div style={{ color: A, fontWeight: 700, fontSize: 16, flexShrink: 0, marginTop: 1 }}>✓</div>
-                  <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 14, lineHeight: 1.5 }}>{pt}</span>
+          </div>
+        </section>
+      )}
+
+      {/* ═══════════════════════════════════════════
+          PROCESS STEPS
+      ═══════════════════════════════════════════ */}
+      <section style={{ background: "#fff", padding: "100px 24px" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <div className="section-eyebrow">YOUR JOURNEY</div>
+            <h2 className="section-heading">From consultation to new smile</h2>
+            <p className="section-subheading" style={{ margin: "0 auto" }}>
+              A clear, predictable path — every step explained upfront.
+            </p>
+          </div>
+
+          <div className="process-steps" style={{ display: "flex", gap: 0, position: "relative", alignItems: "flex-start" }}>
+            {/* Connecting line */}
+            <div className="process-connector" style={{
+              position: "absolute",
+              top: 32,
+              left: "calc(12.5% + 32px)",
+              right: "calc(12.5% + 32px)",
+              height: 2,
+              background: `linear-gradient(90deg, transparent, color-mix(in oklab, ${P} 30%, transparent) 15%, color-mix(in oklab, ${P} 30%, transparent) 85%, transparent)`,
+              pointerEvents: "none",
+              zIndex: 0,
+            }} />
+
+            {processSteps.map((s: ProcessStep, i: number) => (
+              <div key={i} style={{
+                flex: 1,
+                padding: "0 16px",
+                position: "relative",
+                zIndex: 1,
+                textAlign: "center",
+              }}>
+                {/* Icon circle */}
+                <div style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: "50%",
+                  background: `linear-gradient(135deg, ${P}, ${A})`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 18px",
+                  fontSize: 26,
+                  boxShadow: `0 4px 20px color-mix(in oklab, ${P} 35%, transparent)`,
+                  position: "relative",
+                  zIndex: 2,
+                }}>
+                  {s.icon}
+                </div>
+
+                {/* Step number */}
+                <div style={{
+                  fontFamily: "var(--font-barlow)",
+                  fontWeight: 700,
+                  fontSize: 10,
+                  letterSpacing: "0.15em",
+                  color: "var(--accent)",
+                  marginBottom: 10,
+                }}>
+                  STEP {String(i + 1).padStart(2, "0")}
+                </div>
+
+                {/* Title */}
+                <h3 style={{
+                  fontFamily: "var(--font-barlow)",
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: "var(--navy)",
+                  margin: "0 0 10px",
+                  lineHeight: 1.25,
+                }}>
+                  {s.title}
+                </h3>
+
+                {/* Description */}
+                <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6, margin: "0 0 12px" }}>
+                  {s.desc}
+                </p>
+
+                {/* Time + location */}
+                {(s.time_label || s.location_label) && (
+                  <div style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    background: `color-mix(in oklab, ${P} 8%, transparent)`,
+                    border: `1px solid color-mix(in oklab, ${P} 20%, transparent)`,
+                    borderRadius: 6,
+                    padding: "4px 10px",
+                    fontSize: 11,
+                    color: P,
+                    fontWeight: 600,
+                  }}>
+                    {s.time_label && <span>{s.time_label}</span>}
+                    {s.time_label && s.location_label && <span style={{ color: "var(--muted)" }}>·</span>}
+                    {s.location_label && <span>{s.location_label}</span>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          TECH FEATURES
+      ═══════════════════════════════════════════ */}
+      {techFeatures.length > 0 && (
+        <section style={{ background: "var(--offwhite)", padding: "100px 24px" }}>
+          <div className="container">
+            <div style={{ textAlign: "center", marginBottom: 56 }}>
+              <div className="section-eyebrow">TECHNOLOGY</div>
+              <h2 className="section-heading">Built different — literally</h2>
+              <p className="section-subheading" style={{ margin: "0 auto" }}>
+                The equipment most practices outsource, we run in-house. That means faster results, tighter quality control, and no finger-pointing between providers.
+              </p>
+            </div>
+
+            <div className="tech-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+              {techFeatures.map((f: TechFeature, i: number) => (
+                <div
+                  key={i}
+                  className="card-glow"
+                  style={{
+                    background: "#fff",
+                    border: "1px solid var(--border)",
+                    borderRadius: "var(--radius)",
+                    padding: "28px 24px",
+                  transition: "all 0.3s var(--ease-out)",
+                  cursor: "default",
+                }}
+                >
+                  <div style={{ fontSize: 28, marginBottom: 14 }}>{f.icon}</div>
+                  <h3 style={{ fontFamily: "var(--font-barlow)", fontWeight: 700, fontSize: 16, color: "var(--navy)", margin: "0 0 8px" }}>
+                    {f.title}
+                  </h3>
+                  {f.desc && (
+                    <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+                      {f.desc}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
-            {techHighlights.length > 0 && (
-              <>
-                <div style={{ color: "rgba(255,255,255,0.3)", fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 14, textAlign: "center" }}>POWERED BY ADVANCED TECHNOLOGY</div>
-                <div className="tech-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                  {techHighlights.map((hl: string, i: number) => (
-                    <div key={i} style={{ background: "rgba(45,212,191,0.06)", border: "1px solid rgba(45,212,191,0.2)", borderRadius: 10, padding: "14px 16px", textAlign: "center" }}>
-                      <div style={{ fontSize: 22, marginBottom: 6 }}>⚡</div>
-                      <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, fontWeight: 600 }}>{hl}</div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
           </div>
         </section>
       )}
 
-      {/* ── DOCTOR VIDEO ── */}
-      {doctorVideoId && (
-        <section style={{ padding: "70px 20px", background: "#060e1a" }}>
-          <div style={{ maxWidth: 860, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>MEET DR. SIDDIQUI</div>
-              <h2 style={{ fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 800, margin: "0 0 10px" }}>A word from your doctor</h2>
-              <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 15, margin: 0 }}>Chevy Chase&apos;s only dentist with xNav guided navigation for same-day implants</p>
-            </div>
-            <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 16, overflow: "hidden", border: `2px solid ${P}40` }}>
-              <iframe src={`https://www.youtube.com/embed/${doctorVideoId}`} title="Message from Dr. Siddiqui" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }} />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── PATIENT TESTIMONIALS ── */}
+      {/* ═══════════════════════════════════════════
+          TESTIMONIALS
+      ═══════════════════════════════════════════ */}
       {testimonialVideoIds.length > 0 && (
-        <section style={{ padding: "70px 20px", background: "#0a1628" }}>
-          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 40 }}>
-              <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>REAL PATIENTS. REAL RESULTS.</div>
-              <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: "0 0 10px" }}>Hear from our patients</h2>
+        <section style={{ background: "#fff", padding: "100px 24px" }}>
+          <div className="container">
+            <div style={{ textAlign: "center", marginBottom: 56 }}>
+              <div className="section-eyebrow">REAL PATIENTS. REAL RESULTS.</div>
+              <h2 className="section-heading">Hear from our patients</h2>
               {(googleReviewScore || googleReviewCount) && (
-                <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 15 }}>
-                  {"⭐".repeat(Math.round(parseFloat(googleReviewScore) || 5))} {googleReviewScore && `${googleReviewScore} stars`}{googleReviewCount && ` · ${googleReviewCount} Google reviews`}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 16 }}>
+                  <span style={{ color: "#facc15", fontSize: 18 }}>{stars}</span>
+                  <span style={{ color: "var(--subink)", fontWeight: 600, fontSize: 15 }}>{googleReviewScore} stars</span>
+                  {googleReviewCount && <span style={{ color: "var(--muted)", fontSize: 14 }}>· {googleReviewCount} Google reviews</span>}
                 </div>
               )}
             </div>
-            <div className="testimonial-grid" style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+
+            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
               {testimonialVideoIds.map((vidId: string, i: number) => (
-                <div key={i} style={{ flex: "1 1 280px" }}>
-                  <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
-                    <iframe src={`https://www.youtube.com/embed/${vidId}`} title={`Patient Testimonial ${i + 1}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }} />
+                <div key={i} style={{ flex: "1 1 300px" }}>
+                  <div style={{
+                    position: "relative",
+                    paddingBottom: "56.25%",
+                    height: 0,
+                    borderRadius: "var(--radius)",
+                    overflow: "hidden",
+                    border: "1px solid var(--border)",
+                  }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${vidId}`}
+                      title={`Patient Testimonial ${i + 1}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                    />
                   </div>
                 </div>
               ))}
@@ -331,69 +769,94 @@ export default async function ProcedureLandingPage(
         </section>
       )}
 
-      {/* ── BEFORE / AFTER ── */}
-      {beforeAfters.length > 0 && (
-        <section style={{ padding: "70px 20px", background: "#060e1a" }}>
-          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 40 }}>
-              <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>TRANSFORMATIONS</div>
-              <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, margin: "0 0 10px" }}>Before &amp; After</h2>
-              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>Actual patients of Radiant Dental Care</p>
-            </div>
-            <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
-              {beforeAfters.map((pair: { before: string; after: string; label?: string }, i: number) => (
-                <div key={i} style={{ flex: "1 1 300px", maxWidth: 380 }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
-                    <div style={{ position: "relative" }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={pair.before} alt="Before" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
-                      <div style={{ position: "absolute", bottom: 8, left: 8, background: "rgba(0,0,0,0.75)", color: "#fff", fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 20, letterSpacing: 1 }}>BEFORE</div>
-                    </div>
-                    <div style={{ position: "relative" }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={pair.after} alt="After" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }} />
-                      <div style={{ position: "absolute", bottom: 8, right: 8, background: P, color: "#fff", fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 20, letterSpacing: 1 }}>AFTER</div>
-                    </div>
-                  </div>
+      {/* ═══════════════════════════════════════════
+          PRICING BLOCK
+      ═══════════════════════════════════════════ */}
+      {startingPrice && (
+        <section style={{
+          background: `linear-gradient(135deg, color-mix(in oklab, ${P} 8%, var(--offwhite)) 0%, var(--offwhite) 100%)`,
+          padding: "100px 24px",
+          borderTop: `1px solid var(--border)`,
+          borderBottom: `1px solid var(--border)`,
+        }}>
+          <div className="container" style={{ textAlign: "center" }}>
+            {pricingHeadline && (
+              <div className="section-eyebrow">PRICING</div>
+            )}
+            <h2 className="section-heading" style={{ marginBottom: 8 }}>
+              {pricingHeadline || "Transparent pricing — no surprises"}
+            </h2>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, flexWrap: "wrap", marginBottom: 16 }}>
+              {regularPrice && regularPrice > startingPrice && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <span style={{ color: "var(--muted)", fontSize: 12, fontWeight: 600 }}>REGULAR PRICE</span>
+                  <span style={{ color: "var(--muted)", fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 700, textDecoration: "line-through" }}>
+                    ${regularPrice.toLocaleString()}
+                  </span>
                 </div>
-              ))}
+              )}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <span style={{ color: "var(--muted)", fontSize: 12, fontWeight: 600 }}>STARTING FROM</span>
+                <span style={{ color: P, fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: 800, fontFamily: "var(--font-barlow)", letterSpacing: "-0.02em" }}>
+                  ${startingPrice.toLocaleString()}
+                </span>
+              </div>
+              {savingsLabel && (
+                <div style={{
+                  background: `color-mix(in oklab, ${P} 12%, transparent)`,
+                  border: `1px solid color-mix(in oklab, ${P} 30%, transparent)`,
+                  borderRadius: "var(--radius)",
+                  padding: "10px 20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}>
+                  <span style={{ color: P, fontWeight: 800, fontSize: 16 }}>💰 {savingsLabel}</span>
+                </div>
+              )}
             </div>
+
+            {pricingFootnote && (
+              <p style={{ color: "var(--muted)", fontSize: 13, marginBottom: 28 }}>{pricingFootnote}</p>
+            )}
+
+            {financingDetails && (
+              <p style={{ color: "var(--subink)", fontSize: 15, marginBottom: 28 }}>
+                💳 {financingDetails}
+              </p>
+            )}
+
+            <ScrollToFormButton primary={P}>Get Your Exact Quote →</ScrollToFormButton>
           </div>
         </section>
       )}
 
-      {/* ── WHY US ── */}
-      {practiceDiffs && (
-        <section style={{ padding: "70px 20px", background: "#0a1628" }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-            <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 16 }}>WHY {practiceName.toUpperCase()}</div>
-            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 17, lineHeight: 1.8, margin: "0 auto 40px", maxWidth: 700 }}>{practiceDiffs}</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
-              {whyUsItems.map((item: WhyUsItem, i: number) => (
-                <div key={i} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "20px 16px", textAlign: "center" }}>
-                  <div style={{ fontSize: 28, marginBottom: 8 }}>{item.icon}</div>
-                  <div style={{ color: "#fff", fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{item.label}</div>
-                  <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>{item.sub}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── FAQ — only shown if configured ── */}
+      {/* ═══════════════════════════════════════════
+          FAQ
+      ═══════════════════════════════════════════ */}
       {faqItems.length > 0 && (
-        <section style={{ padding: "70px 20px", background: "#060e1a" }}>
-          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 44 }}>
-              <div style={{ color: A, fontWeight: 700, fontSize: 12, letterSpacing: 2, marginBottom: 10 }}>COMMON QUESTIONS</div>
-              <h2 style={{ fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 800, margin: 0 }}>We hear these every day</h2>
+        <section style={{ background: "var(--offwhite)", padding: "100px 24px" }}>
+          <div className="container">
+            <div style={{ textAlign: "center", marginBottom: 56 }}>
+              <div className="section-eyebrow">COMMON QUESTIONS</div>
+              <h2 className="section-heading">We hear these every day</h2>
             </div>
+
             <div className="faq-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               {faqItems.map((item: FaqItem, i: number) => (
-                <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "22px 24px" }}>
-                  <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 10 }}>{item.q}</div>
-                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.65 }}>{item.a}</div>
+                <div key={i} style={{
+                  background: "#fff",
+                  border: "1px solid var(--border)",
+                  borderRadius: "var(--radius)",
+                  padding: "24px 26px",
+                }}>
+                  <div style={{ fontFamily: "var(--font-barlow)", fontWeight: 700, fontSize: 15, color: "var(--navy)", marginBottom: 10 }}>
+                    {item.q}
+                  </div>
+                  <div style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.7 }}>
+                    {item.a}
+                  </div>
                 </div>
               ))}
             </div>
@@ -401,28 +864,57 @@ export default async function ProcedureLandingPage(
         </section>
       )}
 
-      {/* ── FINAL CTA ── */}
-      <section style={{ padding: "80px 20px", background: `linear-gradient(${heroGrad})` }}>
-        <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
+      {/* ═══════════════════════════════════════════
+          FINAL CTA
+      ═══════════════════════════════════════════ */}
+      <section style={{
+        background: `linear-gradient(135deg, ${P}18 0%, var(--navy-deep) 50%, var(--navy) 100%)`,
+        padding: "100px 24px",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%,-50%)",
+          width: 600, height: 400,
+          background: `radial-gradient(ellipse, color-mix(in oklab, ${P} 12%, transparent) 0%, transparent 70%)`,
+          pointerEvents: "none",
+        }} />
+
+        <div className="container" style={{ maxWidth: 560, textAlign: "center", position: "relative", zIndex: 1 }}>
           <div style={{ fontSize: 40, marginBottom: 16 }}>🦷</div>
-          <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 900, margin: "0 0 14px" }}>
+          <h2 style={{
+            fontFamily: "var(--font-barlow)",
+            fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            fontWeight: 900,
+            color: "#fff",
+            margin: "0 0 14px",
+            lineHeight: 1.1,
+          }}>
             Your new smile is one call away.
           </h2>
           <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 16, margin: "0 0 36px", lineHeight: 1.7 }}>
             Free consultation. Complete treatment plan. Exact pricing.<br />No pressure, no commitment — just answers.
           </p>
-          <LeadForm tenantId={slug} procedureName={procedureName} procedureId={procedure} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+          <div style={{ marginBottom: 24 }}>
+            <LeadForm tenantId={slug} procedureName={procedureName} procedureId={procedure} offer={ctaOffer} offerDetail={ctaOfferDetail} primary={P} accent={A} />
+          </div>
           {(practiceAddress || practiceName) && (
-            <div style={{ color: "rgba(255,255,255,0.25)", fontSize: 12, marginTop: 16 }}>
+            <div style={{ color: "rgba(255,255,255,0.28)", fontSize: 13 }}>
               📍 {practiceAddress || practiceName}
             </div>
           )}
         </div>
       </section>
 
+      {/* ═══════════════════════════════════════════
+          STICKY MOBILE CTA
+      ═══════════════════════════════════════════ */}
       <StickyMobileCTA primary={P} tenantId={slug} />
 
-      {/* ── CLARA LIVE CHAT AGENT ── */}
+      {/* ═══════════════════════════════════════════
+          CLARA LIVE CHAT AGENT
+      ═══════════════════════════════════════════ */}
       <ClaraChat
         tenantId={slug}
         practiceName={practiceName}
@@ -431,13 +923,20 @@ export default async function ProcedureLandingPage(
         openingMessage={`Hi! I'm Clara, the AI assistant for ${practiceName}. Have questions about ${procedureName} or want to book your free consultation? I'm here to help! 😊`}
       />
 
-      {/* ── Footer ── */}
-      <footer style={{ background: "#030810", padding: "24px 20px 90px", textAlign: "center", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <div style={{ color: "rgba(255,255,255,0.25)", fontSize: 12 }}>
+      {/* ═══════════════════════════════════════════
+          FOOTER
+      ═══════════════════════════════════════════ */}
+      <footer style={{
+        background: "var(--navy-deep)",
+        padding: "24px 24px 90px",
+        textAlign: "center",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+      }}>
+        <div style={{ color: "rgba(255,255,255,0.22)", fontSize: 12 }}>
           © {new Date().getFullYear()} {practiceName} · Powered by{" "}
           <a href="https://iamclara.ai" style={{ color: A, textDecoration: "none" }}>Clara AI</a>
           {" "}·{" "}
-          <a href="https://iamclara.ai/privacy" style={{ color: "rgba(255,255,255,0.25)", textDecoration: "none" }}>Privacy</a>
+          <a href="https://iamclara.ai/privacy" style={{ color: "rgba(255,255,255,0.22)", textDecoration: "none" }}>Privacy</a>
         </div>
       </footer>
     </div>

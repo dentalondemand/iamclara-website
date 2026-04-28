@@ -315,3 +315,142 @@ function hexToRgb(hex: string): string {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : "13,148,136";
 }
+
+// ── Before/After Image Slider ──────────────────────────────────────────────────
+export function BeforeAfterSlider({
+  beforeUrl,
+  afterUrl,
+  caption,
+  accent = "#0D9E8F",
+}: {
+  beforeUrl: string;
+  afterUrl: string;
+  caption?: string;
+  accent?: string;
+}) {
+  const [clip, setClip] = useState(0.5);
+  const ref = useRef<HTMLDivElement>(null);
+
+  if (!beforeUrl || !afterUrl) return null;
+
+  function getClip(e: MouseEvent | TouchEvent): number {
+    if (!ref.current) return 0.5;
+    const rect = ref.current.getBoundingClientRect();
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const x = clientX - rect.left;
+    return Math.max(0.05, Math.min(0.95, x / rect.width));
+  }
+
+  function onMove(e: MouseEvent | TouchEvent) {
+    e.preventDefault();
+    setClip(getClip(e));
+  }
+
+  function onMouseDown(e: React.MouseEvent) {
+    e.preventDefault();
+    setClip(getClip(e.nativeEvent));
+    const onMove2 = (ev: MouseEvent) => onMove(ev);
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove2);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove2);
+    window.addEventListener("mouseup", onUp);
+  }
+
+  function onTouchStart(e: React.TouchEvent) {
+    setClip(getClip(e.nativeEvent));
+  }
+
+  function onTouchMove(e: React.TouchEvent) {
+    onMove(e.nativeEvent);
+  }
+
+  return (
+    <div
+      ref={ref}
+      className="ba-slider"
+      style={
+        {
+          "--clip": clip,
+          "--accent": accent,
+          position: "relative",
+          borderRadius: "var(--radius-lg, 20px)",
+          overflow: "hidden",
+          cursor: "ew-resize",
+          userSelect: "none",
+        } as React.CSSProperties
+      }
+      onMouseDown={onMouseDown}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+    >
+      <style>{`
+        .ba-slider { position: relative; border-radius: var(--radius-lg, 20px); overflow: hidden; cursor: ew-resize; }
+        .ba-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+        .ba-after-wrap { position: absolute; inset: 0; width: calc(var(--clip) * 100%); overflow: hidden; }
+        .ba-after-wrap .ba-img { width: calc(100% / var(--clip)); min-width: 100%; }
+        .ba-handle {
+          position: absolute; top: 0; bottom: 0;
+          left: calc(var(--clip) * 100%);
+          width: 44px; margin-left: -22px;
+          cursor: ew-resize;
+          display: flex; align-items: center; justify-content: center;
+          z-index: 10;
+        }
+        .ba-handle-line { width: 2px; height: 100%; background: #fff; box-shadow: 0 0 8px rgba(0,0,0,0.4); }
+        .ba-handle-knob {
+          position: absolute; top: 50%; left: 50%;
+          transform: translate(-50%,-50%);
+          width: 40px; height: 40px; border-radius: 50%;
+          background: #fff;
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+          font-size: 16px;
+        }
+        .ba-label {
+          position: absolute; top: 14px;
+          font-size: 0.68rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+          padding: 5px 12px; border-radius: 6px;
+          backdrop-filter: blur(8px);
+          z-index: 10;
+          pointer-events: none;
+        }
+        .ba-label-before { left: 14px; background: rgba(0,0,0,0.72); color: rgba(255,255,255,0.9); }
+        .ba-label-after { right: 14px; background: color-mix(in oklab, var(--accent, #0D9E8F) 85%, black); color: #fff; }
+      `}</style>
+
+      {/* Before image (full width, base layer) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={beforeUrl} alt="Before" className="ba-img" />
+
+      {/* After image (clipped by --clip) */}
+      <div className="ba-after-wrap">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={afterUrl} alt="After" className="ba-img" />
+      </div>
+
+      {/* Labels */}
+      <div className="ba-label ba-label-before">Before</div>
+      <div className="ba-label ba-label-after">After</div>
+
+      {/* Drag handle */}
+      <div className="ba-handle">
+        <div className="ba-handle-line" />
+        <div className="ba-handle-knob">⇄</div>
+      </div>
+
+      {caption && (
+        <div style={{
+          background: "rgba(0,0,0,0.72)",
+          padding: "10px 16px",
+          fontSize: 13,
+          textAlign: "center",
+          color: "rgba(255,255,255,0.8)",
+        }}>
+          {caption}
+        </div>
+      )}
+    </div>
+  );
+}
