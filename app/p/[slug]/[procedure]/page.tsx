@@ -236,6 +236,11 @@ export default async function ProcedureLandingPage(
           .faq-grid { grid-template-columns: 1fr !important; }
           .why-grid { grid-template-columns: 1fr 1fr !important; }
         }
+
+        @media (max-width: 480px) {
+          .tech-grid { grid-template-columns: 1fr !important; }
+          .why-grid { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
       {/* ═══════════════════════════════════════════

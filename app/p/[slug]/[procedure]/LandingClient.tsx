@@ -140,7 +140,7 @@ export function LeadForm({
   const inputStyle: React.CSSProperties = {
     padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)",
     background: "rgba(255,255,255,0.08)", color: "#fff", fontSize: 15,
-    outline: "none", width: "100%", boxSizing: "border-box",
+    width: "100%", boxSizing: "border-box",
   };
 
   return (
