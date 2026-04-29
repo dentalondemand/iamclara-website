@@ -294,7 +294,7 @@ export default function TryClaraPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Dr. Smith"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/20 focus:outline-none focus:border-teal-500/60 transition-colors"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/20 hover:border-white/20 focus:outline-none focus:border-teal-500/60 transition-colors"
                     />
                   </div>
                   <div>
@@ -304,7 +304,7 @@ export default function TryClaraPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="(555) 123-4567"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/20 focus:outline-none focus:border-teal-500/60 transition-colors"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/20 hover:border-white/20 focus:outline-none focus:border-teal-500/60 transition-colors"
                     />
                   </div>
                   {formError && (

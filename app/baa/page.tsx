@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function BAAPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#0F1823', color: '#fff', padding: '0 0 80px' }}>
+    <div style={{ minHeight: '100vh', background: '#141E2B', color: '#fff', padding: '0 0 80px' }}>
       {/* Header */}
       <div style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '20px 24px' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
