@@ -395,7 +395,7 @@ function Pricing() {
                 <span className="text-5xl font-bold">$449</span>
                 <span className="text-white/40 mb-2">/mo</span>
               </div>
-              <p className="text-amber-400 text-xs font-semibold mb-2">→ $549/mo after month 1</p>
+              <p className="text-amber-400 text-xs font-semibold mb-2">Limited intro pricing — lock in $449/mo before it goes to $549</p>
               <p className="text-white/50 text-sm">
                 Everything in Core — plus AI-managed ads, social media automation, and a full lead machine. All-inclusive, no per-minute fees.
               </p>
@@ -436,7 +436,7 @@ function Pricing() {
                 className="block text-center bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3.5 rounded-full transition-colors">
                 Get Started — $449/mo
               </a>
-              <p className="text-center text-white/30 text-xs mt-3">🔒 No contracts · Cancel anytime · $549/mo after month 1</p>
+              <p className="text-center text-white/30 text-xs mt-3">🔒 No contracts · Cancel anytime · Intro price: $449/mo (rises to $549 after intro period)</p>
             </div>
           </div>
         </div>

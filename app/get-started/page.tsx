@@ -240,8 +240,8 @@ export default function GetStarted() {
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:4 }}>
                 {[
                   { val:"core",   name:"Core",   price:"$299/mo",             badge:"",          desc:"AI receptionist + dashboard" },
-                  { val:"growth", name:"Growth", price:"$449/mo → $549/mo",    badge:"",          desc:"Core + ads, social media, lead automation" },
-                  { val:"pro",    name:"Pro",    price:"$449/mo → $549/mo",    badge:"Legacy",    desc:"Pro tier retired — Growth is our full platform" },
+                  { val:"growth", name:"Growth", price:"$449/mo (intro price)",    badge:"",          desc:"Core + ads, social media, lead automation — rises to $549/mo after intro" },
+                  { val:"pro",    name:"Pro",    price:"$449/mo (intro price)",    badge:"Legacy",    desc:"Pro tier retired — Growth is our full platform" },
                 ].map(p => (
                   <div key={p.val} onClick={() => setInfo({...info, plan:p.val})}
                     style={{ cursor:"pointer", borderRadius:12, padding:"14px",
