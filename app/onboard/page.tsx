@@ -50,6 +50,7 @@ export default function OnboardPage() {
   const [form, setForm] = useState({
     practice_name: "", admin_name: "", admin_email: "",
     phone: "", address: "", timezone: "America/New_York", doctor_name: "",
+    pms_provider: "", pms_notes: "",
   })
   const [hours, setHours] = useState<Record<string, string>>({
     mon:"9:00am–5:00pm",tue:"9:00am–5:00pm",wed:"9:00am–5:00pm",
@@ -140,6 +141,8 @@ export default function OnboardPage() {
           address: form.address,
           timezone: form.timezone,
           doctor_name: form.doctor_name,
+          pms_provider: form.pms_provider,
+          pms_notes: form.pms_notes,
           plan: "auto",
         },
         hours,
@@ -240,6 +243,30 @@ export default function OnboardPage() {
                     placeholder={placeholder} />
                 </div>
               ))}
+
+              <div>
+                <label className="block text-sm text-white/60 mb-1.5">Practice management software</label>
+                <select value={form.pms_provider} onChange={e => setForm(f => ({ ...f, pms_provider: e.target.value }))}
+                  className="w-full bg-white/[0.06] border border-white/15 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-teal-500/60">
+                  <option value="">Select PMS / scheduler…</option>
+                  <option value="Curve Hero">Curve Hero</option>
+                  <option value="Open Dental">Open Dental</option>
+                  <option value="Dentrix">Dentrix</option>
+                  <option value="Eaglesoft">Eaglesoft</option>
+                  <option value="CareStack">CareStack</option>
+                  <option value="NexHealth">NexHealth</option>
+                  <option value="Google Calendar only">Google Calendar only</option>
+                  <option value="Other / not sure">Other / not sure</option>
+                </select>
+                <p className="text-white/35 text-xs mt-1.5">This helps us schedule the right setup call and connect Clara to your calendar/PMS.</p>
+              </div>
+              <div>
+                <label className="block text-sm text-white/60 mb-1.5">PMS / scheduling notes <span className="text-white/30">(optional)</span></label>
+                <input value={form.pms_notes}
+                  onChange={e => setForm(f => ({ ...f, pms_notes: e.target.value }))}
+                  className="w-full bg-white/[0.06] border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/25 focus:outline-none focus:border-teal-500/60"
+                  placeholder="Example: We use Curve via NexHealth, or Open Dental Cloud" />
+              </div>
               <div>
                 <label className="block text-sm text-white/60 mb-1.5">Timezone</label>
                 <select value={form.timezone} onChange={e => setForm(f => ({ ...f, timezone: e.target.value }))}
